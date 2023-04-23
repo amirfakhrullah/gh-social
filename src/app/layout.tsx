@@ -1,5 +1,7 @@
-import "./globals.css";
+import Sidebar from "@/components/Sidebar";
+import "../styles/globals.css";
 import { Inter } from "next/font/google";
+import { cn } from "@/lib/utils";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,7 +17,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={cn(inter.className, "bg-slate-900")}>
+        <div className="max-w-7xl mx-auto">
+          <Sidebar />
+          {children}
+        </div>
+      </body>
     </html>
   );
 }
