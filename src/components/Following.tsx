@@ -13,9 +13,9 @@ interface Props {
   isOpened: boolean;
   setIsOpened: React.Dispatch<React.SetStateAction<boolean>>;
 }
-const Followers = ({ isOpened, setIsOpened }: Props) => {
+const Following = ({ isOpened, setIsOpened }: Props) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const { data, isLoading } = api.github.followers.useQuery(
+  const { data, isLoading } = api.github.following.useQuery(
     {
       page: currentPage,
       perPage: USER_LISTING_PER_PAGE,
@@ -29,7 +29,7 @@ const Followers = ({ isOpened, setIsOpened }: Props) => {
     <Dialog open={isOpened} onOpenChange={() => setIsOpened(!isOpened)} modal>
       <DialogContent className="bg-slate-900">
         <DialogHeader>
-          <DialogTitle>Followers</DialogTitle>
+          <DialogTitle>Following</DialogTitle>
         </DialogHeader>
         {isLoading &&
           [...Array(5)].map((_, idx) => (
@@ -78,4 +78,4 @@ const Followers = ({ isOpened, setIsOpened }: Props) => {
   );
 };
 
-export default Followers;
+export default Following;

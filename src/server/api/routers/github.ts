@@ -27,16 +27,44 @@ export const githubRouter = createTRPCRouter({
     .input(
       z.object({
         page: z.number(),
+        perPage: z.number(),
       })
     )
     .query(async ({ ctx, input }) => {
       const {
         oAuth: { token, user },
       } = ctx;
-      const { page } = input;
+      const { page, perPage } = input;
 
       const res = await fetch(
-        `https://api.github.com/users/${user.username}/followers`,
+        `https://api.github.com/users/${user.username}/followers?page=${page}&per_page=${perPage}`,
+        {
+          headers: {
+            Accept: "application/vnd.github+json",
+            Authorization: `Bearer ${token}`,
+            "X-GitHub-Api-Version": "2022-11-28",
+          },
+        }
+      );
+
+      return (await res.json()) as GitHubUserProfile[];
+    }),
+
+  following: gitHubProtectedProcedure
+    .input(
+      z.object({
+        page: z.number(),
+        perPage: z.number(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const {
+        oAuth: { token, user },
+      } = ctx;
+      const { page, perPage } = input;
+
+      const res = await fetch(
+        `https://api.github.com/users/${user.username}/following?page=${page}&per_page=${perPage}`,
         {
           headers: {
             Accept: "application/vnd.github+json",

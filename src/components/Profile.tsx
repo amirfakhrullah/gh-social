@@ -8,6 +8,7 @@ import { Separator } from "./ui/separator";
 import { AiOutlineLink } from "react-icons/ai";
 import Followers from "./Followers";
 import { useState } from "react";
+import Following from "./Following";
 
 interface Props {
   profile: GitHubUserProfile;
@@ -16,6 +17,7 @@ const Profile = ({ profile }: Props) => {
   const { user } = useUser();
 
   const [isFollowersModalOpened, setIsFollowersModalOpened] = useState(false);
+  const [isFollowingModalOpened, setIsFollowingModalOpened] = useState(false);
 
   return (
     <>
@@ -30,12 +32,14 @@ const Profile = ({ profile }: Props) => {
                     src={user.profileImageUrl}
                     alt={user.username ?? "profile-img"}
                   />
-                  <AvatarFallback className="text-gray-800">
+                  <AvatarFallback className="text-gray-800 text-xl">
                     {user.username?.slice(0, 1) ?? "A"}
                   </AvatarFallback>
                 </>
               ) : (
-                <AvatarFallback className="text-gray-800">A</AvatarFallback>
+                <AvatarFallback className="text-gray-800 text-xl">
+                  A
+                </AvatarFallback>
               )}
             </Avatar>
             <p className="text-lg font-bold">{profile.name}</p>
@@ -59,13 +63,22 @@ const Profile = ({ profile }: Props) => {
               {profile.followers ?? 0} Followers
             </p>
             <Separator orientation="vertical" />
-            <p className="cursor-pointer">{profile.following ?? 0} Following</p>
+            <p
+              className="cursor-pointer"
+              onClick={() => setIsFollowingModalOpened(true)}
+            >
+              {profile.following ?? 0} Following
+            </p>
           </div>
         </div>
       </div>
       <Followers
         isOpened={isFollowersModalOpened}
         setIsOpened={setIsFollowersModalOpened}
+      />
+      <Following
+        isOpened={isFollowingModalOpened}
+        setIsOpened={setIsFollowingModalOpened}
       />
     </>
   );
