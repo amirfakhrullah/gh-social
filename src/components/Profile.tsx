@@ -9,14 +9,32 @@ import Followers from "./Followers";
 import { useState } from "react";
 import Following from "./Following";
 import FollowButton from "./FollowButton";
+import { useToast } from "./ui/use-toast";
 
 interface Props {
   profile: GitHubUserProfile;
   self?: boolean;
 }
 const Profile = ({ profile, self = false }: Props) => {
+  const { toast } = useToast();
+
   const [isFollowersModalOpened, setIsFollowersModalOpened] = useState(false);
   const [isFollowingModalOpened, setIsFollowingModalOpened] = useState(false);
+
+  const handleOpen = (type: "following" | "followers") => {
+    if (!self && profile.type !== "User") {
+      return toast({
+        title: "Not Allowed",
+        description: "This profile restrists third-party access",
+      });
+    }
+
+    if (type === "followers") {
+      return setIsFollowersModalOpened(true);
+    } else {
+      return setIsFollowingModalOpened(true);
+    }
+  };
 
   return (
     <>
@@ -47,14 +65,14 @@ const Profile = ({ profile, self = false }: Props) => {
             <div className="md:mt-[50px] mt-[30px] flex h-5 items-center space-x-4 text-sm">
               <p
                 className="cursor-pointer"
-                onClick={() => setIsFollowersModalOpened(true)}
+                onClick={() => handleOpen("followers")}
               >
                 {profile.followers ?? 0} Followers
               </p>
               <Separator orientation="vertical" />
               <p
                 className="cursor-pointer"
-                onClick={() => setIsFollowingModalOpened(true)}
+                onClick={() => handleOpen("following")}
               >
                 {profile.following ?? 0} Following
               </p>
