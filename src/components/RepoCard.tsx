@@ -17,7 +17,6 @@ interface Props {
   repo: GitHubRepoWithUserLike;
 }
 const RepoCard = ({ repo }: Props) => {
-  console.log(repo);
   const [starred, setStarred] = useState(repo.isLiked);
 
   const { toast } = useToast();

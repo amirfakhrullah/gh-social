@@ -274,7 +274,6 @@ export const githubRouter = createTRPCRouter({
         oAuth: { token },
       } = ctx;
       const { repoName, owner, action } = input;
-      console.log(token);
 
       const res = await fetch(
         `https://api.github.com/user/starred/${owner}/${repoName}`,
