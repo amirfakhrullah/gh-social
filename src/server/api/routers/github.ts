@@ -26,6 +26,29 @@ export const githubRouter = createTRPCRouter({
     return (await ghResp.json()) as GitHubUserProfile;
   }),
 
+  otherProfile: gitHubProtectedProcedure
+    .input(
+      z.object({
+        username: z.string().min(1),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const {
+        oAuth: { token },
+      } = ctx;
+      const { username } = input;
+
+      const ghResp = await fetch(`https://api.github.com/users/${username}`, {
+        headers: {
+          Accept: "application/vnd.github+json",
+          Authorization: `Bearer ${token}`,
+          "X-GitHub-Api-Version": "2022-11-28",
+        },
+      });
+
+      return (await ghResp.json()) as GitHubUserProfile;
+    }),
+
   followers: gitHubProtectedProcedure
     .input(
       z.object({
@@ -80,29 +103,6 @@ export const githubRouter = createTRPCRouter({
       );
 
       return (await res.json()) as GitHubUserProfile[];
-    }),
-
-  otherProfile: gitHubProtectedProcedure
-    .input(
-      z.object({
-        username: z.string().min(1),
-      })
-    )
-    .query(async ({ ctx, input }) => {
-      const {
-        oAuth: { token },
-      } = ctx;
-      const { username } = input;
-
-      const ghResp = await fetch(`https://api.github.com/users/${username}`, {
-        headers: {
-          Accept: "application/vnd.github+json",
-          Authorization: `Bearer ${token}`,
-          "X-GitHub-Api-Version": "2022-11-28",
-        },
-      });
-
-      return (await ghResp.json()) as GitHubUserProfile;
     }),
 
   hasFollowedTheUser: gitHubProtectedProcedure
