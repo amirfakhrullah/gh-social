@@ -8,15 +8,20 @@ import UserCardSkeleton from "./skeletons/UserCardSkeleton";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { USER_LISTING_PER_PAGE } from "@/constants";
+import { useRouter } from "next/navigation";
 
 interface Props {
+  username: string;
   isOpened: boolean;
   setIsOpened: React.Dispatch<React.SetStateAction<boolean>>;
 }
-const Following = ({ isOpened, setIsOpened }: Props) => {
+const Following = ({ username, isOpened, setIsOpened }: Props) => {
+  const router = useRouter();
+
   const [currentPage, setCurrentPage] = useState(1);
   const { data, isLoading } = api.github.following.useQuery(
     {
+      username,
       page: currentPage,
       perPage: USER_LISTING_PER_PAGE,
     },
@@ -35,7 +40,7 @@ const Following = ({ isOpened, setIsOpened }: Props) => {
           [...Array(5)].map((_, idx) => (
             <UserCardSkeleton key={`skeleton__${idx}`} />
           ))}
-        {data?.length && (
+        {data && data.length > 0 && (
           <ScrollArea className="max-h-[400px]">
             {data.map((user) => (
               <Fragment key={user.login}>
@@ -47,7 +52,9 @@ const Following = ({ isOpened, setIsOpened }: Props) => {
                     </Avatar>
                     <div>{user.login}</div>
                   </div>
-                  <Button>View</Button>
+                  <Button onClick={() => router.push(`/users/${user.login}`)}>
+                    View
+                  </Button>
                 </div>
               </Fragment>
             ))}
@@ -72,6 +79,9 @@ const Following = ({ isOpened, setIsOpened }: Props) => {
               )}
             </div>
           </ScrollArea>
+        )}
+        {data && data.length === 0 && (
+          <div className="py-5 text-center">No Following</div>
         )}
       </DialogContent>
     </Dialog>

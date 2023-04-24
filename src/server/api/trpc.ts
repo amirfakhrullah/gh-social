@@ -45,10 +45,7 @@ export const gitHubProtectedProcedure = protectedProcedure.use(
       auth: { userId },
     } = ctx;
 
-    const [user, oAuthTokens] = await Promise.all([
-      clerkClient.users.getUser(userId),
-      clerkClient.users.getUserOauthAccessToken(userId, "oauth_github"),
-    ]);
+    const oAuthTokens = await clerkClient.users.getUserOauthAccessToken(userId, "oauth_github");
 
     const oAuthToken = oAuthTokens[0]?.token;
     if (!oAuthToken) {
@@ -62,7 +59,6 @@ export const gitHubProtectedProcedure = protectedProcedure.use(
       ctx: {
         ...ctx,
         oAuth: {
-          user,
           token: oAuthToken,
         },
       },

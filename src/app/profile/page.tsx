@@ -4,11 +4,7 @@ import { api } from "@/lib/api/server";
 export default async function Page() {
   const profile = await api.github.profile.fetch();
 
-  return (
-    <div>
-      <Profile profile={profile} />
-    </div>
-  );
+  return <Profile profile={profile} self />;
 }
 
 export const runtime = "experimental-edge";
