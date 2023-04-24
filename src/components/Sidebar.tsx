@@ -72,8 +72,7 @@ export default function Sidebar() {
       ];
     } else {
       return routes.map((route, idx) => {
-        const isActive =
-          idx !== 0 && `/${basePath}`.includes(route.path);
+        const isActive = idx !== 0 && `/${basePath}`.includes(route.path);
         return {
           Icon: isActive ? route.Active : route.InActive,
           title: route.title,
@@ -86,7 +85,7 @@ export default function Sidebar() {
 
   return (
     <div className="h-screen md:w-[275px] w-[88px] border-r border-slate-700">
-      <div className="fixed z-10 top-0 left-0 h-screen md:w-[275px] w-[88px] mt-10 p-2">
+      <div className="fixed z-10 top-0 h-screen md:w-[275px] w-[88px] mt-10 p-2">
         {navs.map(({ Icon, title, isActive, path }) => (
           <div
             key={title}

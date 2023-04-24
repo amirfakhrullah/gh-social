@@ -37,5 +37,10 @@
     "tailwindcss-animate": "^1.0.5",
     "typescript": "5.0.4",
     "zod": "^3.21.4"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "@tanstack/react-query@4.29.3": "patches/@tanstack__react-query@4.29.3.patch"
+    }
   }
 }
