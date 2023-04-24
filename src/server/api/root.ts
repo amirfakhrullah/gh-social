@@ -1,8 +1,8 @@
-import { exampleRouter } from "@/server/api/routers/example";
 import { createTRPCRouter } from "@/server/api/trpc";
+import { githubRouter } from "./routers/github";
 
 export const appRouter = createTRPCRouter({
-  example: exampleRouter,
+  github: githubRouter,
 });
 
 // export type definition of API

@@ -20,9 +20,9 @@ export default function RootLayout({
     <html lang="en">
       <ClientProviders>
         <body className={cn(inter.className, "bg-slate-900")}>
-          <div className="max-w-7xl mx-auto">
+          <div className="max-w-7xl mx-auto flex flex-row">
             <Sidebar />
-            {children}
+            <div className="md:w-3/4 w-full md:border-r md:border-slate-700 border-r-0">{children}</div>
           </div>
         </body>
       </ClientProviders>

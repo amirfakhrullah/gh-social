@@ -19,11 +19,14 @@ const getBaseUrl = () => {
 
 export const api = createTRPCNextBeta<AppRouter>({
   transformer: superjson,
-  unstable_overrides: {
-    useMutation: {
-      async onSuccess(opts) {
-        await opts.originalFn();
-        await opts.queryClient.invalidateQueries();
+  queryClientConfig: {
+    defaultOptions: {
+      queries: {
+        refetchOnWindowFocus: false,
+        refetchInterval: false,
+        retry: false,
+        cacheTime: Infinity,
+        staleTime: Infinity,
       },
     },
   },

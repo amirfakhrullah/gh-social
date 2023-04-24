@@ -21,7 +21,7 @@ export default function Sidebar() {
   const handleRoute = (route: string) => router.push(route);
 
   const navs = useMemo(() => {
-    const basePath = location.split("/")?.[1];
+    const basePath = location?.split("/")?.[1];
 
     const routes = [
       {
@@ -85,7 +85,7 @@ export default function Sidebar() {
 
   return (
     <div className="h-screen md:w-[275px] w-[88px] border-r border-slate-700">
-      <div className="fixed z-10 top-0 h-screen md:w-[275px] w-[88px] mt-10 p-2">
+      <div className="fixed z-10 top-0 h-screen md:w-[265px] w-[75px] mt-10 p-2">
         {navs.map(({ Icon, title, isActive, path }) => (
           <div
             key={title}
