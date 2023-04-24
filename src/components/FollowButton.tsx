@@ -3,11 +3,13 @@
 import { api } from "@/lib/api/client";
 import { Button } from "./ui/button";
 import { useToast } from "./ui/use-toast";
+import React from "react";
 
 interface Props {
   username: string;
+  setFollowers: React.Dispatch<React.SetStateAction<number>>;
 }
-const FollowButton = ({ username }: Props) => {
+const FollowButton = ({ username, setFollowers }: Props) => {
   const { toast } = useToast();
   const utils = api.useContext();
 
@@ -24,7 +26,13 @@ const FollowButton = ({ username }: Props) => {
         variant: "destructive",
       }),
     onSuccess: (res) => {
+      if (hasFollowed) {
+        setFollowers((followers) => followers - 1);
+      } else {
+        setFollowers((followers) => followers + 1);
+      }
       utils.github.hasFollowedTheUser.invalidate();
+
       toast({
         title: res.success ? "Success!" : "Oh uh..",
         description: res.message,

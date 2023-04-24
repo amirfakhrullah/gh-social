@@ -18,6 +18,9 @@ interface Props {
 const Profile = ({ profile, self = false }: Props) => {
   const { toast } = useToast();
 
+  // had to do this because `.invalidate()` doesn't work for cached data from server-side trpc
+  const [followers, setFollowers] = useState(profile.followers ?? 0);
+
   const [isFollowersModalOpened, setIsFollowersModalOpened] = useState(false);
   const [isFollowingModalOpened, setIsFollowingModalOpened] = useState(false);
 
@@ -67,7 +70,7 @@ const Profile = ({ profile, self = false }: Props) => {
                 className="cursor-pointer"
                 onClick={() => handleOpen("followers")}
               >
-                {profile.followers ?? 0} Followers
+                {followers} Followers
               </p>
               <Separator orientation="vertical" />
               <p
@@ -79,7 +82,7 @@ const Profile = ({ profile, self = false }: Props) => {
             </div>
             {!self && (
               <div className="w-full flex flex-row md:justify-end my-4">
-                <FollowButton username={profile.login} />
+                <FollowButton username={profile.login} setFollowers={setFollowers} />
               </div>
             )}
           </div>

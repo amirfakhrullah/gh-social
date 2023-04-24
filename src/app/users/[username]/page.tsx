@@ -10,7 +10,7 @@ interface PageProps {
 
 export default async function Users({ params: { username } }: PageProps) {
   const profile = await api.github.otherProfile.fetch({ username });
-
+  
   if (!profile) return notFound();
 
   return <Profile profile={profile} />;
