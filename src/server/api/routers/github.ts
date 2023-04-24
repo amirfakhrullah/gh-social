@@ -1,6 +1,10 @@
 import { createTRPCRouter, gitHubProtectedProcedure } from "../trpc";
 import { clerkClient } from "@clerk/nextjs/server";
-import { GitHubUserProfile } from "@/types/github";
+import {
+  GitHubRepo,
+  GitHubRepoWithUserLike,
+  GitHubUserProfile,
+} from "@/types/github";
 import { z } from "zod";
 
 export const githubRouter = createTRPCRouter({
@@ -12,18 +16,15 @@ export const githubRouter = createTRPCRouter({
 
     const user = await clerkClient.users.getUser(userId);
 
-    const ghResp = await fetch(
-      `https://api.github.com/users/${user.username}`,
-      {
-        headers: {
-          Accept: "application/vnd.github+json",
-          Authorization: `Bearer ${token}`,
-          "X-GitHub-Api-Version": "2022-11-28",
-        },
-      }
-    );
+    const res = await fetch(`https://api.github.com/users/${user.username}`, {
+      headers: {
+        Accept: "application/vnd.github+json",
+        Authorization: `Bearer ${token}`,
+        "X-GitHub-Api-Version": "2022-11-28",
+      },
+    });
 
-    return (await ghResp.json()) as GitHubUserProfile;
+    return (await res.json()) as GitHubUserProfile;
   }),
 
   otherProfile: gitHubProtectedProcedure
@@ -38,7 +39,7 @@ export const githubRouter = createTRPCRouter({
       } = ctx;
       const { username } = input;
 
-      const ghResp = await fetch(`https://api.github.com/users/${username}`, {
+      const res = await fetch(`https://api.github.com/users/${username}`, {
         headers: {
           Accept: "application/vnd.github+json",
           Authorization: `Bearer ${token}`,
@@ -46,7 +47,7 @@ export const githubRouter = createTRPCRouter({
         },
       });
 
-      return (await ghResp.json()) as GitHubUserProfile;
+      return (await res.json()) as GitHubUserProfile;
     }),
 
   followers: gitHubProtectedProcedure
@@ -159,6 +160,137 @@ export const githubRouter = createTRPCRouter({
         action === "unfollow"
           ? "Successfully unfollowed the user"
           : "Successfully followed the user";
+      return {
+        success: res.status === 204,
+        message:
+          res.status === 204 ? successMessage : "There's an error occured",
+      };
+    }),
+
+  myRepos: gitHubProtectedProcedure
+    .input(
+      z.object({
+        page: z.number(),
+        perPage: z.number(),
+        visibility: z.enum(["all", "public", "private"]).optional(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const {
+        oAuth: { token },
+      } = ctx;
+      const { page, perPage, visibility } = input;
+
+      const res = await fetch(
+        `https://api.github.com/user/repos?page=${page}&per_page=${perPage}&visbility=${visibility}&sort=pushed`,
+        {
+          headers: {
+            Accept: "application/vnd.github+json",
+            Authorization: `Bearer ${token}`,
+            "X-GitHub-Api-Version": "2022-11-28",
+          },
+        }
+      );
+
+      const repos = (await res.json()) as GitHubRepo[];
+
+      let response: GitHubRepoWithUserLike[] = [];
+      for (const repo of repos) {
+        const res = await fetch(
+          `https://api.github.com/user/starred/${repo.owner.login}/${repo.name}`,
+          {
+            headers: {
+              Accept: "application/vnd.github+json",
+              Authorization: `Bearer ${token}`,
+              "X-GitHub-Api-Version": "2022-11-28",
+            },
+          }
+        );
+        response.push({
+          ...repo,
+          isLiked: res.status === 204,
+        });
+      }
+      return response;
+    }),
+
+  otherUserRepos: gitHubProtectedProcedure
+    .input(
+      z.object({
+        page: z.number(),
+        perPage: z.number(),
+        username: z.string().min(1),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const {
+        oAuth: { token },
+      } = ctx;
+      const { page, perPage, username } = input;
+
+      const res = await fetch(
+        `https://api.github.com/users/${username}/repos?page=${page}&per_page=${perPage}&sort=pushed`,
+        {
+          headers: {
+            Accept: "application/vnd.github+json",
+            Authorization: `Bearer ${token}`,
+            "X-GitHub-Api-Version": "2022-11-28",
+          },
+        }
+      );
+
+      const repos = (await res.json()) as GitHubRepo[];
+
+      let response: GitHubRepoWithUserLike[] = [];
+      for (const repo of repos) {
+        const res = await fetch(
+          `https://api.github.com/user/starred/${repo.owner.login}/${repo.name}`,
+          {
+            headers: {
+              Accept: "application/vnd.github+json",
+              Authorization: `Bearer ${token}`,
+              "X-GitHub-Api-Version": "2022-11-28",
+            },
+          }
+        );
+        response.push({
+          ...repo,
+          isLiked: res.status === 204,
+        });
+      }
+      return response;
+    }),
+
+  starAction: gitHubProtectedProcedure
+    .input(
+      z.object({
+        repoName: z.string().min(1),
+        owner: z.string().min(1),
+        action: z.enum(["star", "unstar"]),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const {
+        oAuth: { token },
+      } = ctx;
+      const { repoName, owner, action } = input;
+      console.log(token);
+
+      const res = await fetch(
+        `https://api.github.com/user/starred/${owner}/${repoName}`,
+        {
+          method: action === "unstar" ? "DELETE" : "PUT",
+          headers: {
+            Accept: "application/vnd.github+json",
+            Authorization: `Bearer ${token}`,
+            "X-GitHub-Api-Version": "2022-11-28",
+          },
+        }
+      );
+      const successMessage =
+        action === "unstar"
+          ? "Successfully unstarred the repository"
+          : "Successfully starred the repository";
       return {
         success: res.status === 204,
         message:

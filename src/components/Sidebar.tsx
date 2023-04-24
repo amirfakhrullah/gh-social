@@ -84,7 +84,7 @@ export default function Sidebar() {
   }, [location]);
 
   return (
-    <div className="h-screen md:w-[275px] w-[88px] border-r border-slate-700">
+    <div className="h-screen md:w-[275px] w-[88px]">
       <div className="fixed z-10 top-0 h-screen md:w-[265px] w-[75px] mt-10 p-2">
         {navs.map(({ Icon, title, isActive, path }) => (
           <div

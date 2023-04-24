@@ -69,6 +69,9 @@ const Following = ({ username, isOpened, setIsOpened }: Props) => {
                   Prev
                 </Button>
               )}
+              {currentPage > 1 && data.length >= USER_LISTING_PER_PAGE && (
+                <div>{currentPage}</div>
+              )}
               {data.length >= USER_LISTING_PER_PAGE && (
                 <Button
                   variant="secondary"
