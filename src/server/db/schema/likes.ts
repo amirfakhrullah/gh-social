@@ -1,7 +1,6 @@
 import { InferModel } from "drizzle-orm";
 import {
   index,
-  int,
   mysqlTable,
   timestamp,
   varchar,
