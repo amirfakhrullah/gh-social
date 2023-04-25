@@ -182,7 +182,7 @@ export const githubRouter = createTRPCRouter({
       const { page, perPage, visibility } = input;
 
       const res = await fetch(
-        `https://api.github.com/user/repos?page=${page}&per_page=${perPage}&visbility=${visibility}&sort=pushed`,
+        `https://api.github.com/user/repos?page=${page}&per_page=${perPage}&visibility=${visibility ?? "all"}&sort=pushed`,
         {
           headers: {
             Accept: "application/vnd.github+json",

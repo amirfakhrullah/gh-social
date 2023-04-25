@@ -3,31 +3,24 @@
 import { GitHubUserProfile } from "@/types/github";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import MyRepoLists from "./MyRepoLists";
-import { usePathname, useRouter } from "next/navigation";
 import RepoLists from "./RepoLists";
+import { useState } from "react";
 
 interface Props {
   profile: GitHubUserProfile;
-  tab: "posts" | "repos";
-  page: number;
   self?: boolean;
 }
-const ProfileContents = ({ profile, tab, page, self = false }: Props) => {
-  const router = useRouter();
-  const pathname = usePathname();
-
-  const handleTabChange = (tab: "posts" | "repos") => {
-    router.push(`${pathname}?tab=${tab}`);
-  };
+const ProfileContents = ({ profile, self = false }: Props) => {
+  const [currentTab, setCurrentTab] = useState<"posts" | "repos">("posts");
 
   return (
     <div className="w-full">
-      <Tabs defaultValue={tab} className="w-full">
+      <Tabs defaultValue={currentTab} className="w-full">
         <TabsList className="w-full grid grid-cols-2 border-b border-slate-700 rounded-none">
-          <TabsTrigger value="posts" onClick={() => handleTabChange("posts")}>
+          <TabsTrigger value="posts" onClick={() => setCurrentTab("posts")}>
             Posts
           </TabsTrigger>
-          <TabsTrigger value="repos" onClick={() => handleTabChange("repos")}>
+          <TabsTrigger value="repos" onClick={() => setCurrentTab("repos")}>
             Repos
           </TabsTrigger>
         </TabsList>
@@ -36,9 +29,9 @@ const ProfileContents = ({ profile, tab, page, self = false }: Props) => {
         </TabsContent>
         <TabsContent value="repos">
           {self ? (
-            <MyRepoLists isActive={tab === "repos"} page={page} />
+            <MyRepoLists isActive={currentTab === "repos"} />
           ) : (
-            <RepoLists isActive={tab === "repos"} username={profile.login} page={page} />
+            <RepoLists isActive={currentTab === "repos"} username={profile.login} />
           )}
         </TabsContent>
       </Tabs>

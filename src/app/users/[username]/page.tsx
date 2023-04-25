@@ -38,7 +38,7 @@ export default async function Users({
   return (
     <>
       <Profile profile={profile} />
-      <ProfileContents profile={profile} tab={currentTab} page={page} />
+      <ProfileContents profile={profile} />
     </>
   );
 }

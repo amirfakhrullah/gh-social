@@ -79,7 +79,7 @@ const RepoCard = ({ repo }: Props) => {
           {repo.stargazers_count}
         </div>
         <Separator orientation="vertical" />
-        <div className="w-full flex flex-row items-center justify-center gap-1">
+        <div className="w-full flex flex-row items-center justify-center gap-1 cursor-pointer" onClick={() => window.open(`https://github.com/${repo.full_name}/fork`)}>
           <AiOutlineFork /> {repo.forks_count}
         </div>
       </div>
