@@ -18,21 +18,17 @@ const ProfileContents = ({ profile, self = false }: Props) => {
       <Tabs defaultValue={currentTab} className="w-full">
         <TabsList className="w-full grid grid-cols-2 border-b border-slate-700 rounded-none">
           <TabsTrigger value="posts" onClick={() => setCurrentTab("posts")}>
-            Posts
+            {self && "My "}Posts
           </TabsTrigger>
           <TabsTrigger value="repos" onClick={() => setCurrentTab("repos")}>
-            Repos
+            {self && "My "}Repos
           </TabsTrigger>
         </TabsList>
         <TabsContent value="posts">
           Make changes to your account here.
         </TabsContent>
         <TabsContent value="repos">
-          {self ? (
-            <MyRepoLists />
-          ) : (
-            <RepoLists username={profile.login} />
-          )}
+          {self ? <MyRepoLists /> : <RepoLists username={profile.login} />}
         </TabsContent>
       </Tabs>
     </div>
