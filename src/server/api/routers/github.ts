@@ -182,7 +182,9 @@ export const githubRouter = createTRPCRouter({
       const { page, perPage, visibility } = input;
 
       const res = await fetch(
-        `https://api.github.com/user/repos?page=${page}&per_page=${perPage}&visibility=${visibility ?? "all"}&sort=pushed`,
+        `https://api.github.com/user/repos?page=${page}&per_page=${perPage}&visibility=${
+          visibility ?? "all"
+        }&sort=pushed`,
         {
           headers: {
             Accept: "application/vnd.github+json",
@@ -208,7 +210,7 @@ export const githubRouter = createTRPCRouter({
         );
         response.push({
           ...repo,
-          isLiked: res.status === 204,
+          isStarredByUser: res.status === 204,
         });
       }
       return response;
@@ -255,7 +257,7 @@ export const githubRouter = createTRPCRouter({
         );
         response.push({
           ...repo,
-          isLiked: res.status === 204,
+          isStarredByUser: res.status === 204,
         });
       }
       return response;

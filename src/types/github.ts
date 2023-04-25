@@ -144,5 +144,5 @@ export type GitHubRepo = {
 };
 
 export type GitHubRepoWithUserLike = GitHubRepo & {
-  isLiked: boolean;
+  isStarredByUser: boolean;
 };

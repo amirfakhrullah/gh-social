@@ -17,7 +17,7 @@ interface Props {
   repo: GitHubRepoWithUserLike;
 }
 const RepoCard = ({ repo }: Props) => {
-  const [starred, setStarred] = useState(repo.isLiked);
+  const [starred, setStarred] = useState(repo.isStarredByUser);
 
   const { toast } = useToast();
   const utils = api.useContext();
@@ -79,7 +79,12 @@ const RepoCard = ({ repo }: Props) => {
           {repo.stargazers_count}
         </div>
         <Separator orientation="vertical" />
-        <div className="w-full flex flex-row items-center justify-center gap-1 cursor-pointer" onClick={() => window.open(`https://github.com/${repo.full_name}/fork`)}>
+        <div
+          className="w-full flex flex-row items-center justify-center gap-1 cursor-pointer"
+          onClick={() =>
+            window.open(`https://github.com/${repo.full_name}/fork`)
+          }
+        >
           <AiOutlineFork /> {repo.forks_count}
         </div>
       </div>
