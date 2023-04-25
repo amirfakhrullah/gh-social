@@ -12,6 +12,7 @@ import {
 import { api } from "@/lib/api/client";
 import { useToast } from "./ui/use-toast";
 import { useState } from "react";
+import { Badge } from "./ui/badge";
 
 interface Props {
   repo: GitHubRepoWithUserLike;
@@ -58,7 +59,25 @@ const RepoCard = ({ repo }: Props) => {
             {repo.name}
           </p>
         </Link>
+        {repo.fork && (
+          <p className="text-sm text-gray-400 mb-2 italic">
+            This is a forked repository
+          </p>
+        )}
         <p className="text-sm text-slate-500">{repo.description}</p>
+        {repo.topics && (
+          <div className="mt-2">
+            {repo.topics.map((topic) => (
+              <Badge
+                key={topic + repo.name}
+                variant="secondary"
+                className="mr-1 bg-slate-500"
+              >
+                {topic}
+              </Badge>
+            ))}
+          </div>
+        )}
       </div>
       <Separator orientation="horizontal" />
       <div className="w-full flex h-8 items-center justify-between space-x-4 text-sm">
