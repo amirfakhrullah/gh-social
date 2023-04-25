@@ -48,7 +48,7 @@ const Profile = ({ profile, self = false }: Props) => {
             <Avatar className="md:h-32 md:w-32 h-14 w-14 border border-slate-950 mb-5">
               <AvatarImage src={profile.avatar_url} alt={profile.login} />
               <AvatarFallback className="text-gray-800 text-xl">
-                {profile.login.slice(0, 1)}
+                {profile.login.slice(0, 1).toUpperCase()}
               </AvatarFallback>
             </Avatar>
             <p className="text-lg font-bold">{profile.name}</p>

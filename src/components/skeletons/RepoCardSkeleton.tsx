@@ -6,6 +6,7 @@ const RepoCardSkeleton = () => {
     <div className="border border-slate-700 m-2 rounded-md">
       <div className="md:p-5 p-2">
         <Skeleton className="h-5 w-1/3 mb-2" />
+        <Skeleton className="h-3 w-full mb-1" />
         <Skeleton className="h-3 w-full" />
       </div>
       <Separator orientation="horizontal" />

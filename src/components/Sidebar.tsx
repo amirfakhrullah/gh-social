@@ -9,7 +9,7 @@ import {
   AiFillMessage,
   AiOutlineMessage,
 } from "react-icons/ai";
-import { FaHashtag } from "react-icons/fa";
+import { IoSearchOutline, IoSearchSharp } from "react-icons/io5";
 import { RiUser3Fill, RiUser3Line } from "react-icons/ri";
 import { usePathname, useRouter } from "next/navigation";
 import { useMemo } from "react";
@@ -31,10 +31,10 @@ export default function Sidebar() {
         path: "/",
       },
       {
-        Active: FaHashtag,
-        InActive: FaHashtag,
-        title: "Explore",
-        path: "/explore",
+        Active: IoSearchSharp,
+        InActive: IoSearchOutline,
+        title: "Search",
+        path: "/search",
       },
       {
         Active: AiFillBell,

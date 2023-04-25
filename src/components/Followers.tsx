@@ -48,7 +48,7 @@ const Followers = ({ username, isOpened, setIsOpened }: Props) => {
                   <div className="flex flex-row items-center gap-4 my-2">
                     <Avatar>
                       <AvatarImage src={user.avatar_url} alt={user.login} />
-                      <AvatarFallback>{user.login.slice(0, 1)}</AvatarFallback>
+                      <AvatarFallback>{user.login.slice(0, 1).toUpperCase()}</AvatarFallback>
                     </Avatar>
                     <div>{user.login}</div>
                   </div>
