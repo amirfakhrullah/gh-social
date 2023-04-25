@@ -1,10 +1,6 @@
 import { createTRPCRouter } from "../trpc";
 import { clerkClient } from "@clerk/nextjs/server";
-import {
-  GitHubRepo,
-  GitHubUserProfile,
-  TrimmedGitHubRepoWithStarStatus,
-} from "@/types/github";
+import { TrimmedGitHubRepoWithStarStatus } from "@/types/github";
 import { z } from "zod";
 import {
   trimGitHubProfileData,
