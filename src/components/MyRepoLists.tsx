@@ -7,21 +7,13 @@ import RepoCardSkeleton from "./skeletons/RepoCardSkeleton";
 import { Button } from "./ui/button";
 import { useState } from "react";
 
-interface Props {
-  isActive: boolean;
-}
-const MyRepoLists = ({ isActive }: Props) => {
+const MyRepoLists = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { data: repos, isLoading } = api.github.myRepos.useQuery(
-    {
-      perPage: REPO_LISTING_PER_PAGE,
-      page: currentPage,
-    },
-    {
-      enabled: isActive,
-    }
-  );
+  const { data: repos, isLoading } = api.github.myRepos.useQuery({
+    perPage: REPO_LISTING_PER_PAGE,
+    page: currentPage,
+  });
 
   const handlePage = (pageToGo: number) => {
     window.scrollTo(0, 0);

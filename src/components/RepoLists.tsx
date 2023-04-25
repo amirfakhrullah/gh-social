@@ -8,22 +8,16 @@ import { Button } from "./ui/button";
 import { useState } from "react";
 
 interface Props {
-  isActive: boolean;
   username: string;
 }
-const RepoLists = ({ isActive, username }: Props) => {
+const RepoLists = ({ username }: Props) => {
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { data: repos, isLoading } = api.github.otherUserRepos.useQuery(
-    {
-      perPage: REPO_LISTING_PER_PAGE,
-      page: currentPage,
-      username,
-    },
-    {
-      enabled: isActive,
-    }
-  );
+  const { data: repos, isLoading } = api.github.otherUserRepos.useQuery({
+    perPage: REPO_LISTING_PER_PAGE,
+    page: currentPage,
+    username,
+  });
 
   const handlePage = (pageToGo: number) => {
     window.scrollTo(0, 0);

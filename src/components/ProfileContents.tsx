@@ -29,9 +29,9 @@ const ProfileContents = ({ profile, self = false }: Props) => {
         </TabsContent>
         <TabsContent value="repos">
           {self ? (
-            <MyRepoLists isActive={currentTab === "repos"} />
+            <MyRepoLists />
           ) : (
-            <RepoLists isActive={currentTab === "repos"} username={profile.login} />
+            <RepoLists username={profile.login} />
           )}
         </TabsContent>
       </Tabs>
