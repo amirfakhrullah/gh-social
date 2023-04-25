@@ -6,7 +6,6 @@ import {
   timestamp,
   varchar,
 } from "drizzle-orm/mysql-core";
-import { posts } from "./posts";
 
 export const likes = mysqlTable(
   "likes",

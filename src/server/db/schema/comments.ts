@@ -7,7 +7,6 @@ import {
   timestamp,
   index,
 } from "drizzle-orm/mysql-core";
-import { posts } from "./posts";
 
 export const comments = mysqlTable(
   "comments",
