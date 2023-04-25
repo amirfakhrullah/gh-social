@@ -1,6 +1,6 @@
+import { InferModel } from "drizzle-orm";
 import {
   mysqlTable,
-  serial,
   text,
   varchar,
   int,
@@ -11,10 +11,10 @@ import {
 export const comments = mysqlTable(
   "comments",
   {
-    id: serial("id").primaryKey(),
+    id: varchar("id", { length: 191 }).notNull().primaryKey(),
     ownerId: varchar("owner_id", { length: 191 }).notNull(),
     content: text("content").notNull(),
-    postId: int("post_id").notNull(),
+    postId: varchar("post_id", { length: 191 }).notNull(),
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
   (table) => ({
@@ -22,3 +22,5 @@ export const comments = mysqlTable(
     postIdIdx: index("post_id_idx").on(table.id),
   })
 );
+
+export type Comment = InferModel<typeof comments>

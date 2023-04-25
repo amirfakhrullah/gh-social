@@ -49,6 +49,7 @@
     "tailwindcss": "3.3.1",
     "tailwindcss-animate": "^1.0.5",
     "typescript": "5.0.4",
+    "uuid": "^9.0.0",
     "zod": "^3.21.4"
   },
   "pnpm": {
@@ -57,6 +58,7 @@
     }
   },
   "devDependencies": {
+    "@types/uuid": "^9.0.1",
     "dotenv": "^16.0.3",
     "drizzle-kit": "^0.17.6",
     "ts-node": "^10.9.1"

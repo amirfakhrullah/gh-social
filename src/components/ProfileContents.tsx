@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import MyRepoLists from "./MyRepoLists";
 import RepoLists from "./RepoLists";
 import { useState } from "react";
+import MyPostLists from "./MyPostLists";
 
 interface Props {
   profile: TrimmedGitHubProfile;
@@ -25,7 +26,7 @@ const ProfileContents = ({ profile, self = false }: Props) => {
           </TabsTrigger>
         </TabsList>
         <TabsContent value="posts">
-          Make changes to your account here.
+          {self ? <MyPostLists /> : <></>}
         </TabsContent>
         <TabsContent value="repos">
           {self ? <MyRepoLists /> : <RepoLists username={profile.login} />}

@@ -1,5 +1,5 @@
 CREATE TABLE `comments` (
-	`id` serial AUTO_INCREMENT PRIMARY KEY NOT NULL,
+	`id` varchar(191) PRIMARY KEY NOT NULL,
 	`owner_id` varchar(191) NOT NULL,
 	`content` text NOT NULL,
 	`post_id` int NOT NULL,
@@ -7,14 +7,14 @@ CREATE TABLE `comments` (
 );
 
 CREATE TABLE `likes` (
-	`id` serial AUTO_INCREMENT PRIMARY KEY NOT NULL,
+	`id` varchar(191) PRIMARY KEY NOT NULL,
 	`owner_id` varchar(191) NOT NULL,
 	`post_id` int NOT NULL,
 	`created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE `posts` (
-	`id` serial AUTO_INCREMENT PRIMARY KEY NOT NULL,
+	`id` varchar(191) PRIMARY KEY NOT NULL,
 	`owner_id` varchar(191) NOT NULL,
 	`content` text NOT NULL,
 	`repo_shared` varchar(256),

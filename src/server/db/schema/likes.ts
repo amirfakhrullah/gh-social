@@ -1,8 +1,8 @@
+import { InferModel } from "drizzle-orm";
 import {
   index,
   int,
   mysqlTable,
-  serial,
   timestamp,
   varchar,
 } from "drizzle-orm/mysql-core";
@@ -10,9 +10,9 @@ import {
 export const likes = mysqlTable(
   "likes",
   {
-    id: serial("id").primaryKey(),
+    id: varchar("id", { length: 191 }).notNull().primaryKey(),
     ownerId: varchar("owner_id", { length: 191 }).notNull(),
-    postId: int("post_id").notNull(),
+    postId: varchar("post_id", { length: 191 }).notNull(),
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
   (table) => ({
@@ -20,3 +20,5 @@ export const likes = mysqlTable(
     postIdIdx: index("post_id_idx").on(table.id),
   })
 );
+
+export type Like = InferModel<typeof likes>

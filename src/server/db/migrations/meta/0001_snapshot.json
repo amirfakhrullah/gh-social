@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "6957d62c-9f99-452d-b8e5-5423c5401680",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "d0035a37-102b-4578-a1ae-8b2193d038b3",
+  "prevId": "6957d62c-9f99-452d-b8e5-5423c5401680",
   "tables": {
     "comments": {
       "name": "comments",
@@ -30,7 +30,7 @@
         },
         "post_id": {
           "name": "post_id",
-          "type": "int",
+          "type": "varchar(191)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -82,7 +82,7 @@
         },
         "post_id": {
           "name": "post_id",
-          "type": "int",
+          "type": "varchar(191)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
