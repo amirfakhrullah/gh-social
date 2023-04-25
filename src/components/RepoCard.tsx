@@ -13,6 +13,7 @@ import { api } from "@/lib/api/client";
 import { useToast } from "./ui/use-toast";
 import { useState } from "react";
 import { Badge } from "./ui/badge";
+import { displayNumbers } from "@/helpers/displayNumbers";
 
 interface Props {
   repo: TrimmedGitHubRepoWithStarStatus;
@@ -92,7 +93,8 @@ const RepoCard = ({ repo }: Props) => {
       <Separator orientation="horizontal" />
       <div className="w-full flex h-8 items-center justify-between space-x-4 text-sm">
         <div className="w-full flex flex-row items-center justify-center gap-1">
-          <AiOutlineRetweet /> 0
+          <AiOutlineRetweet />
+          {displayNumbers(startCount)}
         </div>
         <Separator orientation="vertical" />
 
@@ -105,7 +107,7 @@ const RepoCard = ({ repo }: Props) => {
           ) : (
             <AiOutlineStar />
           )}
-          {startCount}
+          {displayNumbers(startCount)}
         </div>
         <Separator orientation="vertical" />
         <div
@@ -114,7 +116,7 @@ const RepoCard = ({ repo }: Props) => {
             window.open(`https://github.com/${repo.full_name}/fork`)
           }
         >
-          <AiOutlineFork /> {repo.forks_count}
+          <AiOutlineFork /> {displayNumbers(repo.forks_count)}
         </div>
       </div>
     </div>

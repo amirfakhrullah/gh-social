@@ -4,10 +4,8 @@ import { POST_LISTING_PER_PAGE } from "@/constants";
 import { api } from "@/lib/api/client";
 import { useState } from "react";
 import RepoCardSkeleton from "./skeletons/RepoCardSkeleton";
-import { useToast } from "./ui/use-toast";
 
 const MyPostLists = () => {
-  const { toast } = useToast();
   const [currentPage, setCurrentPage] = useState(1);
 
   const { isLoading, data: posts } = api.post.myPosts.useQuery({

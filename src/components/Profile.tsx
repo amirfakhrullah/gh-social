@@ -10,6 +10,7 @@ import { useState } from "react";
 import Following from "./Following";
 import FollowAction from "./FollowAction";
 import { useToast } from "./ui/use-toast";
+import { displayNumbers } from "@/helpers/displayNumbers";
 
 interface Props {
   profile: TrimmedGitHubProfile;
@@ -70,14 +71,14 @@ const Profile = ({ profile, self = false }: Props) => {
                 className="cursor-pointer"
                 onClick={() => handleOpen("followers")}
               >
-                {followers} Followers
+                {displayNumbers(followers)} Followers
               </p>
               <Separator orientation="vertical" />
               <p
                 className="cursor-pointer"
                 onClick={() => handleOpen("following")}
               >
-                {profile.following ?? 0} Following
+                {displayNumbers(profile.following ?? 0)} Following
               </p>
             </div>
             {!self && (
