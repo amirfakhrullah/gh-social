@@ -1,4 +1,4 @@
-import { createTRPCRouter, gitHubProtectedProcedure } from "../trpc";
+import { createTRPCRouter } from "../trpc";
 import { clerkClient } from "@clerk/nextjs/server";
 import {
   GitHubRepo,
@@ -10,6 +10,9 @@ import {
   trimGitHubProfileData,
   trimGitHubRepoData,
 } from "@/server/helpers/trimGitHubData";
+import { gitHubProtectedProcedure } from "../procedures";
+import githubApi from "@/server/helpers/githubApi";
+import { TRPCError } from "@trpc/server";
 
 export const githubRouter = createTRPCRouter({
   profile: gitHubProtectedProcedure.query(async ({ ctx }) => {
@@ -20,15 +23,14 @@ export const githubRouter = createTRPCRouter({
 
     const user = await clerkClient.users.getUser(userId);
 
-    const res = await fetch(`https://api.github.com/users/${user.username}`, {
-      headers: {
-        Accept: "application/vnd.github+json",
-        Authorization: `Bearer ${token}`,
-        "X-GitHub-Api-Version": "2022-11-28",
-      },
-    });
+    if (!user.username) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Username not found in Clerk",
+      });
+    }
 
-    const profile = (await res.json()) as GitHubUserProfile;
+    const profile = await githubApi.getUserProfile(token, user.username);
     return trimGitHubProfileData(profile);
   }),
 
@@ -44,15 +46,7 @@ export const githubRouter = createTRPCRouter({
       } = ctx;
       const { username } = input;
 
-      const res = await fetch(`https://api.github.com/users/${username}`, {
-        headers: {
-          Accept: "application/vnd.github+json",
-          Authorization: `Bearer ${token}`,
-          "X-GitHub-Api-Version": "2022-11-28",
-        },
-      });
-
-      const profile = (await res.json()) as GitHubUserProfile;
+      const profile = await githubApi.getUserProfile(token, username);
       return trimGitHubProfileData(profile);
     }),
 
@@ -70,18 +64,12 @@ export const githubRouter = createTRPCRouter({
       } = ctx;
       const { page, perPage, username } = input;
 
-      const res = await fetch(
-        `https://api.github.com/users/${username}/followers?page=${page}&per_page=${perPage}`,
-        {
-          headers: {
-            Accept: "application/vnd.github+json",
-            Authorization: `Bearer ${token}`,
-            "X-GitHub-Api-Version": "2022-11-28",
-          },
-        }
+      const profiles = await githubApi.getFollowerLists(
+        token,
+        username,
+        page,
+        perPage
       );
-
-      const profiles = (await res.json()) as GitHubUserProfile[];
       return profiles.map((profile) => trimGitHubProfileData(profile));
     }),
 
@@ -99,18 +87,12 @@ export const githubRouter = createTRPCRouter({
       } = ctx;
       const { page, perPage, username } = input;
 
-      const res = await fetch(
-        `https://api.github.com/users/${username}/following?page=${page}&per_page=${perPage}`,
-        {
-          headers: {
-            Accept: "application/vnd.github+json",
-            Authorization: `Bearer ${token}`,
-            "X-GitHub-Api-Version": "2022-11-28",
-          },
-        }
+      const profiles = await githubApi.getFollowingLists(
+        token,
+        username,
+        page,
+        perPage
       );
-
-      const profiles = (await res.json()) as GitHubUserProfile[];
       return profiles.map((profile) => trimGitHubProfileData(profile));
     }),
 
@@ -125,19 +107,7 @@ export const githubRouter = createTRPCRouter({
         oAuth: { token },
       } = ctx;
       const { username } = input;
-
-      const ghResp = await fetch(
-        `https://api.github.com/user/following/${username}`,
-        {
-          headers: {
-            Accept: "application/vnd.github+json",
-            Authorization: `Bearer ${token}`,
-            "X-GitHub-Api-Version": "2022-11-28",
-          },
-        }
-      );
-
-      return ghResp.status === 204;
+      return await githubApi.amIFollowingTheUser(token, username);
     }),
 
   followAction: gitHubProtectedProcedure
@@ -153,25 +123,19 @@ export const githubRouter = createTRPCRouter({
       } = ctx;
       const { username, action } = input;
 
-      const res = await fetch(
-        `https://api.github.com/user/following/${username}`,
-        {
-          method: action === "unfollow" ? "DELETE" : "PUT",
-          headers: {
-            Accept: "application/vnd.github+json",
-            Authorization: `Bearer ${token}`,
-            "X-GitHub-Api-Version": "2022-11-28",
-          },
-        }
+      const isRequestSucceed = await githubApi.followAction(
+        token,
+        username,
+        action
       );
+
       const successMessage =
         action === "unfollow"
           ? "Successfully unfollowed the user"
           : "Successfully followed the user";
       return {
-        success: res.status === 204,
-        message:
-          res.status === 204 ? successMessage : "There's an error occured",
+        success: isRequestSucceed,
+        message: isRequestSucceed ? successMessage : "There's an error occured",
       };
     }),
 
@@ -187,33 +151,16 @@ export const githubRouter = createTRPCRouter({
         oAuth: { token },
       } = ctx;
       const { page, perPage } = input;
-
-      const res = await fetch(
-        `https://api.github.com/user/repos?page=${page}&per_page=${perPage}&visibility=public&sort=pushed`,
-        {
-          headers: {
-            Accept: "application/vnd.github+json",
-            Authorization: `Bearer ${token}`,
-            "X-GitHub-Api-Version": "2022-11-28",
-          },
-        }
-      );
-
-      const repos = (await res.json()) as GitHubRepo[];
+      const repos = await githubApi.myRepoLists(token, page, perPage);
 
       let response: TrimmedGitHubRepoWithStarStatus[] = [];
       for (const repo of repos) {
-        const res = await fetch(
-          `https://api.github.com/user/starred/${repo.owner.login}/${repo.name}`,
-          {
-            headers: {
-              Accept: "application/vnd.github+json",
-              Authorization: `Bearer ${token}`,
-              "X-GitHub-Api-Version": "2022-11-28",
-            },
-          }
+        const isStarred = await githubApi.hasIStarredTheRepo(
+          token,
+          repo.owner.login,
+          repo.name
         );
-        response.push(trimGitHubRepoData(repo, res.status === 204));
+        response.push(trimGitHubRepoData(repo, isStarred));
       }
       return response;
     }),
@@ -231,33 +178,21 @@ export const githubRouter = createTRPCRouter({
         oAuth: { token },
       } = ctx;
       const { page, perPage, username } = input;
-
-      const res = await fetch(
-        `https://api.github.com/users/${username}/repos?page=${page}&per_page=${perPage}&sort=pushed`,
-        {
-          headers: {
-            Accept: "application/vnd.github+json",
-            Authorization: `Bearer ${token}`,
-            "X-GitHub-Api-Version": "2022-11-28",
-          },
-        }
+      const repos = await githubApi.otherUserRepoLists(
+        token,
+        username,
+        page,
+        perPage
       );
-
-      const repos = (await res.json()) as GitHubRepo[];
 
       let response: TrimmedGitHubRepoWithStarStatus[] = [];
       for (const repo of repos) {
-        const res = await fetch(
-          `https://api.github.com/user/starred/${repo.owner.login}/${repo.name}`,
-          {
-            headers: {
-              Accept: "application/vnd.github+json",
-              Authorization: `Bearer ${token}`,
-              "X-GitHub-Api-Version": "2022-11-28",
-            },
-          }
+        const isStarred = await githubApi.hasIStarredTheRepo(
+          token,
+          repo.owner.login,
+          repo.name
         );
-        response.push(trimGitHubRepoData(repo, res.status === 204));
+        response.push(trimGitHubRepoData(repo, isStarred));
       }
       return response;
     }),
@@ -276,25 +211,19 @@ export const githubRouter = createTRPCRouter({
       } = ctx;
       const { repoName, owner, action } = input;
 
-      const res = await fetch(
-        `https://api.github.com/user/starred/${owner}/${repoName}`,
-        {
-          method: action === "unstar" ? "DELETE" : "PUT",
-          headers: {
-            Accept: "application/vnd.github+json",
-            Authorization: `Bearer ${token}`,
-            "X-GitHub-Api-Version": "2022-11-28",
-          },
-        }
+      const isRequestSucceed = await githubApi.starAction(
+        token,
+        owner,
+        repoName,
+        action
       );
       const successMessage =
         action === "unstar"
           ? "Successfully unstarred the repository"
           : "Successfully starred the repository";
       return {
-        success: res.status === 204,
-        message:
-          res.status === 204 ? successMessage : "There's an error occured",
+        success: isRequestSucceed,
+        message: isRequestSucceed ? successMessage : "There's an error occured",
       };
     }),
 });

@@ -115,7 +115,7 @@ export default function Sidebar() {
               <p className="text-sm text-slate-200 font-bold">
                 {user?.fullName}
               </p>
-              <p className="text-sm">@{user?.username}</p>
+              <p className="text-sm text-gray-500">@{user?.username}</p>
             </div>
           )}
         </div>
