@@ -19,6 +19,7 @@ interface Props {
 }
 const RepoCard = ({ repo }: Props) => {
   const [starred, setStarred] = useState(repo.isStarredByUser);
+  const [startCount, setStarCount] = useState(repo.stargazers_count);
 
   const { toast } = useToast();
   const utils = api.useContext();
@@ -31,8 +32,16 @@ const RepoCard = ({ repo }: Props) => {
         variant: "destructive",
       }),
     onSuccess: (res) => {
+      setStarCount((count) => {
+        if (starred) {
+          return count - 1;
+        } else {
+          return count + 1;
+        }
+      });
       setStarred((star) => !star);
       utils.github.myRepos.invalidate();
+      utils.github.otherUserRepos.invalidate();
 
       toast({
         title: res.success ? "Success!" : "Oh uh..",
@@ -95,7 +104,7 @@ const RepoCard = ({ repo }: Props) => {
           ) : (
             <AiOutlineStar />
           )}
-          {repo.stargazers_count}
+          {startCount}
         </div>
         <Separator orientation="vertical" />
         <div

@@ -8,7 +8,7 @@ import { AiOutlineLink } from "react-icons/ai";
 import Followers from "./Followers";
 import { useState } from "react";
 import Following from "./Following";
-import FollowButton from "./FollowButton";
+import FollowAction from "./FollowAction";
 import { useToast } from "./ui/use-toast";
 
 interface Props {
@@ -82,7 +82,10 @@ const Profile = ({ profile, self = false }: Props) => {
             </div>
             {!self && (
               <div className="w-full flex flex-row md:justify-end my-4">
-                <FollowButton username={profile.login} setFollowers={setFollowers} />
+                <FollowAction
+                  username={profile.login}
+                  setFollowers={setFollowers}
+                />
               </div>
             )}
           </div>
