@@ -1,6 +1,6 @@
 "use client";
 
-import { GitHubRepoWithUserLike } from "@/types/github";
+import { TrimmedGitHubRepoWithStarStatus } from "@/types/github";
 import Link from "next/link";
 import { Separator } from "./ui/separator";
 import {
@@ -15,7 +15,7 @@ import { useState } from "react";
 import { Badge } from "./ui/badge";
 
 interface Props {
-  repo: GitHubRepoWithUserLike;
+  repo: TrimmedGitHubRepoWithStarStatus;
 }
 const RepoCard = ({ repo }: Props) => {
   const [starred, setStarred] = useState(repo.isStarredByUser);

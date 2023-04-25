@@ -44,6 +44,21 @@ export interface GitHubUserProfile {
   };
 }
 
+export type TrimmedGitHubProfile = Pick<
+  GitHubUserProfile,
+  | "id"
+  | "node_id"
+  | "name"
+  | "login"
+  | "avatar_url"
+  | "bio"
+  | "blog"
+  | "followers"
+  | "following"
+  | "html_url"
+  | "type"
+>;
+
 export type GitHubRepo = {
   id: number;
   node_id: string;
@@ -143,6 +158,20 @@ export type GitHubRepo = {
   watchers: number;
 };
 
-export type GitHubRepoWithUserLike = GitHubRepo & {
+export type TrimmedGitHubRepoWithStarStatus = Pick<
+  GitHubRepo,
+  | "id"
+  | "node_id"
+  | "name"
+  | "full_name"
+  | "html_url"
+  | "description"
+  | "fork"
+  | "forks_count"
+  | "stargazers_count"
+  | "watchers_count"
+  | "topics"
+> & {
   isStarredByUser: boolean;
+  owner: TrimmedGitHubProfile;
 };

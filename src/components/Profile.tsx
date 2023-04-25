@@ -1,7 +1,7 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { GitHubUserProfile } from "@/types/github";
+import { TrimmedGitHubProfile } from "@/types/github";
 import Link from "next/link";
 import { Separator } from "./ui/separator";
 import { AiOutlineLink } from "react-icons/ai";
@@ -12,7 +12,7 @@ import FollowAction from "./FollowAction";
 import { useToast } from "./ui/use-toast";
 
 interface Props {
-  profile: GitHubUserProfile;
+  profile: TrimmedGitHubProfile;
   self?: boolean;
 }
 const Profile = ({ profile, self = false }: Props) => {

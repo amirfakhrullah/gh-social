@@ -1,13 +1,13 @@
 "use client";
 
-import { GitHubUserProfile } from "@/types/github";
+import { TrimmedGitHubProfile } from "@/types/github";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import MyRepoLists from "./MyRepoLists";
 import RepoLists from "./RepoLists";
 import { useState } from "react";
 
 interface Props {
-  profile: GitHubUserProfile;
+  profile: TrimmedGitHubProfile;
   self?: boolean;
 }
 const ProfileContents = ({ profile, self = false }: Props) => {

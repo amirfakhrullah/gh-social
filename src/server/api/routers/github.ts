@@ -2,10 +2,14 @@ import { createTRPCRouter, gitHubProtectedProcedure } from "../trpc";
 import { clerkClient } from "@clerk/nextjs/server";
 import {
   GitHubRepo,
-  GitHubRepoWithUserLike,
   GitHubUserProfile,
+  TrimmedGitHubRepoWithStarStatus,
 } from "@/types/github";
 import { z } from "zod";
+import {
+  trimGitHubProfileData,
+  trimGitHubRepoData,
+} from "@/server/helpers/trimGitHubData";
 
 export const githubRouter = createTRPCRouter({
   profile: gitHubProtectedProcedure.query(async ({ ctx }) => {
@@ -24,7 +28,8 @@ export const githubRouter = createTRPCRouter({
       },
     });
 
-    return (await res.json()) as GitHubUserProfile;
+    const profile = (await res.json()) as GitHubUserProfile;
+    return trimGitHubProfileData(profile);
   }),
 
   otherProfile: gitHubProtectedProcedure
@@ -47,7 +52,8 @@ export const githubRouter = createTRPCRouter({
         },
       });
 
-      return (await res.json()) as GitHubUserProfile;
+      const profile = (await res.json()) as GitHubUserProfile;
+      return trimGitHubProfileData(profile);
     }),
 
   followers: gitHubProtectedProcedure
@@ -75,7 +81,8 @@ export const githubRouter = createTRPCRouter({
         }
       );
 
-      return (await res.json()) as GitHubUserProfile[];
+      const profiles = (await res.json()) as GitHubUserProfile[];
+      return profiles.map((profile) => trimGitHubProfileData(profile));
     }),
 
   following: gitHubProtectedProcedure
@@ -103,7 +110,8 @@ export const githubRouter = createTRPCRouter({
         }
       );
 
-      return (await res.json()) as GitHubUserProfile[];
+      const profiles = (await res.json()) as GitHubUserProfile[];
+      return profiles.map((profile) => trimGitHubProfileData(profile));
     }),
 
   hasFollowedTheUser: gitHubProtectedProcedure
@@ -172,19 +180,16 @@ export const githubRouter = createTRPCRouter({
       z.object({
         page: z.number(),
         perPage: z.number(),
-        visibility: z.enum(["all", "public", "private"]).optional(),
       })
     )
     .query(async ({ ctx, input }) => {
       const {
         oAuth: { token },
       } = ctx;
-      const { page, perPage, visibility } = input;
+      const { page, perPage } = input;
 
       const res = await fetch(
-        `https://api.github.com/user/repos?page=${page}&per_page=${perPage}&visibility=${
-          visibility ?? "all"
-        }&sort=pushed`,
+        `https://api.github.com/user/repos?page=${page}&per_page=${perPage}&visibility=public&sort=pushed`,
         {
           headers: {
             Accept: "application/vnd.github+json",
@@ -196,7 +201,7 @@ export const githubRouter = createTRPCRouter({
 
       const repos = (await res.json()) as GitHubRepo[];
 
-      let response: GitHubRepoWithUserLike[] = [];
+      let response: TrimmedGitHubRepoWithStarStatus[] = [];
       for (const repo of repos) {
         const res = await fetch(
           `https://api.github.com/user/starred/${repo.owner.login}/${repo.name}`,
@@ -208,10 +213,7 @@ export const githubRouter = createTRPCRouter({
             },
           }
         );
-        response.push({
-          ...repo,
-          isStarredByUser: res.status === 204,
-        });
+        response.push(trimGitHubRepoData(repo, res.status === 204));
       }
       return response;
     }),
@@ -243,7 +245,7 @@ export const githubRouter = createTRPCRouter({
 
       const repos = (await res.json()) as GitHubRepo[];
 
-      let response: GitHubRepoWithUserLike[] = [];
+      let response: TrimmedGitHubRepoWithStarStatus[] = [];
       for (const repo of repos) {
         const res = await fetch(
           `https://api.github.com/user/starred/${repo.owner.login}/${repo.name}`,
@@ -255,10 +257,7 @@ export const githubRouter = createTRPCRouter({
             },
           }
         );
-        response.push({
-          ...repo,
-          isStarredByUser: res.status === 204,
-        });
+        response.push(trimGitHubRepoData(repo, res.status === 204));
       }
       return response;
     }),
