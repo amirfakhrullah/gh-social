@@ -69,9 +69,10 @@ const RepoCard = ({ repo }: Props) => {
           </p>
         </Link>
         {repo.fork && (
-          <p className="text-sm text-gray-400 mb-2 italic">
+          <div className="text-[13px] text-gray-400 mb-2 flex flex-row items-center gap-1 italic">
+            <AiOutlineFork />
             This is a forked repository
-          </p>
+          </div>
         )}
         <p className="text-sm text-slate-500">{repo.description}</p>
         {repo.topics && (
