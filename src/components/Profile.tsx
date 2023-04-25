@@ -51,7 +51,7 @@ const Profile = ({ profile, self = false }: Props) => {
                 {profile.login.slice(0, 1).toUpperCase()}
               </AvatarFallback>
             </Avatar>
-            <p className="text-lg font-bold">{profile.name}</p>
+            <p className="text-lg text-slate-200 font-bold">{profile.name}</p>
             <p className="text-sm text-gray-500 mb-5">@{profile.login}</p>
             <p className="mb-2">{profile.bio}</p>
 

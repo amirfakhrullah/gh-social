@@ -81,7 +81,7 @@ const RepoCard = ({ repo }: Props) => {
               <Badge
                 key={topic + repo.name}
                 variant="secondary"
-                className="mr-1 bg-slate-500"
+                className="mr-1 bg-slate-400"
               >
                 {topic}
               </Badge>

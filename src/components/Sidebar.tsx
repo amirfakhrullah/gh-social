@@ -13,8 +13,12 @@ import { IoSearchOutline, IoSearchSharp } from "react-icons/io5";
 import { RiUser3Fill, RiUser3Line } from "react-icons/ri";
 import { usePathname, useRouter } from "next/navigation";
 import { useMemo } from "react";
+import { UserButton, useUser } from "@clerk/nextjs";
+import { dark } from "@clerk/themes";
 
 export default function Sidebar() {
+  const { user } = useUser();
+
   const location = usePathname();
   const router = useRouter();
 
@@ -89,20 +93,32 @@ export default function Sidebar() {
         {navs.map(({ Icon, title, isActive, path }) => (
           <div
             key={title}
-            className="flex flex-row items-center md:justify-start justify-center p-4 cursor-pointer"
+            className={cn(
+              "flex flex-row items-center md:justify-start justify-center p-4 cursor-pointer",
+              isActive ? "font-black text-slate-200" : "font-bold"
+            )}
             onClick={() => handleRoute(path)}
           >
             <Icon className="text-3xl" />
-            <p
-              className={cn(
-                "md:block hidden ml-4",
-                isActive ? "font-black" : "font-bold"
-              )}
-            >
-              {title}
-            </p>
+            <p className="md:block hidden ml-4">{title}</p>
           </div>
         ))}
+        <div className="fixed z-20 md:bottom-[20px] bottom-[10px] md:p-6 p-3 flex flex-row items-center justify-center gap-2">
+          <UserButton
+            afterSignOutUrl="/sign-in"
+            appearance={{
+              baseTheme: dark,
+            }}
+          />
+          {user && (
+            <div className="md:block hidden">
+              <p className="text-sm text-slate-200 font-bold">
+                {user?.fullName}
+              </p>
+              <p className="text-sm">@{user?.username}</p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
