@@ -1,14 +1,9 @@
-import { z } from "zod";
 import { userProtectedProcedure } from "../procedures";
 import { createTRPCRouter } from "../trpc";
 import {
-  createCommentSchema,
-  idSchema,
   likeActionSchema,
-  paginationSchema,
 } from "@/validationSchemas";
-import { comments } from "@/server/db/schema/comments";
-import { and, asc, eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { getUsernameFromClerkOrThrow } from "@/server/helpers/clerk";
 import { posts } from "@/server/db/schema/posts";
 import { TRPCError } from "@trpc/server";
