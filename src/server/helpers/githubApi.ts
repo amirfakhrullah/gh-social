@@ -79,11 +79,10 @@ const followAction = async (
 
 const starAction = async (
   token: string,
-  owner: string,
   repoName: string,
   action: "star" | "unstar"
 ) => {
-  const res = await fetch(`${baseUrl}/user/starred/${owner}/${repoName}`, {
+  const res = await fetch(`${baseUrl}/user/starred/${repoName}`, {
     method: action === "unstar" ? "DELETE" : "PUT",
     headers: {
       ...baseHeaders,
@@ -93,12 +92,8 @@ const starAction = async (
   return res.status === 204;
 };
 
-const hasIStarredTheRepo = async (
-  token: string,
-  owner: string,
-  repoName: string
-) => {
-  const res = await fetch(`${baseUrl}/user/starred/${owner}/${repoName}`, {
+const hasIStarredTheRepo = async (token: string, repoName: string) => {
+  const res = await fetch(`${baseUrl}/user/starred/${repoName}`, {
     headers: {
       Accept: "application/vnd.github+json",
       Authorization: `Bearer ${token}`,
@@ -106,6 +101,16 @@ const hasIStarredTheRepo = async (
     },
   });
   return res.status === 204;
+};
+
+const getARepo = async (token: string, repoName: string) => {
+  const res = await fetch(`${baseUrl}/repos/${repoName}`, {
+    headers: {
+      ...baseHeaders,
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return (await res.json()) as GitHubRepo;
 };
 
 const myRepoLists = async (token: string, page: number, perPage: number) => {
@@ -147,6 +152,7 @@ const githubApi = {
   followAction,
   starAction,
   hasIStarredTheRepo,
+  getARepo,
   myRepoLists,
   otherUserRepoLists,
 };

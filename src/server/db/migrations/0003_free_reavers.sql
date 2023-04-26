@@ -1,0 +1,1 @@
+CREATE INDEX `repo_shared_idx` ON `posts` (`repo_shared`);

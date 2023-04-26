@@ -8,7 +8,7 @@ import {
 import { gitHubProtectedProcedure } from "../procedures";
 import githubApi from "@/server/helpers/githubApi";
 import { TRPCError } from "@trpc/server";
-import { paginationSchema } from "@/validationSchemas";
+import { githubRepoSchema, paginationSchema } from "@/validationSchemas";
 
 export const githubRouter = createTRPCRouter({
   profile: gitHubProtectedProcedure.query(async ({ ctx }) => {
@@ -136,18 +136,22 @@ export const githubRouter = createTRPCRouter({
     }),
 
   hasStarredTheRepo: gitHubProtectedProcedure
-    .input(
-      z.object({
-        owner: z.string().min(1),
-        repoName: z.string().min(1),
-      })
-    )
+    .input(githubRepoSchema)
     .query(async ({ ctx, input }) => {
       const {
         oAuth: { token },
       } = ctx;
-      const { owner, repoName } = input;
-      return await githubApi.hasIStarredTheRepo(token, owner, repoName);
+      return await githubApi.hasIStarredTheRepo(token, input.repoName);
+    }),
+
+  getARepo: gitHubProtectedProcedure
+    .input(githubRepoSchema)
+    .query(async ({ ctx, input }) => {
+      const {
+        oAuth: { token },
+      } = ctx;
+      const repo = await githubApi.getARepo(token, input.repoName);
+      return trimGitHubRepoData(repo);
     }),
 
   myRepos: gitHubProtectedProcedure
@@ -185,21 +189,20 @@ export const githubRouter = createTRPCRouter({
 
   starAction: gitHubProtectedProcedure
     .input(
-      z.object({
-        repoName: z.string().min(1),
-        owner: z.string().min(1),
-        action: z.enum(["star", "unstar"]),
-      })
+      z
+        .object({
+          action: z.enum(["star", "unstar"]),
+        })
+        .merge(githubRepoSchema)
     )
     .mutation(async ({ ctx, input }) => {
       const {
         oAuth: { token },
       } = ctx;
-      const { repoName, owner, action } = input;
+      const { repoName, action } = input;
 
       const isRequestSucceed = await githubApi.starAction(
         token,
-        owner,
         repoName,
         action
       );

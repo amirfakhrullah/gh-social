@@ -1,14 +1,13 @@
 import { userProtectedProcedure } from "../procedures";
 import { createTRPCRouter } from "../trpc";
-import {
-  likeActionSchema,
-} from "@/validationSchemas";
+import { likeActionSchema } from "@/validationSchemas";
 import { and, eq } from "drizzle-orm";
 import { posts } from "@/server/db/schema/posts";
 import { TRPCError } from "@trpc/server";
 import { v4 } from "uuid";
 import { likes } from "@/server/db/schema/likes";
 import { getUsernameFromClerkOrCached } from "@/server/caches/usernameCache";
+import { z } from "zod";
 
 export const likeRouter = createTRPCRouter({
   likeActionByPostId: userProtectedProcedure
@@ -48,5 +47,30 @@ export const likeRouter = createTRPCRouter({
           ownerId: username,
         });
       }
+    }),
+
+  hasLikedThePost: userProtectedProcedure
+    .input(
+      z.object({
+        postId: z.string().min(1),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const {
+        db,
+        auth: { userId },
+      } = ctx;
+      const username = await getUsernameFromClerkOrCached(userId);
+
+      const likeFound = (
+        await db
+          .select({ id: likes.id })
+          .from(likes)
+          .where(
+            and(eq(likes.postId, input.postId), eq(likes.ownerId, username))
+          )
+      )[0];
+
+      return !!likeFound;
     }),
 });

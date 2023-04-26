@@ -19,6 +19,12 @@
       "version": "5",
       "when": 1682505792387,
       "tag": "0002_zippy_cannonball"
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1682531356776,
+      "tag": "0003_free_reavers"
     }
   ]
 }

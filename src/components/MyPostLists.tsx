@@ -3,26 +3,42 @@
 import { POST_LISTING_PER_PAGE } from "@/constants";
 import { api } from "@/lib/api/client";
 import { useState } from "react";
-import RepoCardSkeleton from "./skeletons/RepoCardSkeleton";
+import CardSkeleton from "./skeletons/CardSkeleton";
+import PostCard from "./PostCard";
 
 const MyPostLists = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { isLoading, data: posts } = api.post.myPosts.useQuery({
+  const { isLoading: isLoadingPosts, data: posts } = api.post.myPosts.useQuery({
     perPage: POST_LISTING_PER_PAGE,
     page: currentPage,
   });
+  const { isLoading: isLoadingProfile, data: profile } =
+    api.github.profile.useQuery();
 
-  if (isLoading)
+  if (isLoadingPosts || isLoadingProfile)
     return (
       <>
         {[...Array(3)].map((_, idx) => (
-          <RepoCardSkeleton key={`repoCardSkeleton__${idx}`} />
+          <CardSkeleton key={`cardSkeleton__${idx}`} withAvatar />
         ))}
       </>
     );
 
-  return <div>{JSON.stringify(posts)}</div>;
+  return (
+    <>
+      {posts && posts.length === 0 && (
+        <div className="pt-20 text-center text-lg font-bold text-slate-500">
+          Uh oh.. no post here.
+        </div>
+      )}
+      {posts &&
+        posts.length > 0 &&
+        posts.map((data) => (
+          <PostCard key={data.post.id} data={data} owner={profile} />
+        ))}
+    </>
+  );
 };
 
 export default MyPostLists;

@@ -3,7 +3,7 @@ import { timestamp } from "drizzle-orm/mysql-core";
 import { index } from "drizzle-orm/mysql-core";
 import { text } from "drizzle-orm/mysql-core";
 import { varchar } from "drizzle-orm/mysql-core";
-import { mysqlTable,   } from "drizzle-orm/mysql-core";
+import { mysqlTable } from "drizzle-orm/mysql-core";
 
 export const posts = mysqlTable(
   "posts",
@@ -16,6 +16,7 @@ export const posts = mysqlTable(
   },
   (table) => ({
     ownerIdIdx: index("owner_id_idx").on(table.ownerId),
+    repoSharedIdx: index("repo_shared_idx").on(table.repoShared),
   })
 );
 

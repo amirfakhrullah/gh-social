@@ -29,7 +29,7 @@ const Profile = ({ profile, self = false }: Props) => {
     if (!self && profile.type !== "User") {
       return toast({
         title: "Not Allowed",
-        description: "This profile restrists third-party access",
+        description: "This profile restricts third-party access",
       });
     }
 

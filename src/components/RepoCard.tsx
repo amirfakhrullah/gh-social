@@ -15,15 +15,24 @@ import { useState } from "react";
 import { Badge } from "./ui/badge";
 import { displayNumbers } from "@/helpers/displayNumbers";
 import StarSkeleton from "./skeletons/StarSkeleton";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
 
 interface Props {
   repo: TrimmedGitHubRepo;
+  hideCounts?: boolean;
 }
-const RepoCard = ({ repo }: Props) => {
+const RepoCard = ({ repo, hideCounts = false }: Props) => {
   const { isLoading, data: hasStarred } = api.github.hasStarredTheRepo.useQuery(
     {
-      owner: repo.owner.login,
-      repoName: repo.name,
+      repoName: repo.full_name,
+    },
+    {
+      enabled: !hideCounts,
     }
   );
   const [starCount, setStarCount] = useState(repo.stargazers_count);
@@ -47,8 +56,7 @@ const RepoCard = ({ repo }: Props) => {
         }
       });
       utils.github.hasStarredTheRepo.invalidate({
-        owner: repo.owner.login,
-        repoName: repo.name,
+        repoName: repo.full_name,
       });
       utils.github.myRepos.invalidate();
       utils.github.otherUserRepos.invalidate();
@@ -66,13 +74,12 @@ const RepoCard = ({ repo }: Props) => {
     const action = hasStarred ? "unstar" : "star";
     mutate({
       action,
-      owner: repo.owner.login,
-      repoName: repo.name,
+      repoName: repo.full_name,
     });
   };
 
   return (
-    <div className="border border-slate-700 m-2 rounded-md">
+    <div className="border border-slate-700 m-2 rounded-md shadow-md">
       <div className="md:p-5 p-2">
         <Link href={repo.html_url} target="_blank">
           <p className="text-md font-bold mb-2 text-blue-400 cursor-pointer hover:underline">
@@ -87,7 +94,7 @@ const RepoCard = ({ repo }: Props) => {
         )}
         <p className="text-sm text-slate-500">{repo.description}</p>
         {repo.topics && (
-          <div className="mt-2">
+          <div className="mt-2 md:block hidden">
             {repo.topics.map((topic) => (
               <Badge
                 key={topic + repo.name}
@@ -100,39 +107,73 @@ const RepoCard = ({ repo }: Props) => {
           </div>
         )}
       </div>
-      <Separator orientation="horizontal" />
-      <div className="w-full flex h-8 items-center justify-between space-x-4 text-sm">
-        <div className="w-full flex flex-row items-center justify-center gap-1">
-          <AiOutlineRetweet />
-          {displayNumbers(starCount)}
-        </div>
-        <Separator orientation="vertical" />
+      {!hideCounts && (
+        <>
+          <Separator orientation="horizontal" />
+          <div className="w-full flex h-8 items-center justify-between space-x-4 text-sm">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="w-full flex flex-row items-center justify-center gap-1 cursor-pointer">
+                    <AiOutlineRetweet />
+                    {displayNumbers(starCount)}
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Share repo in a post</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
 
-        {isLoading ? (
-          <StarSkeleton />
-        ) : (
-          <div
-            className="w-full flex flex-row items-center justify-center gap-1 cursor-pointer"
-            onClick={handleStar}
-          >
-            {hasStarred ? (
-              <AiFillStar className="text-yellow-400" />
+            <Separator orientation="vertical" />
+
+            {isLoading ? (
+              <StarSkeleton />
             ) : (
-              <AiOutlineStar />
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div
+                      className="w-full flex flex-row items-center justify-center gap-1 cursor-pointer"
+                      onClick={handleStar}
+                    >
+                      {hasStarred ? (
+                        <AiFillStar className="text-yellow-400" />
+                      ) : (
+                        <AiOutlineStar />
+                      )}
+                      {displayNumbers(starCount)}
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Star/Unstar the repo</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             )}
-            {displayNumbers(starCount)}
+
+            <Separator orientation="vertical" />
+
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div
+                    className="w-full flex flex-row items-center justify-center gap-1 cursor-pointer"
+                    onClick={() =>
+                      window.open(`https://github.com/${repo.full_name}/fork`)
+                    }
+                  >
+                    <AiOutlineFork /> {displayNumbers(repo.forks_count)}
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Fork the repo</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
-        )}
-        <Separator orientation="vertical" />
-        <div
-          className="w-full flex flex-row items-center justify-center gap-1 cursor-pointer"
-          onClick={() =>
-            window.open(`https://github.com/${repo.full_name}/fork`)
-          }
-        >
-          <AiOutlineFork /> {displayNumbers(repo.forks_count)}
-        </div>
-      </div>
+        </>
+      )}
     </div>
   );
 };

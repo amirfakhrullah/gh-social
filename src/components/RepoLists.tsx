@@ -3,7 +3,7 @@
 import { REPO_LISTING_PER_PAGE } from "@/constants";
 import { api } from "@/lib/api/client";
 import RepoCard from "./RepoCard";
-import RepoCardSkeleton from "./skeletons/RepoCardSkeleton";
+import CardSkeleton from "./skeletons/CardSkeleton";
 import { Button } from "./ui/button";
 import { useState } from "react";
 
@@ -28,7 +28,7 @@ const RepoLists = ({ username }: Props) => {
     return (
       <>
         {[...Array(3)].map((_, idx) => (
-          <RepoCardSkeleton key={`repoCardSkeleton__${idx}`} />
+          <CardSkeleton key={`CardSkeleton__${idx}`} />
         ))}
       </>
     );

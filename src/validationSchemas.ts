@@ -23,3 +23,7 @@ export const likeActionSchema = z.object({
   postId: z.string().min(1),
   action: z.enum(["like", "unlike"]),
 });
+
+export const githubRepoSchema = z.object({
+  repoName: z.string().min(1),
+});
