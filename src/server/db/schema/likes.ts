@@ -3,6 +3,7 @@ import {
   index,
   mysqlTable,
   timestamp,
+  uniqueIndex,
   varchar,
 } from "drizzle-orm/mysql-core";
 
@@ -17,7 +18,11 @@ export const likes = mysqlTable(
   (table) => ({
     ownerIdIdx: index("owner_id_idx").on(table.ownerId),
     postIdIdx: index("post_id_idx").on(table.id),
+    ownerIdPostIdUniqueIdx: uniqueIndex("owner_id_post_id_unique_idx").on(
+      table.postId,
+      table.ownerId
+    ),
   })
 );
 
-export type Like = InferModel<typeof likes>
+export type Like = InferModel<typeof likes>;

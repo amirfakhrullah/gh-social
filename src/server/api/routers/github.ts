@@ -1,6 +1,5 @@
 import { createTRPCRouter } from "../trpc";
 import { clerkClient } from "@clerk/nextjs/server";
-import { TrimmedGitHubRepo } from "@/types/github";
 import { z } from "zod";
 import {
   trimGitHubProfileData,
@@ -9,6 +8,7 @@ import {
 import { gitHubProtectedProcedure } from "../procedures";
 import githubApi from "@/server/helpers/githubApi";
 import { TRPCError } from "@trpc/server";
+import { paginationSchema } from "@/validationSchemas";
 
 export const githubRouter = createTRPCRouter({
   profile: gitHubProtectedProcedure.query(async ({ ctx }) => {
@@ -48,11 +48,11 @@ export const githubRouter = createTRPCRouter({
 
   followers: gitHubProtectedProcedure
     .input(
-      z.object({
-        username: z.string(),
-        page: z.number(),
-        perPage: z.number(),
-      })
+      z
+        .object({
+          username: z.string(),
+        })
+        .merge(paginationSchema)
     )
     .query(async ({ ctx, input }) => {
       const {
@@ -71,11 +71,11 @@ export const githubRouter = createTRPCRouter({
 
   following: gitHubProtectedProcedure
     .input(
-      z.object({
-        username: z.string(),
-        page: z.number(),
-        perPage: z.number(),
-      })
+      z
+        .object({
+          username: z.string(),
+        })
+        .merge(paginationSchema)
     )
     .query(async ({ ctx, input }) => {
       const {
@@ -151,12 +151,7 @@ export const githubRouter = createTRPCRouter({
     }),
 
   myRepos: gitHubProtectedProcedure
-    .input(
-      z.object({
-        page: z.number(),
-        perPage: z.number(),
-      })
-    )
+    .input(paginationSchema)
     .query(async ({ ctx, input }) => {
       const {
         oAuth: { token },
@@ -168,11 +163,11 @@ export const githubRouter = createTRPCRouter({
 
   otherUserRepos: gitHubProtectedProcedure
     .input(
-      z.object({
-        page: z.number(),
-        perPage: z.number(),
-        username: z.string().min(1),
-      })
+      z
+        .object({
+          username: z.string().min(1),
+        })
+        .merge(paginationSchema)
     )
     .query(async ({ ctx, input }) => {
       const {

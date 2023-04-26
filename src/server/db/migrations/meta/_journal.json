@@ -13,6 +13,12 @@
       "version": "5",
       "when": 1682448125846,
       "tag": "0001_dark_charles_xavier"
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1682505792387,
+      "tag": "0002_zippy_cannonball"
     }
   ]
 }

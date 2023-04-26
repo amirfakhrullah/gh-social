@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX `owner_id_post_id_unique_idx` ON `likes` (`post_id`,`owner_id`);
