@@ -45,10 +45,10 @@ export const gitHubProtectedProcedure = userProtectedProcedure.use(
      */
     const tokenFromCache = cachedTokens.getToken(userId);
     if (tokenFromCache) {
-      console.log("getting from cache");
+      console.log(`getting OAuth token for user ${userId} from memory cache`);
       token = tokenFromCache;
     } else {
-      console.log("getting from clerk");
+      console.log(`getting OAuth token for user ${userId} from Clerk`);
       const oAuthTokens = await clerkClient.users.getUserOauthAccessToken(
         userId,
         "oauth_github"
