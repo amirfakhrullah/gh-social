@@ -41,7 +41,7 @@ export const gitHubProtectedProcedure = userProtectedProcedure.use(
     let token: string;
 
     /**
-     * Strategy: cached OAuth Tokens for 30 seconds to avoid making too many request to Clerk
+     * Strategy: Cache OAuth Tokens for 30 seconds to avoid making too many request to Clerk
      */
     const tokenFromCache = cachedTokens.getToken(userId);
     if (tokenFromCache) {
