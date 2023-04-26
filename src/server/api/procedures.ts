@@ -1,6 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { procedure } from "./trpc";
 import { clerkClient } from "@clerk/nextjs/server";
+import cachedTokens from "../helpers/cache";
 
 /**
  * Public
@@ -37,16 +38,33 @@ export const gitHubProtectedProcedure = userProtectedProcedure.use(
       auth: { userId },
     } = ctx;
 
-    const oAuthTokens = await clerkClient.users.getUserOauthAccessToken(
-      userId,
-      "oauth_github"
-    );
+    let token: string;
 
-    const oAuthToken = oAuthTokens[0]?.token;
-    if (!oAuthToken) {
+    /**
+     * Strategy: cached OAuth Tokens for 30 seconds to avoid making too many request to Clerk
+     */
+    if (cachedTokens.hasToken(userId)) {
+      console.log("getting from cache");
+      token = cachedTokens.getToken(userId);
+    } else {
+      console.log("getting from clerk");
+      const oAuthTokens = await clerkClient.users.getUserOauthAccessToken(
+        userId,
+        "oauth_github"
+      );
+
+      token = oAuthTokens[0]?.token;
+
+      cachedTokens.setToken(userId, {
+        token,
+        lastFetched: new Date(),
+      });
+    }
+
+    if (!token) {
       throw new TRPCError({
         code: "UNAUTHORIZED",
-        message: "Failed to retrieve OAuth token from Clerk",
+        message: "Failed to retrieve OAuth tokens from Clerk",
       });
     }
 
@@ -54,7 +72,7 @@ export const gitHubProtectedProcedure = userProtectedProcedure.use(
       ctx: {
         ...ctx,
         oAuth: {
-          token: oAuthToken,
+          token,
         },
       },
     });
