@@ -1,4 +1,5 @@
 import PostCard from "@/components/PostCard";
+import { RouterOutputs } from "@/lib/api/client";
 import { api } from "@/lib/api/server";
 import { notFound } from "next/navigation";
 
@@ -12,9 +13,14 @@ export default async function PostIdPage({ params: { postId } }: PageProps) {
     return notFound();
   }
 
-  const post = await api.post.postById.fetch({
-    id: postId,
-  });
+  let post: RouterOutputs["post"]["postById"] | undefined;
+  try {
+    post = await api.post.postById.fetch({
+      id: postId,
+    });
+  } catch (_) {
+    return notFound();
+  }
 
   if (!post) return notFound();
 
