@@ -12,7 +12,7 @@ import {
 import { IoSearchOutline, IoSearchSharp } from "react-icons/io5";
 import { RiUser3Fill, RiUser3Line } from "react-icons/ri";
 import { usePathname, useRouter } from "next/navigation";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { UserButton, useUser } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 
@@ -86,6 +86,16 @@ export default function Sidebar() {
       });
     }
   }, [location]);
+
+  /**
+   * Prefetch routes when first-time rendering this component
+   */
+  useEffect(() => {
+    navs.map((nav) => {
+      if (!nav.isActive) router.prefetch(nav.path);
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="h-screen md:w-[275px] w-[88px]">
