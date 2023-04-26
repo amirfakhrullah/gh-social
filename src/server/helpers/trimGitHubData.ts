@@ -2,7 +2,7 @@ import {
   GitHubRepo,
   GitHubUserProfile,
   TrimmedGitHubProfile,
-  TrimmedGitHubRepoWithStarStatus,
+  TrimmedGitHubRepo,
 } from "@/types/github";
 
 export const trimGitHubProfileData = (profile: GitHubUserProfile) => {
@@ -21,11 +21,8 @@ export const trimGitHubProfileData = (profile: GitHubUserProfile) => {
   return trimmedProfile;
 };
 
-export const trimGitHubRepoData = (
-  repo: GitHubRepo,
-  isStarredByUser: boolean
-) => {
-  const trimmedRepo: TrimmedGitHubRepoWithStarStatus = {
+export const trimGitHubRepoData = (repo: GitHubRepo) => {
+  const trimmedRepo: TrimmedGitHubRepo = {
     id: repo.id,
     node_id: repo.node_id,
     name: repo.name,
@@ -38,7 +35,6 @@ export const trimGitHubRepoData = (
     watchers_count: repo.watchers_count,
     topics: repo.topics,
     owner: trimGitHubProfileData(repo.owner),
-    isStarredByUser,
   };
   return trimmedRepo;
 };

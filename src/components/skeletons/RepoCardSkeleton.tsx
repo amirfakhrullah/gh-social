@@ -1,5 +1,6 @@
 import { Skeleton } from "../ui/skeleton";
 import { Separator } from "../ui/separator";
+import StarSkeleton from "./StarSkeleton";
 
 const RepoCardSkeleton = () => {
   return (
@@ -11,10 +12,11 @@ const RepoCardSkeleton = () => {
       </div>
       <Separator orientation="horizontal" />
       <div className="w-full flex h-8 items-center justify-between space-x-4 text-sm">
-        <div className="h-1 w-2"/>
+        <StarSkeleton />
         <Separator orientation="vertical" />
+        <StarSkeleton />
         <Separator orientation="vertical" />
-        <div className="h-1 w-2"/>
+        <StarSkeleton />
       </div>
     </div>
   );

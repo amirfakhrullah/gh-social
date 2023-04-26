@@ -14,7 +14,8 @@ const hasToken = (userId: string) => {
   if (!obj) return false;
 
   if (
-    getSecondsDifferenceFromNow(obj.lastFetched) >= MAX_TOKEN_LIFE_IN_SECONDS
+    getSecondsDifferenceFromNow(obj.lastFetched) >= MAX_TOKEN_LIFE_IN_SECONDS ||
+    !obj.token
   ) {
     oAuthCache.delete(userId);
     return false;
@@ -22,18 +23,12 @@ const hasToken = (userId: string) => {
   return !!obj.token;
 };
 
+/**
+ * Make sure to pre-check with `.hasToken()` before using this
+ */
 const getToken = (userId: string) => {
   const obj = oAuthCache.get(userId);
-  console.log(obj);
-  if (!obj) return "";
-
-  if (
-    getSecondsDifferenceFromNow(obj.lastFetched) >= MAX_TOKEN_LIFE_IN_SECONDS
-  ) {
-    oAuthCache.delete(userId);
-    return "";
-  }
-  return obj.token;
+  return obj?.token ?? "";
 };
 
 const setToken = (userId: string, obj: CachedToken) =>

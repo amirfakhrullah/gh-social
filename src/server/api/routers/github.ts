@@ -1,6 +1,6 @@
 import { createTRPCRouter } from "../trpc";
 import { clerkClient } from "@clerk/nextjs/server";
-import { TrimmedGitHubRepoWithStarStatus } from "@/types/github";
+import { TrimmedGitHubRepo } from "@/types/github";
 import { z } from "zod";
 import {
   trimGitHubProfileData,
@@ -135,6 +135,21 @@ export const githubRouter = createTRPCRouter({
       };
     }),
 
+  hasStarredTheRepo: gitHubProtectedProcedure
+    .input(
+      z.object({
+        owner: z.string().min(1),
+        repoName: z.string().min(1),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const {
+        oAuth: { token },
+      } = ctx;
+      const { owner, repoName } = input;
+      return await githubApi.hasIStarredTheRepo(token, owner, repoName);
+    }),
+
   myRepos: gitHubProtectedProcedure
     .input(
       z.object({
@@ -148,17 +163,7 @@ export const githubRouter = createTRPCRouter({
       } = ctx;
       const { page, perPage } = input;
       const repos = await githubApi.myRepoLists(token, page, perPage);
-
-      let response: TrimmedGitHubRepoWithStarStatus[] = [];
-      for (const repo of repos) {
-        const isStarred = await githubApi.hasIStarredTheRepo(
-          token,
-          repo.owner.login,
-          repo.name
-        );
-        response.push(trimGitHubRepoData(repo, isStarred));
-      }
-      return response;
+      return repos.map(trimGitHubRepoData);
     }),
 
   otherUserRepos: gitHubProtectedProcedure
@@ -180,17 +185,7 @@ export const githubRouter = createTRPCRouter({
         page,
         perPage
       );
-
-      let response: TrimmedGitHubRepoWithStarStatus[] = [];
-      for (const repo of repos) {
-        const isStarred = await githubApi.hasIStarredTheRepo(
-          token,
-          repo.owner.login,
-          repo.name
-        );
-        response.push(trimGitHubRepoData(repo, isStarred));
-      }
-      return response;
+      return repos.map(trimGitHubRepoData);
     }),
 
   starAction: gitHubProtectedProcedure

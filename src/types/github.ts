@@ -158,7 +158,7 @@ export type GitHubRepo = {
   watchers: number;
 };
 
-export type TrimmedGitHubRepoWithStarStatus = Pick<
+export type TrimmedGitHubRepo = Pick<
   GitHubRepo,
   | "id"
   | "node_id"
@@ -172,6 +172,5 @@ export type TrimmedGitHubRepoWithStarStatus = Pick<
   | "watchers_count"
   | "topics"
 > & {
-  isStarredByUser: boolean;
   owner: TrimmedGitHubProfile;
 };

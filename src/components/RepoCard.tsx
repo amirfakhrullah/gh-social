@@ -1,6 +1,6 @@
 "use client";
 
-import { TrimmedGitHubRepoWithStarStatus } from "@/types/github";
+import { TrimmedGitHubRepo } from "@/types/github";
 import Link from "next/link";
 import { Separator } from "./ui/separator";
 import {
@@ -14,13 +14,19 @@ import { useToast } from "./ui/use-toast";
 import { useState } from "react";
 import { Badge } from "./ui/badge";
 import { displayNumbers } from "@/helpers/displayNumbers";
+import StarSkeleton from "./skeletons/StarSkeleton";
 
 interface Props {
-  repo: TrimmedGitHubRepoWithStarStatus;
+  repo: TrimmedGitHubRepo;
 }
 const RepoCard = ({ repo }: Props) => {
-  const [starred, setStarred] = useState(repo.isStarredByUser);
-  const [startCount, setStarCount] = useState(repo.stargazers_count);
+  const { isLoading, data: hasStarred } = api.github.hasStarredTheRepo.useQuery(
+    {
+      owner: repo.owner.login,
+      repoName: repo.name,
+    }
+  );
+  const [starCount, setStarCount] = useState(repo.stargazers_count);
 
   const { toast } = useToast();
   const utils = api.useContext();
@@ -34,13 +40,16 @@ const RepoCard = ({ repo }: Props) => {
       }),
     onSuccess: (res) => {
       setStarCount((count) => {
-        if (starred) {
+        if (hasStarred) {
           return count - 1;
         } else {
           return count + 1;
         }
       });
-      setStarred((star) => !star);
+      utils.github.hasStarredTheRepo.invalidate({
+        owner: repo.owner.login,
+        repoName: repo.name,
+      });
       utils.github.myRepos.invalidate();
       utils.github.otherUserRepos.invalidate();
 
@@ -53,7 +62,8 @@ const RepoCard = ({ repo }: Props) => {
   });
 
   const handleStar = () => {
-    const action = starred ? "unstar" : "star";
+    if (isLoading) return;
+    const action = hasStarred ? "unstar" : "star";
     mutate({
       action,
       owner: repo.owner.login,
@@ -94,21 +104,25 @@ const RepoCard = ({ repo }: Props) => {
       <div className="w-full flex h-8 items-center justify-between space-x-4 text-sm">
         <div className="w-full flex flex-row items-center justify-center gap-1">
           <AiOutlineRetweet />
-          {displayNumbers(startCount)}
+          {displayNumbers(starCount)}
         </div>
         <Separator orientation="vertical" />
 
-        <div
-          className="w-full flex flex-row items-center justify-center gap-1 cursor-pointer"
-          onClick={handleStar}
-        >
-          {starred ? (
-            <AiFillStar className="text-yellow-400" />
-          ) : (
-            <AiOutlineStar />
-          )}
-          {displayNumbers(startCount)}
-        </div>
+        {isLoading ? (
+          <StarSkeleton />
+        ) : (
+          <div
+            className="w-full flex flex-row items-center justify-center gap-1 cursor-pointer"
+            onClick={handleStar}
+          >
+            {hasStarred ? (
+              <AiFillStar className="text-yellow-400" />
+            ) : (
+              <AiOutlineStar />
+            )}
+            {displayNumbers(starCount)}
+          </div>
+        )}
         <Separator orientation="vertical" />
         <div
           className="w-full flex flex-row items-center justify-center gap-1 cursor-pointer"
