@@ -12,7 +12,7 @@ import {
   idSchema,
   paginationSchema,
 } from "@/validationSchemas";
-import { getUsernameFromClerkOrThrow } from "@/server/helpers/clerk";
+import { getUsernameFromClerkOrCached } from "@/server/caches/usernameCache";
 
 export const postRouter = createTRPCRouter({
   myPosts: userProtectedProcedure
@@ -24,7 +24,7 @@ export const postRouter = createTRPCRouter({
       } = ctx;
       const { page, perPage } = input;
 
-      const username = await getUsernameFromClerkOrThrow(userId);
+      const username = await getUsernameFromClerkOrCached(userId);
 
       const myPosts = await db
         .select({
@@ -116,7 +116,7 @@ export const postRouter = createTRPCRouter({
         auth: { userId },
       } = ctx;
       const { content, repoShared } = input;
-      const username = await getUsernameFromClerkOrThrow(userId);
+      const username = await getUsernameFromClerkOrCached(userId);
 
       await db.insert(posts).values({
         id: v4(),
@@ -133,7 +133,7 @@ export const postRouter = createTRPCRouter({
         db,
         auth: { userId },
       } = ctx;
-      const username = await getUsernameFromClerkOrThrow(userId);
+      const username = await getUsernameFromClerkOrCached(userId);
 
       const postNeededToBeDeleted = (
         await db

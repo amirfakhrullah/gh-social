@@ -1,7 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { procedure } from "./trpc";
 import { clerkClient } from "@clerk/nextjs/server";
-import cachedTokens from "../helpers/cache";
+import cachedTokens from "../caches/oAuthCache";
 
 /**
  * Public
@@ -45,10 +45,8 @@ export const gitHubProtectedProcedure = userProtectedProcedure.use(
      */
     const tokenFromCache = cachedTokens.getToken(userId);
     if (tokenFromCache) {
-      console.log(`getting OAuth token for user ${userId} from memory cache`);
       token = tokenFromCache;
     } else {
-      console.log(`getting OAuth token for user ${userId} from Clerk`);
       const oAuthTokens = await clerkClient.users.getUserOauthAccessToken(
         userId,
         "oauth_github"

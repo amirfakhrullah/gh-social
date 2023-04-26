@@ -1,10 +1,12 @@
 import { MAX_TOKEN_LIFE_IN_SECONDS } from "@/constants";
-import { getSecondsDifferenceFromNow } from "./getMinuteDiff";
+import { getSecondsDifferenceFromNow } from "../helpers/getMinuteDiff";
 
 interface CachedToken {
   token: string;
   lastFetched: Date;
 }
+
+// in-memory cache
 const oAuthCache = new Map<string, CachedToken>();
 
 const getToken = (userId: string) => {

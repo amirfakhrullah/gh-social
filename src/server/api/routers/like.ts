@@ -4,11 +4,11 @@ import {
   likeActionSchema,
 } from "@/validationSchemas";
 import { and, eq } from "drizzle-orm";
-import { getUsernameFromClerkOrThrow } from "@/server/helpers/clerk";
 import { posts } from "@/server/db/schema/posts";
 import { TRPCError } from "@trpc/server";
 import { v4 } from "uuid";
 import { likes } from "@/server/db/schema/likes";
+import { getUsernameFromClerkOrCached } from "@/server/caches/usernameCache";
 
 export const likeRouter = createTRPCRouter({
   likeActionByPostId: userProtectedProcedure
@@ -19,7 +19,7 @@ export const likeRouter = createTRPCRouter({
         auth: { userId },
       } = ctx;
       const { action, postId } = input;
-      const username = await getUsernameFromClerkOrThrow(userId);
+      const username = await getUsernameFromClerkOrCached(userId);
 
       const postReference = (
         await db

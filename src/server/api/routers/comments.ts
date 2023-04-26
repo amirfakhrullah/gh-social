@@ -8,10 +8,10 @@ import {
 } from "@/validationSchemas";
 import { comments } from "@/server/db/schema/comments";
 import { and, asc, eq } from "drizzle-orm";
-import { getUsernameFromClerkOrThrow } from "@/server/helpers/clerk";
 import { posts } from "@/server/db/schema/posts";
 import { TRPCError } from "@trpc/server";
 import { v4 } from "uuid";
+import { getUsernameFromClerkOrCached } from "@/server/caches/usernameCache";
 
 export const commentRouter = createTRPCRouter({
   commentsByPostId: userProtectedProcedure
@@ -45,7 +45,7 @@ export const commentRouter = createTRPCRouter({
         auth: { userId },
       } = ctx;
       const { content, postId } = input;
-      const username = await getUsernameFromClerkOrThrow(userId);
+      const username = await getUsernameFromClerkOrCached(userId);
 
       const postReference = (
         await db
@@ -76,7 +76,7 @@ export const commentRouter = createTRPCRouter({
         db,
         auth: { userId },
       } = ctx;
-      const username = await getUsernameFromClerkOrThrow(userId);
+      const username = await getUsernameFromClerkOrCached(userId);
 
       await db
         .delete(comments)
