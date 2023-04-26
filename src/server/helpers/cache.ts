@@ -1,7 +1,5 @@
-import {
-  MAX_TOKEN_LIFE_IN_SECONDS,
-  getSecondsDifferenceFromNow,
-} from "./getMinuteDiff";
+import { MAX_TOKEN_LIFE_IN_SECONDS } from "@/constants";
+import { getSecondsDifferenceFromNow } from "./getMinuteDiff";
 
 interface CachedToken {
   token: string;
