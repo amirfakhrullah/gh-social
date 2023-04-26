@@ -29,10 +29,10 @@ export const postRouter = createTRPCRouter({
       const myPosts = await db
         .select({
           post: posts,
-          commentsCount: sql<number>`count(${comments.id})`.as(
+          commentsCount: sql<string>`count(${comments.id})`.as(
             "comments_count"
           ),
-          likesCount: sql<number>`count(${likes.id})`.as("likes_count"),
+          likesCount: sql<string>`count(${likes.id})`.as("likes_count"),
         })
         .from(posts)
         .where(eq(posts.ownerId, username))
@@ -61,10 +61,10 @@ export const postRouter = createTRPCRouter({
       const myPosts = await db
         .select({
           post: posts,
-          commentsCount: sql<number>`count(${comments.id})`.as(
+          commentsCount: sql<string>`count(${comments.id})`.as(
             "comments_count"
           ),
-          likesCount: sql<number>`count(${likes.id})`.as("likes_count"),
+          likesCount: sql<string>`count(${likes.id})`.as("likes_count"),
         })
         .from(posts)
         .where(eq(posts.ownerId, username))
@@ -87,10 +87,10 @@ export const postRouter = createTRPCRouter({
         await db
           .select({
             post: posts,
-            commentsCount: sql<number>`count(${comments.id})`.as(
+            commentsCount: sql<string>`count(${comments.id})`.as(
               "comments_count"
             ),
-            likesCount: sql<number>`count(${likes.id})`.as("likes_count"),
+            likesCount: sql<string>`count(${likes.id})`.as("likes_count"),
           })
           .from(posts)
           .where(eq(posts.id, input.id))

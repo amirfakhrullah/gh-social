@@ -5,6 +5,7 @@ import { api } from "@/lib/api/client";
 import { useState } from "react";
 import CardSkeleton from "./skeletons/CardSkeleton";
 import PostCard from "./PostCard";
+import { Button } from "./ui/button";
 
 const MyPostLists = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -37,6 +38,32 @@ const MyPostLists = () => {
         posts.map((data) => (
           <PostCard key={data.post.id} data={data} owner={profile} />
         ))}
+      {posts && (
+        <div className="py-2 flex flex-row items-center justify-center gap-2">
+          {currentPage > 1 && (
+            <Button
+              variant="secondary"
+              onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
+            >
+              Prev
+            </Button>
+          )}
+          {currentPage > 1 && posts.length >= POST_LISTING_PER_PAGE && (
+            <div>{currentPage}</div>
+          )}
+          {posts.length >= POST_LISTING_PER_PAGE && (
+            <Button
+              variant="secondary"
+              onClick={() =>
+                posts.length >= POST_LISTING_PER_PAGE &&
+                setCurrentPage(currentPage + 1)
+              }
+            >
+              Next
+            </Button>
+          )}
+        </div>
+      )}
     </>
   );
 };
