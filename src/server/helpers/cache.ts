@@ -9,33 +9,24 @@ interface CachedToken {
 }
 const oAuthCache = new Map<string, CachedToken>();
 
-const hasToken = (userId: string) => {
+const getToken = (userId: string) => {
   const obj = oAuthCache.get(userId);
-  if (!obj) return false;
+  if (!obj) return;
 
   if (
     getSecondsDifferenceFromNow(obj.lastFetched) >= MAX_TOKEN_LIFE_IN_SECONDS ||
     !obj.token
   ) {
     oAuthCache.delete(userId);
-    return false;
+    return;
   }
-  return !!obj.token;
-};
-
-/**
- * Make sure to pre-check with `.hasToken()` before using this
- */
-const getToken = (userId: string) => {
-  const obj = oAuthCache.get(userId);
-  return obj?.token ?? "";
+  return obj.token;
 };
 
 const setToken = (userId: string, obj: CachedToken) =>
   oAuthCache.set(userId, obj);
 
 const cachedTokens = {
-  hasToken,
   getToken,
   setToken,
 };

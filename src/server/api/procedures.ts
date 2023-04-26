@@ -43,9 +43,10 @@ export const gitHubProtectedProcedure = userProtectedProcedure.use(
     /**
      * Strategy: cached OAuth Tokens for 30 seconds to avoid making too many request to Clerk
      */
-    if (cachedTokens.hasToken(userId)) {
+    const tokenFromCache = cachedTokens.getToken(userId);
+    if (tokenFromCache) {
       console.log("getting from cache");
-      token = cachedTokens.getToken(userId);
+      token = tokenFromCache;
     } else {
       console.log("getting from clerk");
       const oAuthTokens = await clerkClient.users.getUserOauthAccessToken(
@@ -53,18 +54,18 @@ export const gitHubProtectedProcedure = userProtectedProcedure.use(
         "oauth_github"
       );
 
-      token = oAuthTokens[0]?.token;
+      if (!oAuthTokens[0]?.token) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Failed to retrieve OAuth tokens from Clerk",
+        });
+      }
+
+      token = oAuthTokens[0].token;
 
       cachedTokens.setToken(userId, {
         token,
         lastFetched: new Date(),
-      });
-    }
-
-    if (!token) {
-      throw new TRPCError({
-        code: "UNAUTHORIZED",
-        message: "Failed to retrieve OAuth tokens from Clerk",
       });
     }
 
