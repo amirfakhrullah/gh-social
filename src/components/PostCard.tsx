@@ -19,6 +19,7 @@ import {
 } from "./ui/tooltip";
 import StarSkeleton from "./skeletons/StarSkeleton";
 import { useToast } from "./ui/use-toast";
+import { formatTimeAgo } from "@/helpers/formatTimeAgo";
 
 interface Props {
   data: RouterOutputs["post"]["myPosts"][number];
@@ -113,6 +114,7 @@ const PostCard = ({ data, owner }: Props) => {
                 @{(owner ?? profile)!.login}
               </p>
             </div>
+            <div className="md:block hidden text-sm text-gray-500"> | Posted {formatTimeAgo(post.createdAt)}</div>
           </div>
         )}
         <p className="mb-2 text-slate-200 cursor-pointer" onClick={readPost}>
@@ -126,6 +128,7 @@ const PostCard = ({ data, owner }: Props) => {
           Repo doesn&apos;t exist
         </div>
       )}
+      <div className="md:hidden block text-sm ml-2 mb-1 text-gray-500 italic">Posted {formatTimeAgo(post.createdAt)}</div>
       <Separator orientation="horizontal" />
       <div className="w-full flex h-8 items-center justify-between space-x-4 text-sm">
         <TooltipProvider>
