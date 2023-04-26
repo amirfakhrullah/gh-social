@@ -4,8 +4,9 @@ import { getUsernameFromClerkOrThrow } from "../helpers/clerk";
 
 /**
  * WHY WE CACHED USERNAME?
- * - We need to fetch username from Clerk
- * - By caching, we can avoid from making too many requests to Clerk
+ * - For every requests that requires username, we need to make a call to Clerk to get it
+ * - Requests with paginations === Too many requests to Clerk
+ * - Username mostly not changed, so we better cache it
  */
 
 interface CachedUsername {
