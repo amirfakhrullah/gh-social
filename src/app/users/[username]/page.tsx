@@ -1,7 +1,7 @@
 import Profile from "@/components/Profile";
 import ProfileContents from "@/components/ProfileContents";
 import { api } from "@/lib/api/server";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 interface PageProps {
   params: {
@@ -9,17 +9,22 @@ interface PageProps {
   };
 }
 
-export default async function Users({
-  params: { username },
-}: PageProps) {
-  const profile = await api.github.otherProfile.fetch({ username });
+export default async function Users({ params: { username } }: PageProps) {
+  const [myProfile, pageProfile] = await Promise.all([
+    api.github.profile.fetch(),
+    api.github.otherProfile.fetch({ username }),
+  ]);
 
-  if (!profile) return notFound();
+  if (!pageProfile || !myProfile) return notFound();
+
+  if (myProfile.login === pageProfile.login) {
+    return redirect("/profile");
+  }
 
   return (
     <>
-      <Profile profile={profile} />
-      <ProfileContents profile={profile} />
+      <Profile profile={pageProfile} />
+      <ProfileContents profile={pageProfile} />
     </>
   );
 }
