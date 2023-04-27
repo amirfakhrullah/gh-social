@@ -19,12 +19,14 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
+import { cn } from "@/lib/utils";
 
 interface Props {
   comment: RouterOutputs["comment"]["commentsByPostId"][number];
   owner?: TrimmedGitHubProfile;
+  navigateToPost?: boolean;
 }
-const CommentCard = ({ comment, owner }: Props) => {
+const CommentCard = ({ comment, owner, navigateToPost = true }: Props) => {
   const { toast } = useToast();
   const { user } = useUser();
   const router = useRouter();
@@ -59,9 +61,11 @@ const CommentCard = ({ comment, owner }: Props) => {
   });
 
   const readProfile = () => router.push(`/users/${comment.ownerId}`);
+  const readPost = () =>
+    navigateToPost && router.push(`/posts/${comment.postId}`);
   const handleDelete = () =>
     user?.username === comment.ownerId && mutate({ id: comment.id });
-  const displayLoaderProfile = owner ? isLoadingProfile : false;
+  const displayLoaderProfile = !owner ? isLoadingProfile : false;
   return (
     <div className="border border-slate-700 m-2 rounded-md shadow-md md:p-5 p-2">
       {displayLoaderProfile && <AvatarSkeleton />}
@@ -90,7 +94,15 @@ const CommentCard = ({ comment, owner }: Props) => {
           </div>
         </div>
       )}
-      <p className="mb-2 text-slate-200">{comment.content}</p>
+      <p
+        className={cn(
+          "mb-2 text-slate-200",
+          navigateToPost && "cursor-pointer"
+        )}
+        onClick={readPost}
+      >
+        {comment.content}
+      </p>
       {user?.username === comment.ownerId && (
         <AlertDialog>
           <AlertDialogTrigger className="w-full">

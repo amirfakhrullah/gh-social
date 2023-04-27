@@ -18,8 +18,6 @@ const CommentForm = ({ postId }: Props) => {
   const {
     register,
     handleSubmit,
-    reset,
-    setValue,
     formState: { errors },
   } = useForm<CreateCommentInput>({
     defaultValues: {
@@ -35,7 +33,7 @@ const CommentForm = ({ postId }: Props) => {
       utils.post.invalidate();
       toast({
         title: "Success!",
-        description: "Comment added",
+        description: "Reply added",
       });
     },
     onError: (err) =>
@@ -57,10 +55,10 @@ const CommentForm = ({ postId }: Props) => {
       <div className="flex md:flex-row flex-col md:items-center items-end gap-2">
         <Input
           {...register("content", { required: true })}
-          placeholder="Insert comment"
+          placeholder="Insert text"
         />
-        <Button type="submit" variant="secondary">
-          Submit
+        <Button type="submit" variant="secondary" disabled={isLoading}>
+          Reply
         </Button>
       </div>
       {errors.content && (

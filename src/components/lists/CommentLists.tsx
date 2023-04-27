@@ -3,44 +3,45 @@
 import { COMMENTS_LISTING_PER_PAGE } from "@/constants";
 import { api } from "@/lib/api/client";
 import { useState } from "react";
+import CardSkeleton from "../skeletons/CardSkeleton";
 import CommentCard from "../cards/CommentCard";
 import { Button } from "../ui/button";
-import CardSkeleton from "../skeletons/CardSkeleton";
-import CommentForm from "../CommentForm";
 
 interface Props {
-  postId: string;
+  username: string;
 }
-const PostCommentLists = ({ postId }: Props) => {
+const CommentLists = ({ username }: Props) => {
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { isLoading, data: comments } = api.comment.commentsByPostId.useQuery({
-    postId,
-    page: currentPage,
-    perPage: COMMENTS_LISTING_PER_PAGE,
-  });
+  const { isLoading: isLoadingComments, data: comments } =
+    api.comment.otherUserComments.useQuery({
+      username,
+      perPage: COMMENTS_LISTING_PER_PAGE,
+      page: currentPage,
+    });
+  const { isLoading: isLoadingProfile, data: profile } =
+    api.github.profile.useQuery();
+
+  if (isLoadingComments || isLoadingProfile)
+    return (
+      <>
+        {[...Array(5)].map((_, idx) => (
+          <CardSkeleton key={`skeleton__${idx}`} hideCounts withAvatar />
+        ))}
+      </>
+    );
 
   return (
     <>
-      <h3 className="text-lg font-bold mt-12 mx-3 mb-2">Replies:</h3>
-      <CommentForm postId={postId} />
-      {isLoading &&
-        [...Array(3)].map((_, idx) => (
-          <CardSkeleton key={`skeleton__${idx}`} hideCounts withAvatar />
-        ))}
       {comments && comments.length === 0 && (
-        <div className="pt-10 text-center text-lg font-bold text-slate-500">
-          No reply.
+        <div className="pt-20 text-center text-lg font-bold text-slate-500">
+          Uh oh.. no comment here.
         </div>
       )}
       {comments &&
         comments.length > 0 &&
-        comments.map((comment) => (
-          <CommentCard
-            key={comment.id}
-            comment={comment}
-            navigateToPost={false}
-          />
+        comments.map((data) => (
+          <CommentCard key={data.id} comment={data} owner={profile} />
         ))}
       {comments && (
         <div className="py-2 flex flex-row items-center justify-center gap-2">
@@ -72,4 +73,4 @@ const PostCommentLists = ({ postId }: Props) => {
   );
 };
 
-export default PostCommentLists;
+export default CommentLists;

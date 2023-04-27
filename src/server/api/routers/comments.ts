@@ -37,6 +37,50 @@ export const commentRouter = createTRPCRouter({
       return commentLists;
     }),
 
+  myComments: userProtectedProcedure
+    .input(paginationSchema)
+    .query(async ({ ctx, input }) => {
+      const {
+        db,
+        auth: { userId },
+      } = ctx;
+      const { page, perPage } = input;
+      const username = await getUsernameFromClerkOrCached(userId);
+
+      const commentLists = await db
+        .select()
+        .from(comments)
+        .where(eq(comments.ownerId, username))
+        .orderBy(desc(comments.createdAt))
+        .limit(perPage)
+        .offset((page - 1) * perPage);
+
+      return commentLists;
+    }),
+
+  otherUserComments: userProtectedProcedure
+    .input(
+      z
+        .object({
+          username: z.string().min(1),
+        })
+        .merge(paginationSchema)
+    )
+    .query(async ({ ctx, input }) => {
+      const { db } = ctx;
+      const { page, perPage, username } = input;
+
+      const commentLists = await db
+        .select()
+        .from(comments)
+        .where(eq(comments.ownerId, username))
+        .orderBy(desc(comments.createdAt))
+        .limit(perPage)
+        .offset((page - 1) * perPage);
+
+      return commentLists;
+    }),
+
   create: userProtectedProcedure
     .input(createCommentSchema)
     .mutation(async ({ ctx, input }) => {
