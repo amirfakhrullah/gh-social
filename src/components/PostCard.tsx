@@ -33,7 +33,6 @@ const PostCard = ({ data, owner, hideCommentsCount = false }: Props) => {
   const utils = api.useContext();
 
   const { post, likesCount, commentsCount } = data;
-  const [totalLikes, setTotalLikes] = useState(Number(likesCount));
 
   const { isLoading: isLoadingProfile, data: profile } =
     api.github.otherProfile.useQuery(
@@ -59,29 +58,28 @@ const PostCard = ({ data, owner, hideCommentsCount = false }: Props) => {
       postId: post.id,
     });
 
-  const { mutate } = api.like.likeActionByPostId.useMutation({
-    onSuccess: () => {
-      if (hasLiked) {
-        setTotalLikes(totalLikes - 1);
-      } else {
-        setTotalLikes(totalLikes + 1);
-      }
-      utils.like.hasLikedThePost.invalidate({ postId: post.id });
-      utils.like.myLikedPosts.invalidate();
-      toast({
-        title: "Success!",
-        description: `Successfully ${hasLiked ? "unliked" : "liked"} the post`,
-      });
-    },
-    onError: (err) =>
-      toast({
-        title: "Oh uh..",
-        description: err.message,
-      }),
-  });
+  const { mutate, isLoading: isLiking } =
+    api.like.likeActionByPostId.useMutation({
+      onSuccess: () => {
+        utils.like.hasLikedThePost.invalidate({ postId: post.id });
+        utils.like.myLikedPosts.invalidate();
+        utils.post.invalidate();
+        toast({
+          title: "Success!",
+          description: `Successfully ${
+            hasLiked ? "unliked" : "liked"
+          } the post`,
+        });
+      },
+      onError: (err) =>
+        toast({
+          title: "Oh uh..",
+          description: err.message,
+        }),
+    });
 
   const handleLike = () => {
-    if (isLoadingLike) return;
+    if (isLoadingLike || isLiking) return;
     mutate({
       postId: post.id,
       action: hasLiked ? "unlike" : "like",
@@ -197,7 +195,7 @@ const PostCard = ({ data, owner, hideCommentsCount = false }: Props) => {
                   ) : (
                     <AiOutlineHeart />
                   )}
-                  {displayNumbers(totalLikes)}
+                  {displayNumbers(Number(likesCount))}
                 </div>
               </TooltipTrigger>
               <TooltipContent>
