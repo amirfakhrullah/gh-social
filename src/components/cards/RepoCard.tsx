@@ -27,14 +27,24 @@ interface Props {
   hideCounts?: boolean;
 }
 const RepoCard = ({ repo, hideCounts = false }: Props) => {
-  const { isLoading, data: hasStarred } = api.github.hasStarredTheRepo.useQuery(
-    {
-      repoName: repo.full_name,
-    },
-    {
-      enabled: !hideCounts,
-    }
-  );
+  const { isLoading: isLoadingHasStarred, data: hasStarred } =
+    api.github.hasStarredTheRepo.useQuery(
+      {
+        repoName: repo.full_name,
+      },
+      {
+        enabled: !hideCounts,
+      }
+    );
+  const { isLoading: isLoadingRepoSharedCounts, data: totalShared } =
+    api.post.repoSharedCounts.useQuery(
+      {
+        repoName: repo.full_name,
+      },
+      {
+        enabled: !hideCounts,
+      }
+    );
   const [starCount, setStarCount] = useState(repo.stargazers_count);
 
   const { toast } = useToast();
@@ -70,7 +80,7 @@ const RepoCard = ({ repo, hideCounts = false }: Props) => {
   });
 
   const handleStar = () => {
-    if (isLoading) return;
+    if (isLoadingHasStarred) return;
     const action = hasStarred ? "unstar" : "star";
     mutate({
       action,
@@ -111,23 +121,27 @@ const RepoCard = ({ repo, hideCounts = false }: Props) => {
         <>
           <Separator orientation="horizontal" />
           <div className="w-full flex h-8 items-center justify-between space-x-4 text-sm">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className="w-full flex flex-row items-center justify-center gap-1 cursor-pointer">
-                    <AiOutlineRetweet />
-                    {displayNumbers(starCount)}
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Share repo in a post</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            {isLoadingRepoSharedCounts ? (
+              <StarSkeleton />
+            ) : (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="w-full flex flex-row items-center justify-center gap-1 cursor-pointer">
+                      <AiOutlineRetweet />
+                      {displayNumbers(totalShared ?? 0)}
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Share repo in a post</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )}
 
             <Separator orientation="vertical" />
 
-            {isLoading ? (
+            {isLoadingHasStarred ? (
               <StarSkeleton />
             ) : (
               <TooltipProvider>

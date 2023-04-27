@@ -77,6 +77,23 @@ export const postRouter = createTRPCRouter({
       return post;
     }),
 
+  repoSharedCounts: userProtectedProcedure
+    .input(
+      z.object({
+        repoName: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { db } = ctx;
+
+      const postsWithRepoShared = await db
+        .select({ id: posts.id })
+        .from(posts)
+        .where(eq(posts.repoShared, input.repoName));
+
+      return postsWithRepoShared.length;
+    }),
+
   create: userProtectedProcedure
     .input(createPostSchema)
     .mutation(async ({ ctx, input }) => {
