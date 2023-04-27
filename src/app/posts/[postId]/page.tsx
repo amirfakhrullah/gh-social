@@ -26,7 +26,7 @@ export default async function PostIdPage({ params: { postId } }: PageProps) {
 
   return (
     <>
-      <PostCard data={post} hideCommentsCount />
+      <PostCard data={post} onlyShowLikes showFullRepo />
     </>
   );
 }

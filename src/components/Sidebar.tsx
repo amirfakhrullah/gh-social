@@ -11,6 +11,7 @@ import {
 } from "react-icons/ai";
 import { IoSearchOutline, IoSearchSharp } from "react-icons/io5";
 import { RiUser3Fill, RiUser3Line } from "react-icons/ri";
+import { BiMessageSquareAdd } from "react-icons/bi";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
 import { UserButton, useUser } from "@clerk/nextjs";
@@ -94,7 +95,7 @@ export default function Sidebar() {
     navs.map((nav) => {
       if (!nav.isActive) router.prefetch(nav.path);
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -113,6 +114,13 @@ export default function Sidebar() {
             <p className="md:block hidden ml-4">{title}</p>
           </div>
         ))}
+        <div
+            className="font-bold flex flex-row items-center md:justify-start justify-center p-4 cursor-pointer"
+          >
+            <BiMessageSquareAdd className="text-3xl" />
+            <p className="md:block hidden ml-4">Add Post</p>
+          </div>
+
         <div className="fixed z-20 md:bottom-[20px] bottom-[10px] md:p-6 p-3 flex flex-row items-center justify-center gap-2">
           <UserButton
             afterSignOutUrl="/sign-in"

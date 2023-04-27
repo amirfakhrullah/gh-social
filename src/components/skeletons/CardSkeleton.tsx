@@ -6,8 +6,13 @@ import AvatarSkeleton from "./AvatarSkeleton";
 interface Props {
   hideCounts?: boolean;
   withAvatar?: boolean;
+  onlyShowLike?: boolean;
 }
-const CardSkeleton = ({ hideCounts = false, withAvatar = false }: Props) => {
+const CardSkeleton = ({
+  hideCounts = false,
+  withAvatar = false,
+  onlyShowLike = false,
+}: Props) => {
   return (
     <div className="border border-slate-700 m-2 rounded-md shadow-md">
       <div className="md:p-5 p-2">
@@ -23,10 +28,14 @@ const CardSkeleton = ({ hideCounts = false, withAvatar = false }: Props) => {
         <>
           <Separator orientation="horizontal" />
           <div className="w-full flex h-8 items-center justify-between space-x-4 text-sm">
-            <StarSkeleton />
-            <Separator orientation="vertical" />
-            <StarSkeleton />
-            <Separator orientation="vertical" />
+            {!onlyShowLike && (
+              <>
+                <StarSkeleton />
+                <Separator orientation="vertical" />
+                <StarSkeleton />
+                <Separator orientation="vertical" />
+              </>
+            )}
             <StarSkeleton />
           </div>
         </>

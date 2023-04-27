@@ -20,14 +20,19 @@ import {
 import StarSkeleton from "./skeletons/StarSkeleton";
 import { useToast } from "./ui/use-toast";
 import { formatTimeAgo } from "@/helpers/formatTimeAgo";
-import { useState } from "react";
 
 interface Props {
   data: Omit<RouterOutputs["post"]["myPosts"][number], "comments">;
-  hideCommentsCount?: boolean;
+  onlyShowLikes?: boolean;
   owner?: TrimmedGitHubProfile;
+  showFullRepo?: boolean;
 }
-const PostCard = ({ data, owner, hideCommentsCount = false }: Props) => {
+const PostCard = ({
+  data,
+  owner,
+  onlyShowLikes = false,
+  showFullRepo = false,
+}: Props) => {
   const router = useRouter();
   const { toast } = useToast();
   const utils = api.useContext();
@@ -131,8 +136,10 @@ const PostCard = ({ data, owner, hideCommentsCount = false }: Props) => {
           {post.content}
         </p>
       </div>
-      {displayLoaderRepo && <CardSkeleton hideCounts />}
-      {displayRepo && repo && <RepoCard repo={repo} hideCounts />}
+      {displayLoaderRepo && <CardSkeleton hideCounts={!showFullRepo} />}
+      {displayRepo && repo && (
+        <RepoCard repo={repo} hideCounts={!showFullRepo} />
+      )}
       {displayRepo && !displayLoaderRepo && !repo && (
         <div className="border border-slate-700 m-2 rounded-md shadow-lg md:p-5 p-2 text-center">
           Repo doesn&apos;t exist
@@ -143,42 +150,46 @@ const PostCard = ({ data, owner, hideCommentsCount = false }: Props) => {
       </div>
       <Separator orientation="horizontal" />
       <div className="w-full flex h-8 items-center justify-between space-x-4 text-sm">
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div
-                className="w-full flex flex-row items-center justify-center gap-1 cursor-pointer"
-                onClick={readComments}
-              >
-                <BiComment />
-                {!hideCommentsCount && displayNumbers(Number(commentsCount))}
-              </div>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Go to the comments</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        {!onlyShowLikes && (
+          <>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div
+                    className="w-full flex flex-row items-center justify-center gap-1 cursor-pointer"
+                    onClick={readComments}
+                  >
+                    <BiComment />
+                    {displayNumbers(Number(commentsCount))}
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Go to the comments</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
 
-        <Separator orientation="vertical" />
+            <Separator orientation="vertical" />
 
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div
-                className="w-full flex flex-row items-center justify-center gap-1 cursor-pointer"
-                onClick={readPost}
-              >
-                <AiOutlineRead />
-              </div>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Go to the post</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div
+                    className="w-full flex flex-row items-center justify-center gap-1 cursor-pointer"
+                    onClick={readPost}
+                  >
+                    <AiOutlineRead />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Go to the post</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
 
-        <Separator orientation="vertical" />
+            <Separator orientation="vertical" />
+          </>
+        )}
 
         {isLoadingLike ? (
           <StarSkeleton />
