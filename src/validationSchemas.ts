@@ -27,3 +27,7 @@ export const likeActionSchema = z.object({
 export const githubRepoSchema = z.object({
   repoName: z.string().min(1),
 });
+
+// Types
+export type CreatePostInput = z.infer<typeof createPostSchema>;
+export type CreateCommentInput = z.infer<typeof createCommentSchema>;

@@ -7,7 +7,7 @@ import {
   paginationSchema,
 } from "@/validationSchemas";
 import { comments } from "@/server/db/schema/comments";
-import { and, asc, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { posts } from "@/server/db/schema/posts";
 import { TRPCError } from "@trpc/server";
 import { v4 } from "uuid";
@@ -30,7 +30,7 @@ export const commentRouter = createTRPCRouter({
         .select()
         .from(comments)
         .where(eq(comments.postId, postId))
-        .orderBy(asc(comments.createdAt))
+        .orderBy(desc(comments.createdAt))
         .limit(perPage)
         .offset((page - 1) * perPage);
 

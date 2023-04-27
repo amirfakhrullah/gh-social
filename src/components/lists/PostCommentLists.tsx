@@ -6,6 +6,7 @@ import { useState } from "react";
 import CommentCard from "../cards/CommentCard";
 import { Button } from "../ui/button";
 import CardSkeleton from "../skeletons/CardSkeleton";
+import CommentForm from "../CommentForm";
 
 interface Props {
   postId: string;
@@ -21,7 +22,8 @@ const PostCommentLists = ({ postId }: Props) => {
 
   return (
     <>
-      <h3 className="text-lg font-bold mx-3 mt-10 mb-2">Comments</h3>
+      <h3 className="text-lg font-bold mt-12 mx-3 mb-2">Comments:</h3>
+      <CommentForm postId={postId} />
       {isLoading &&
         [...Array(3)].map((_, idx) => (
           <CardSkeleton key={`skeleton__${idx}`} hideCounts withAvatar />
