@@ -11,6 +11,8 @@ import Following from "./Following";
 import FollowAction from "./FollowAction";
 import { useToast } from "./ui/use-toast";
 import { displayNumbers } from "@/helpers/displayNumbers";
+import TitleHead from "./heads/TitleHead";
+import { cn } from "@/lib/utils";
 
 interface Props {
   profile: TrimmedGitHubProfile;
@@ -42,8 +44,14 @@ const Profile = ({ profile, self = false }: Props) => {
 
   return (
     <>
+      {!self && <TitleHead title="User" />}
       <div className="border-b border-slate-700">
-        <div className="w-full md:h-48 h-20 bg-gradient-to-l from-slate-900 to-indigo-950" />
+        <div
+          className={cn(
+            "w-full bg-gradient-to-l from-slate-900 to-indigo-950",
+            self ? "md:h-48 h-20" : "md:h-28 h-10"
+          )}
+        />
         <div className="md:p-5 p-2 md:mt-[-50px] mt-[-30px] flex md:flex-row md:justify-between flex-col">
           <div>
             <Avatar className="md:h-32 md:w-32 h-14 w-14 border border-slate-950 mb-5">

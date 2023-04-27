@@ -3,7 +3,10 @@
 import { useRouter } from "next/navigation";
 import { AiOutlineArrowLeft } from "react-icons/ai";
 
-const PostIdHead = () => {
+interface Props {
+  title: string;
+}
+const TitleHead = ({ title }: Props) => {
   const router = useRouter();
   const navigateBack = () => router.back();
 
@@ -12,9 +15,9 @@ const PostIdHead = () => {
       <div className="cursor-pointer" onClick={navigateBack}>
         <AiOutlineArrowLeft />
       </div>
-      <p>Thread</p>
+      <p>{title}</p>
     </div>
   );
 };
 
-export default PostIdHead;
+export default TitleHead;

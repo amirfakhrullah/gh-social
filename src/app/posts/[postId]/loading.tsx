@@ -1,10 +1,10 @@
-import PostIdHead from "@/components/heads/PostIdHead";
+import TitleHead from "@/components/heads/TitleHead";
 import CardSkeleton from "@/components/skeletons/CardSkeleton";
 
 export default function LoadingPostId() {
   return (
     <>
-      <PostIdHead />
+      <TitleHead title="Thread" />
       <CardSkeleton withAvatar onlyShowLike />
     </>
   );

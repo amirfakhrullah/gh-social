@@ -1,5 +1,5 @@
 import PostCard from "@/components/cards/PostCard";
-import PostIdHead from "@/components/heads/PostIdHead";
+import TitleHead from "@/components/heads/TitleHead";
 import { RouterOutputs } from "@/lib/api/client";
 import { api } from "@/lib/api/server";
 import { notFound } from "next/navigation";
@@ -27,7 +27,7 @@ export default async function PostIdPage({ params: { postId } }: PageProps) {
 
   return (
     <>
-      <PostIdHead />
+      <TitleHead title="Thread" />
       <PostCard
         data={post}
         onlyShowLikes
