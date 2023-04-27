@@ -21,6 +21,7 @@ import StarSkeleton from "../skeletons/StarSkeleton";
 import { useToast } from "../ui/use-toast";
 import { formatTimeAgo } from "@/helpers/formatTimeAgo";
 import { cn } from "@/lib/utils";
+import { Skeleton } from "../ui/skeleton";
 
 interface Props {
   data: Omit<RouterOutputs["post"]["myPosts"][number], "comments">;
@@ -111,7 +112,9 @@ const PostCard = ({
     <div
       className={cn(
         "shadow-md",
-        border ? "rounded-md border border-slate-700 m-2" : "border-b border-slate-700 mb-2"
+        border
+          ? "rounded-md border border-slate-700 m-2"
+          : "border-b border-slate-700 mb-2"
       )}
     >
       <div className="md:p-5 md:pb-1 p-2 pb-1">
@@ -166,10 +169,38 @@ const PostCard = ({
       <div className="md:hidden block text-sm ml-2 mb-1 text-gray-500 italic">
         Posted {formatTimeAgo(post.createdAt)}
       </div>
-      <Separator orientation="horizontal" />
-      <div className="w-full flex h-8 items-center justify-between space-x-4 text-sm">
-        {!onlyShowLikes && (
-          <>
+
+      {onlyShowLikes ? (
+        <div className="m-3">
+          {isLoadingLike ? (
+            <Skeleton className="h-4 md:w-12 w-8" />
+          ) : (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div
+                    className="cursor-pointer text-sm flex flex-row items-center gap-1"
+                    onClick={handleLike}
+                  >
+                    {hasLiked ? (
+                      <AiFillHeart className="text-red-600" />
+                    ) : (
+                      <AiOutlineHeart />
+                    )}
+                    {displayNumbers(Number(likesCount))} likes
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Like/Unlike the post</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+        </div>
+      ) : (
+        <>
+          <Separator orientation="horizontal" />
+          <div className="w-full flex h-8 items-center justify-between space-x-4 text-sm">
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -206,34 +237,34 @@ const PostCard = ({
             </TooltipProvider>
 
             <Separator orientation="vertical" />
-          </>
-        )}
 
-        {isLoadingLike ? (
-          <StarSkeleton />
-        ) : (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div
-                  className="w-full flex flex-row items-center justify-center gap-1 cursor-pointer"
-                  onClick={handleLike}
-                >
-                  {hasLiked ? (
-                    <AiFillHeart className="text-red-600" />
-                  ) : (
-                    <AiOutlineHeart />
-                  )}
-                  {displayNumbers(Number(likesCount))}
-                </div>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Like/Unlike the post</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        )}
-      </div>
+            {isLoadingLike ? (
+              <StarSkeleton />
+            ) : (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div
+                      className="w-full flex flex-row items-center justify-center gap-1 cursor-pointer"
+                      onClick={handleLike}
+                    >
+                      {hasLiked ? (
+                        <AiFillHeart className="text-red-600" />
+                      ) : (
+                        <AiOutlineHeart />
+                      )}
+                      {displayNumbers(Number(likesCount))}
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Like/Unlike the post</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 };

@@ -7,13 +7,11 @@ import { cn } from "@/lib/utils";
 interface Props {
   hideCounts?: boolean;
   withAvatar?: boolean;
-  onlyShowLike?: boolean;
   border?: boolean;
 }
 const CardSkeleton = ({
   hideCounts = false,
   withAvatar = false,
-  onlyShowLike = false,
   border = true,
 }: Props) => {
   return (
@@ -38,14 +36,10 @@ const CardSkeleton = ({
         <>
           <Separator orientation="horizontal" />
           <div className="w-full flex h-8 items-center justify-between space-x-4 text-sm">
-            {!onlyShowLike && (
-              <>
-                <StarSkeleton />
-                <Separator orientation="vertical" />
-                <StarSkeleton />
-                <Separator orientation="vertical" />
-              </>
-            )}
+            <StarSkeleton />
+            <Separator orientation="vertical" />
+            <StarSkeleton />
+            <Separator orientation="vertical" />
             <StarSkeleton />
           </div>
         </>
