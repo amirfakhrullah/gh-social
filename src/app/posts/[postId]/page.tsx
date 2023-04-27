@@ -1,5 +1,6 @@
 import PostCard from "@/components/cards/PostCard";
 import TitleHead from "@/components/heads/TitleHead";
+import PostCommentLists from "@/components/lists/PostCommentLists";
 import { RouterOutputs } from "@/lib/api/client";
 import { api } from "@/lib/api/server";
 import { notFound } from "next/navigation";
@@ -33,7 +34,9 @@ export default async function PostIdPage({ params: { postId } }: PageProps) {
         onlyShowLikes
         showFullRepo
         disableNavigateToPostPage
+        border={false}
       />
+      <PostCommentLists postId={postId} />
     </>
   );
 }

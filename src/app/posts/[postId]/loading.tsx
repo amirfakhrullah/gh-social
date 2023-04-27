@@ -5,7 +5,7 @@ export default function LoadingPostId() {
   return (
     <>
       <TitleHead title="Thread" />
-      <CardSkeleton withAvatar onlyShowLike />
+      <CardSkeleton withAvatar onlyShowLike border={false} />
     </>
   );
 }

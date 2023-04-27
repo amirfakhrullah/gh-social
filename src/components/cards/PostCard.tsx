@@ -28,6 +28,7 @@ interface Props {
   owner?: TrimmedGitHubProfile;
   showFullRepo?: boolean;
   disableNavigateToPostPage?: boolean;
+  border?: boolean;
 }
 const PostCard = ({
   data,
@@ -35,6 +36,7 @@ const PostCard = ({
   onlyShowLikes = false,
   showFullRepo = false,
   disableNavigateToPostPage = false,
+  border = true,
 }: Props) => {
   const router = useRouter();
   const { toast } = useToast();
@@ -106,7 +108,12 @@ const PostCard = ({
   const displayLoaderProfile = !owner ? isLoadingProfile : false;
 
   return (
-    <div className="border border-slate-700 m-2 rounded-md shadow-md">
+    <div
+      className={cn(
+        "shadow-md",
+        border ? "rounded-md border border-slate-700 m-2" : "border-b border-slate-700 mb-2"
+      )}
+    >
       <div className="md:p-5 md:pb-1 p-2 pb-1">
         {displayLoaderProfile && <AvatarSkeleton />}
         {(owner || profile) && (

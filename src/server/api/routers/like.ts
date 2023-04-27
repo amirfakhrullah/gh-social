@@ -46,6 +46,44 @@ export const likeRouter = createTRPCRouter({
       return likedPostsWithCommentsAndLikes;
     }),
 
+  otherUserLikedPost: userProtectedProcedure
+    .input(
+      z
+        .object({
+          username: z.string().min(1),
+        })
+        .merge(paginationSchema)
+    )
+    .query(async ({ ctx, input }) => {
+      const {
+        db,
+      } = ctx;
+      const { page, perPage, username } = input;
+
+      const likedPosts = await db
+        .select({
+          id: posts.id,
+        })
+        .from(likes)
+        .where(eq(likes.ownerId, username))
+        .innerJoin(posts, eq(posts.id, likes.postId))
+        .orderBy(desc(likes.createdAt))
+        .limit(perPage)
+        .offset((page - 1) * perPage);
+
+      if (likedPosts.length === 0) return [];
+
+      const likedPostsWithCommentsAndLikes =
+        await getPostsWithCommentsCountAndLikesCountQuery(db).where(
+          inArray(
+            posts.id,
+            likedPosts.map((post) => post.id)
+          )
+        );
+
+      return likedPostsWithCommentsAndLikes;
+    }),
+
   likeActionByPostId: userProtectedProcedure
     .input(likeActionSchema)
     .mutation(async ({ ctx, input }) => {

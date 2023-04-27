@@ -2,19 +2,29 @@ import { Skeleton } from "../ui/skeleton";
 import { Separator } from "../ui/separator";
 import StarSkeleton from "./StarSkeleton";
 import AvatarSkeleton from "./AvatarSkeleton";
+import { cn } from "@/lib/utils";
 
 interface Props {
   hideCounts?: boolean;
   withAvatar?: boolean;
   onlyShowLike?: boolean;
+  border?: boolean;
 }
 const CardSkeleton = ({
   hideCounts = false,
   withAvatar = false,
   onlyShowLike = false,
+  border = true,
 }: Props) => {
   return (
-    <div className="border border-slate-700 m-2 rounded-md shadow-md">
+    <div
+      className={cn(
+        "shadow-md",
+        border
+          ? "rounded-md border border-slate-700 m-2"
+          : "border-b border-slate-700 mb-2"
+      )}
+    >
       <div className="md:p-5 p-2">
         {withAvatar ? (
           <AvatarSkeleton />

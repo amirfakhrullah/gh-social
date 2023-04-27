@@ -29,7 +29,7 @@ export const commentRouter = createTRPCRouter({
       const commentLists = await db
         .select()
         .from(comments)
-        .where(eq(comments.id, postId))
+        .where(eq(comments.postId, postId))
         .orderBy(asc(comments.createdAt))
         .limit(perPage)
         .offset((page - 1) * perPage);
