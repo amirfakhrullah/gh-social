@@ -1,4 +1,4 @@
-import PostCard from "@/components/PostCard";
+import PostCard from "@/components/cards/PostCard";
 import { RouterOutputs } from "@/lib/api/client";
 import { api } from "@/lib/api/server";
 import { notFound } from "next/navigation";

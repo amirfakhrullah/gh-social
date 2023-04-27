@@ -3,12 +3,12 @@
 import { RouterOutputs, api } from "@/lib/api/client";
 import { TrimmedGitHubProfile } from "@/types/github";
 import RepoCard from "./RepoCard";
-import CardSkeleton from "./skeletons/CardSkeleton";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import CardSkeleton from "../skeletons/CardSkeleton";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { AiOutlineHeart, AiFillHeart, AiOutlineRead } from "react-icons/ai";
 import { BiComment } from "react-icons/bi";
-import { Separator } from "./ui/separator";
-import AvatarSkeleton from "./skeletons/AvatarSkeleton";
+import { Separator } from "../ui/separator";
+import AvatarSkeleton from "../skeletons/AvatarSkeleton";
 import { displayNumbers } from "@/helpers/displayNumbers";
 import { useRouter } from "next/navigation";
 import {
@@ -16,9 +16,9 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "./ui/tooltip";
-import StarSkeleton from "./skeletons/StarSkeleton";
-import { useToast } from "./ui/use-toast";
+} from "../ui/tooltip";
+import StarSkeleton from "../skeletons/StarSkeleton";
+import { useToast } from "../ui/use-toast";
 import { formatTimeAgo } from "@/helpers/formatTimeAgo";
 
 interface Props {

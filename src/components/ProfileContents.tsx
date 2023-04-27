@@ -2,11 +2,11 @@
 
 import { TrimmedGitHubProfile } from "@/types/github";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import MyRepoLists from "./MyRepoLists";
-import RepoLists from "./RepoLists";
+import MyRepoLists from "./lists/MyRepoLists";
+import RepoLists from "./lists/RepoLists";
 import { useState } from "react";
-import MyPostLists from "./MyPostLists";
-import MyLikedPostLists from "./MyLikedPostLists";
+import MyPostLists from "./lists/MyPostLists";
+import MyLikedPostLists from "./lists/MyLikedPostLists";
 
 interface Props {
   profile: TrimmedGitHubProfile;

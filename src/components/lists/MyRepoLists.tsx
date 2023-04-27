@@ -2,9 +2,9 @@
 
 import { REPO_LISTING_PER_PAGE } from "@/constants";
 import { api } from "@/lib/api/client";
-import RepoCard from "./RepoCard";
-import CardSkeleton from "./skeletons/CardSkeleton";
-import { Button } from "./ui/button";
+import RepoCard from "../cards/RepoCard";
+import CardSkeleton from "../skeletons/CardSkeleton";
+import { Button } from "../ui/button";
 import { useState } from "react";
 
 const MyRepoLists = () => {

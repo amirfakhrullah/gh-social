@@ -3,9 +3,9 @@
 import { POST_LISTING_PER_PAGE } from "@/constants";
 import { api } from "@/lib/api/client";
 import { useState } from "react";
-import CardSkeleton from "./skeletons/CardSkeleton";
-import PostCard from "./PostCard";
-import { Button } from "./ui/button";
+import CardSkeleton from "../skeletons/CardSkeleton";
+import PostCard from "../cards/PostCard";
+import { Button } from "../ui/button";
 
 const MyLikedPostLists = () => {
   const [currentPage, setCurrentPage] = useState(1);

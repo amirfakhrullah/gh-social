@@ -2,7 +2,7 @@
 
 import { TrimmedGitHubRepo } from "@/types/github";
 import Link from "next/link";
-import { Separator } from "./ui/separator";
+import { Separator } from "../ui/separator";
 import {
   AiOutlineRetweet,
   AiFillStar,
@@ -10,17 +10,17 @@ import {
   AiOutlineFork,
 } from "react-icons/ai";
 import { api } from "@/lib/api/client";
-import { useToast } from "./ui/use-toast";
+import { useToast } from "../ui/use-toast";
 import { useState } from "react";
-import { Badge } from "./ui/badge";
+import { Badge } from "../ui/badge";
 import { displayNumbers } from "@/helpers/displayNumbers";
-import StarSkeleton from "./skeletons/StarSkeleton";
+import StarSkeleton from "../skeletons/StarSkeleton";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "./ui/tooltip";
+} from "../ui/tooltip";
 
 interface Props {
   repo: TrimmedGitHubRepo;
