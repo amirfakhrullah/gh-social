@@ -20,18 +20,21 @@ import {
 import StarSkeleton from "../skeletons/StarSkeleton";
 import { useToast } from "../ui/use-toast";
 import { formatTimeAgo } from "@/helpers/formatTimeAgo";
+import { cn } from "@/lib/utils";
 
 interface Props {
   data: Omit<RouterOutputs["post"]["myPosts"][number], "comments">;
   onlyShowLikes?: boolean;
   owner?: TrimmedGitHubProfile;
   showFullRepo?: boolean;
+  disableNavigateToPostPage?: boolean;
 }
 const PostCard = ({
   data,
   owner,
   onlyShowLikes = false,
   showFullRepo = false,
+  disableNavigateToPostPage = false,
 }: Props) => {
   const router = useRouter();
   const { toast } = useToast();
@@ -91,8 +94,10 @@ const PostCard = ({
     });
   };
 
-  const readPost = () => router.push(`/posts/${post.id}`);
-  const readComments = () => router.push(`/posts/${post.id}#comments`);
+  const readPost = () =>
+    !disableNavigateToPostPage && router.push(`/posts/${post.id}`);
+  const readComments = () =>
+    !disableNavigateToPostPage && router.push(`/posts/${post.id}#comments`);
   const readProfile = () =>
     (owner || profile) && router.push(`/users/${(owner ?? profile)!.login}`);
 
@@ -132,7 +137,13 @@ const PostCard = ({
             </div>
           </div>
         )}
-        <p className="mb-2 text-slate-200 cursor-pointer" onClick={readPost}>
+        <p
+          className={cn(
+            "mb-2 text-slate-200",
+            !disableNavigateToPostPage && "cursor-pointer"
+          )}
+          onClick={readPost}
+        >
           {post.content}
         </p>
       </div>
