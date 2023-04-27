@@ -1,7 +1,7 @@
 import { posts } from "@/server/db/schema/posts";
 import { userProtectedProcedure } from "../procedures";
 import { createTRPCRouter } from "../trpc";
-import { and, desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { z } from "zod";
 import { comments } from "@/server/db/schema/comments";
 import { likes } from "@/server/db/schema/likes";
@@ -13,6 +13,7 @@ import {
   paginationSchema,
 } from "@/validationSchemas";
 import { getUsernameFromClerkOrCached } from "@/server/caches/usernameCache";
+import { getPostsWithCommentsCountAndLikesCountQuery } from "@/server/helpers/drizzleQueries";
 
 export const postRouter = createTRPCRouter({
   myPosts: userProtectedProcedure
@@ -26,22 +27,11 @@ export const postRouter = createTRPCRouter({
 
       const username = await getUsernameFromClerkOrCached(userId);
 
-      const myPosts = await db
-        .select({
-          post: posts,
-          commentsCount: sql<string>`count(${comments.id})`.as(
-            "comments_count"
-          ),
-          likesCount: sql<string>`count(${likes.id})`.as("likes_count"),
-        })
-        .from(posts)
+      const myPosts = await getPostsWithCommentsCountAndLikesCountQuery(db)
         .where(eq(posts.ownerId, username))
-        .leftJoin(comments, eq(comments.postId, posts.id))
-        .leftJoin(likes, eq(likes.postId, posts.id))
-        .groupBy(posts.id)
         .orderBy(desc(posts.createdAt))
-        .limit(perPage)
-        .offset((page - 1) * perPage);
+        .offset((page - 1) * perPage)
+        .limit(perPage);
 
       return myPosts;
     }),
@@ -58,24 +48,13 @@ export const postRouter = createTRPCRouter({
       const { db } = ctx;
       const { username, page, perPage } = input;
 
-      const myPosts = await db
-        .select({
-          post: posts,
-          commentsCount: sql<string>`count(${comments.id})`.as(
-            "comments_count"
-          ),
-          likesCount: sql<string>`count(${likes.id})`.as("likes_count"),
-        })
-        .from(posts)
+      const postLists = await getPostsWithCommentsCountAndLikesCountQuery(db)
         .where(eq(posts.ownerId, username))
-        .leftJoin(comments, eq(comments.postId, posts.id))
-        .leftJoin(likes, eq(likes.postId, posts.id))
-        .groupBy(posts.id)
         .orderBy(desc(posts.createdAt))
-        .limit(perPage)
-        .offset((page - 1) * perPage);
+        .offset((page - 1) * perPage)
+        .limit(perPage);
 
-      return myPosts;
+      return postLists;
     }),
 
   postById: userProtectedProcedure
@@ -84,19 +63,9 @@ export const postRouter = createTRPCRouter({
       const { db } = ctx;
 
       const post = (
-        await db
-          .select({
-            post: posts,
-            commentsCount: sql<string>`count(${comments.id})`.as(
-              "comments_count"
-            ),
-            likesCount: sql<string>`count(${likes.id})`.as("likes_count"),
-          })
-          .from(posts)
-          .where(eq(posts.id, input.id))
-          .leftJoin(comments, eq(comments.postId, posts.id))
-          .leftJoin(likes, eq(likes.postId, posts.id))
-          .groupBy(posts.id)
+        await getPostsWithCommentsCountAndLikesCountQuery(db).where(
+          eq(posts.id, input.id)
+        )
       )[0];
 
       if (!post) {

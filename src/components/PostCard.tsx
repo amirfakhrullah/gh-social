@@ -23,7 +23,7 @@ import { formatTimeAgo } from "@/helpers/formatTimeAgo";
 import { useState } from "react";
 
 interface Props {
-  data: RouterOutputs["post"]["myPosts"][number];
+  data: Omit<RouterOutputs["post"]["myPosts"][number], "comments">;
   hideCommentsCount?: boolean;
   owner?: TrimmedGitHubProfile;
 }
@@ -67,6 +67,7 @@ const PostCard = ({ data, owner, hideCommentsCount = false }: Props) => {
         setTotalLikes(totalLikes + 1);
       }
       utils.like.hasLikedThePost.invalidate({ postId: post.id });
+      utils.like.myLikedPosts.invalidate();
       toast({
         title: "Success!",
         description: `Successfully ${hasLiked ? "unliked" : "liked"} the post`,
