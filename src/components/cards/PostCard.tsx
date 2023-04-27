@@ -35,6 +35,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
+import { useState } from "react";
 
 interface Props {
   data: Omit<RouterOutputs["post"]["myPosts"][number], "comments">;
@@ -58,6 +59,7 @@ const PostCard = ({
   const utils = api.useContext();
 
   const { post, likesCount, commentsCount } = data;
+  const [likesCountState, setLikesCountState] = useState(Number(likesCount));
 
   const { isLoading: isLoadingProfile, data: profile } =
     api.github.otherProfile.useQuery(
@@ -86,6 +88,11 @@ const PostCard = ({
   const { mutate: likeMutate, isLoading: isLiking } =
     api.like.likeActionByPostId.useMutation({
       onSuccess: () => {
+        if (hasLiked) {
+          setLikesCountState(likesCountState - 1);
+        } else {
+          setLikesCountState(likesCountState + 1);
+        }
         utils.like.hasLikedThePost.invalidate({ postId: post.id });
         utils.like.myLikedPosts.invalidate();
         utils.post.invalidate();
@@ -251,7 +258,7 @@ const PostCard = ({
                     ) : (
                       <AiOutlineHeart />
                     )}
-                    {displayNumbers(Number(likesCount))} likes
+                    {displayNumbers(likesCountState)} likes
                   </div>
                 </TooltipTrigger>
                 <TooltipContent>
@@ -317,7 +324,7 @@ const PostCard = ({
                       ) : (
                         <AiOutlineHeart />
                       )}
-                      {displayNumbers(Number(likesCount))}
+                      {displayNumbers(likesCountState)}
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>

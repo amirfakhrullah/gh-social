@@ -98,7 +98,7 @@ const RepoCard = ({ repo, hideCounts = false }: Props) => {
       <div className="md:p-5 p-2">
         <Link href={repo.html_url} target="_blank">
           <p className="text-md font-bold mb-2 text-blue-400 cursor-pointer hover:underline">
-            {repo.name}
+            {repo.full_name}
           </p>
         </Link>
         {repo.fork && (
