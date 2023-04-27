@@ -21,12 +21,15 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
+import { usePostModalContext } from "@/providers/PostModalProvider";
 
 interface Props {
   repo: TrimmedGitHubRepo;
   hideCounts?: boolean;
 }
 const RepoCard = ({ repo, hideCounts = false }: Props) => {
+  const { handleOpen: handleOpenPostModal } = usePostModalContext();
+
   const { isLoading: isLoadingHasStarred, data: hasStarred } =
     api.github.hasStarredTheRepo.useQuery(
       {
@@ -88,6 +91,8 @@ const RepoCard = ({ repo, hideCounts = false }: Props) => {
     });
   };
 
+  const handleShareRepo = () => handleOpenPostModal(repo);
+
   return (
     <div className="border border-slate-700 m-2 rounded-md shadow-md">
       <div className="md:p-5 p-2">
@@ -127,7 +132,10 @@ const RepoCard = ({ repo, hideCounts = false }: Props) => {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <div className="w-full flex flex-row items-center justify-center gap-1 cursor-pointer">
+                    <div
+                      className="w-full flex flex-row items-center justify-center gap-1 cursor-pointer"
+                      onClick={handleShareRepo}
+                    >
                       <AiOutlineRetweet />
                       {displayNumbers(totalShared ?? 0)}
                     </div>

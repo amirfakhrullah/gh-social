@@ -6,6 +6,7 @@ import RepoCard from "./RepoCard";
 import CardSkeleton from "../skeletons/CardSkeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { AiOutlineHeart, AiFillHeart, AiOutlineRead } from "react-icons/ai";
+import { MdOutlineDelete } from "react-icons/md";
 import { BiComment } from "react-icons/bi";
 import { Separator } from "../ui/separator";
 import AvatarSkeleton from "../skeletons/AvatarSkeleton";
@@ -22,6 +23,18 @@ import { useToast } from "../ui/use-toast";
 import { formatTimeAgo } from "@/helpers/formatTimeAgo";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "../ui/skeleton";
+import { useUser } from "@clerk/nextjs";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog";
 
 interface Props {
   data: Omit<RouterOutputs["post"]["myPosts"][number], "comments">;
@@ -41,6 +54,7 @@ const PostCard = ({
 }: Props) => {
   const router = useRouter();
   const { toast } = useToast();
+  const { user } = useUser();
   const utils = api.useContext();
 
   const { post, likesCount, commentsCount } = data;
@@ -69,7 +83,7 @@ const PostCard = ({
       postId: post.id,
     });
 
-  const { mutate, isLoading: isLiking } =
+  const { mutate: likeMutate, isLoading: isLiking } =
     api.like.likeActionByPostId.useMutation({
       onSuccess: () => {
         utils.like.hasLikedThePost.invalidate({ postId: post.id });
@@ -86,17 +100,39 @@ const PostCard = ({
         toast({
           title: "Oh uh..",
           description: err.message,
+          variant: "destructive",
+        }),
+    });
+
+  const { mutate: deleteMutate, isLoading: isDeleting } =
+    api.post.deleteById.useMutation({
+      onSuccess: () => {
+        utils.like.invalidate();
+        utils.comment.invalidate();
+        utils.post.invalidate();
+        toast({
+          title: "Success!",
+          description: "Delete successful",
+        });
+      },
+      onError: (err) =>
+        toast({
+          title: "Oh uh..",
+          description: err.message,
+          variant: "destructive",
         }),
     });
 
   const handleLike = () => {
     if (isLoadingLike || isLiking) return;
-    mutate({
+    likeMutate({
       postId: post.id,
       action: hasLiked ? "unlike" : "like",
     });
   };
 
+  const handleDelete = () =>
+    user?.username === post.ownerId && deleteMutate({ id: post.id });
   const readPost = () =>
     !disableNavigateToPostPage && router.push(`/posts/${post.id}`);
   const readComments = () =>
@@ -169,6 +205,34 @@ const PostCard = ({
       <div className="md:hidden block text-sm ml-2 mb-1 text-gray-500 italic">
         Posted {formatTimeAgo(post.createdAt)}
       </div>
+
+      {user?.username === post.ownerId && (
+        <AlertDialog>
+          <AlertDialogTrigger className="w-full flex justify-end px-2 pb-1">
+            <div className="cursor-pointer text-sm flex flex-row items-center gap-1">
+              <MdOutlineDelete />
+              <p>Delete</p>
+            </div>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>
+                Are you sure you want to delete this post?
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. Deleting this will also delete all
+                the comments and likes belongs to this post.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleDelete}>
+                Continue
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
 
       {onlyShowLikes ? (
         <div className="m-3">

@@ -16,9 +16,11 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
 import { UserButton, useUser } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
+import { usePostModalContext } from "@/providers/PostModalProvider";
 
 export default function Sidebar() {
   const { user } = useUser();
+  const { handleOpen: handleOpenPostModal } = usePostModalContext();
 
   const location = usePathname();
   const router = useRouter();
@@ -115,11 +117,12 @@ export default function Sidebar() {
           </div>
         ))}
         <div
-            className="font-bold flex flex-row items-center md:justify-start justify-center p-4 cursor-pointer"
-          >
-            <BiMessageSquareAdd className="text-3xl" />
-            <p className="md:block hidden ml-4">Add Post</p>
-          </div>
+          className="font-bold flex flex-row items-center md:justify-start justify-center p-4 cursor-pointer"
+          onClick={() => handleOpenPostModal()}
+        >
+          <BiMessageSquareAdd className="text-3xl" />
+          <p className="md:block hidden ml-4">Add Post</p>
+        </div>
 
         <div className="fixed z-20 md:bottom-[20px] bottom-[10px] md:p-6 p-3 flex flex-row items-center justify-center gap-2">
           <UserButton

@@ -1,8 +1,8 @@
 import { userProtectedProcedure } from "../procedures";
 import { createTRPCRouter } from "../trpc";
 import { likeActionSchema, paginationSchema } from "@/validationSchemas";
-import { and, desc, eq, inArray, sql } from "drizzle-orm";
-import { posts } from "@/server/db/schema/posts";
+import { and, desc, eq, inArray } from "drizzle-orm";
+import { Post, posts } from "@/server/db/schema/posts";
 import { TRPCError } from "@trpc/server";
 import { v4 } from "uuid";
 import { likes } from "@/server/db/schema/likes";
@@ -43,7 +43,19 @@ export const likeRouter = createTRPCRouter({
           )
         );
 
-      return likedPostsWithCommentsAndLikes;
+      const mapping = new Map<
+        string,
+        {
+          post: Post;
+          commentsCount: string;
+          likesCount: string;
+        }
+      >();
+      for (const data of likedPostsWithCommentsAndLikes) {
+        mapping.set(data.post.id, data);
+      }
+
+      return likedPosts.map(({ id }) => mapping.get(id)!);
     }),
 
   otherUserLikedPost: userProtectedProcedure
@@ -55,9 +67,7 @@ export const likeRouter = createTRPCRouter({
         .merge(paginationSchema)
     )
     .query(async ({ ctx, input }) => {
-      const {
-        db,
-      } = ctx;
+      const { db } = ctx;
       const { page, perPage, username } = input;
 
       const likedPosts = await db

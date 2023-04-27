@@ -20,6 +20,7 @@ import {
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
 import { cn } from "@/lib/utils";
+import { MdOutlineDelete } from "react-icons/md";
 
 interface Props {
   comment: RouterOutputs["comment"]["commentsByPostId"][number];
@@ -90,7 +91,7 @@ const CommentCard = ({ comment, owner, navigateToPost = true }: Props) => {
           </div>
           <div className="md:block hidden text-sm text-gray-500">
             {" "}
-            | Commented {formatTimeAgo(comment.createdAt)}
+            | Replied {formatTimeAgo(comment.createdAt)}
           </div>
         </div>
       )}
@@ -105,8 +106,9 @@ const CommentCard = ({ comment, owner, navigateToPost = true }: Props) => {
       </p>
       {user?.username === comment.ownerId && (
         <AlertDialog>
-          <AlertDialogTrigger className="w-full">
-            <div className="text-red-400 text-end text-sm hover:underline cursor-pointer">
+          <AlertDialogTrigger className="w-full flex justify-end">
+            <div className="cursor-pointer text-sm flex flex-row items-center gap-1">
+              <MdOutlineDelete />
               <p>Delete</p>
             </div>
           </AlertDialogTrigger>

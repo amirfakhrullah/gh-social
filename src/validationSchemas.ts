@@ -10,7 +10,7 @@ export const paginationSchema = z.object({
 });
 
 export const createPostSchema = z.object({
-  content: z.string().max(100),
+  content: z.string().min(1).max(100),
   repoShared: z.string().optional(),
 });
 

@@ -18,6 +18,7 @@ const CommentForm = ({ postId }: Props) => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<CreateCommentInput>({
     defaultValues: {
@@ -29,6 +30,7 @@ const CommentForm = ({ postId }: Props) => {
 
   const { mutate, isLoading } = api.comment.create.useMutation({
     onSuccess: () => {
+      reset();
       utils.comment.invalidate();
       utils.post.invalidate();
       toast({
