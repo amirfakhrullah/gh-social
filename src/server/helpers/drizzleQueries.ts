@@ -1,4 +1,4 @@
-import { SQL, eq, sql } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { PlanetScaleDatabase } from "drizzle-orm/planetscale-serverless";
 import { posts } from "../db/schema/posts";
 import { comments } from "../db/schema/comments";
