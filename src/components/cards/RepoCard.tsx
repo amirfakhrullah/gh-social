@@ -105,12 +105,18 @@ const RepoCard = ({
     <div
       className={cn(
         "shadow-md",
-        border ? "rounded-md border border-slate-700 m-2" : "border-b border-slate-700"
+        border
+          ? "rounded-md border border-slate-700 m-2"
+          : "border-b border-slate-700"
       )}
     >
       <div className="md:p-5 p-2">
         <Link
-          href={navigateToGitHub ? repo.html_url : `/users/${repo.full_name}`}
+          href={
+            navigateToGitHub
+              ? repo.html_url
+              : `/repos/${repo.full_name.replace("/", "-")}`
+          }
           target={navigateToGitHub ? "_blank" : undefined}
         >
           <p className="text-md font-bold mb-2 text-blue-400 cursor-pointer hover:underline">

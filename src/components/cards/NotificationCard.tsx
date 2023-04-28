@@ -46,11 +46,11 @@ const NotificationCard = ({ notification }: Props) => {
           if (postId) {
             link = `/posts/${postId}`;
           } else {
-            link = `/users/${repoName}`;
+            link = `/repos/${repoName?.replace("/", "-")}`;
           }
           break;
         case "star":
-          link = `/users/${repoName}`;
+          link = `/repos/${repoName}?.replace("/", "-")`;
           break;
         default:
           break;

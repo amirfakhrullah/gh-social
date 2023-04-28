@@ -6,15 +6,12 @@ import { notFound } from "next/navigation";
 
 interface PageProps {
   params: {
-    username: string;
-    repId: string;
+    repoId: string;
   };
 }
 
-export default async function RepoIdPage({
-  params: { repId, username },
-}: PageProps) {
-  const repoName = `${username}/${repId}`;
+export default async function RepoIdPage({ params: { repoId } }: PageProps) {
+  const repoName = repoId.replace("-", "/");
 
   const repo = await api.github.getARepo.fetch({ repoName });
   if (!repo) return notFound();
