@@ -13,6 +13,7 @@ const getUserProfile = async (token: string, username: string) => {
       Authorization: `Bearer ${token}`,
     },
   });
+  if (res.status !== 200) return;
   return (await res.json()) as GitHubUserProfile;
 };
 
@@ -31,6 +32,7 @@ const getFollowerLists = async (
       },
     }
   );
+  if (res.status !== 200) return []
   return (await res.json()) as GitHubUserProfile[];
 };
 
@@ -49,6 +51,7 @@ const getFollowingLists = async (
       },
     }
   );
+  if (res.status !== 200) return []
   return (await res.json()) as GitHubUserProfile[];
 };
 
@@ -110,6 +113,7 @@ const getARepo = async (token: string, repoName: string) => {
       Authorization: `Bearer ${token}`,
     },
   });
+  if (res.status !== 200) return;
   return (await res.json()) as GitHubRepo;
 };
 
@@ -123,6 +127,7 @@ const myRepoLists = async (token: string, page: number, perPage: number) => {
       },
     }
   );
+  if (res.status !== 200) return [];
   return (await res.json()) as GitHubRepo[];
 };
 
@@ -141,6 +146,7 @@ const otherUserRepoLists = async (
       },
     }
   );
+  if (res.status !== 200) return [];
   return (await res.json()) as GitHubRepo[];
 };
 

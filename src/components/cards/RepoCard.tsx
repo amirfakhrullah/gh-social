@@ -110,7 +110,7 @@ const RepoCard = ({
     >
       <div className="md:p-5 p-2">
         <Link
-          href={navigateToGitHub ? repo.html_url : `/repos/${repo.full_name}`}
+          href={navigateToGitHub ? repo.html_url : `/users/${repo.full_name}`}
           target={navigateToGitHub ? "_blank" : undefined}
         >
           <p className="text-md font-bold mb-2 text-blue-400 cursor-pointer hover:underline">

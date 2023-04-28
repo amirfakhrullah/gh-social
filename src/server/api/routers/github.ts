@@ -29,6 +29,7 @@ export const githubRouter = createTRPCRouter({
     }
 
     const profile = await githubApi.getUserProfile(token, user.username);
+    if (!profile) return;
     return trimGitHubProfileData(profile);
   }),
 
@@ -45,6 +46,7 @@ export const githubRouter = createTRPCRouter({
       const { username } = input;
 
       const profile = await githubApi.getUserProfile(token, username);
+      if (!profile) return;
       return trimGitHubProfileData(profile);
     }),
 
@@ -166,6 +168,7 @@ export const githubRouter = createTRPCRouter({
         oAuth: { token },
       } = ctx;
       const repo = await githubApi.getARepo(token, input.repoName);
+      if (!repo) return;
       return trimGitHubRepoData(repo);
     }),
 
