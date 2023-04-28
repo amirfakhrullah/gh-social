@@ -1,6 +1,7 @@
 import RepoCard from "@/components/cards/RepoCard";
 import TitleHead from "@/components/heads/TitleHead";
 import RepoPostLists from "@/components/lists/RepoPostLists";
+import { convertToRepoName } from "@/helpers/repoId";
 import { api } from "@/lib/api/server";
 import { notFound } from "next/navigation";
 
@@ -11,7 +12,7 @@ interface PageProps {
 }
 
 export default async function RepoIdPage({ params: { repoId } }: PageProps) {
-  const repoName = repoId.replace("-", "/");
+  const repoName = convertToRepoName(repoId);
 
   const repo = await api.github.getARepo.fetch({ repoName });
   if (!repo) return notFound();

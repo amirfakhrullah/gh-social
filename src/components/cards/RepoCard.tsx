@@ -23,6 +23,7 @@ import {
 } from "../ui/tooltip";
 import { usePostModalContext } from "@/providers/PostModalProvider";
 import { cn } from "@/lib/utils";
+import { convertToRepoId } from "@/helpers/repoId";
 
 interface Props {
   repo: TrimmedGitHubRepo;
@@ -115,7 +116,7 @@ const RepoCard = ({
           href={
             navigateToGitHub
               ? repo.html_url
-              : `/repos/${repo.full_name.replace("/", "-")}`
+              : `/repos/${convertToRepoId(repo.full_name)}`
           }
           target={navigateToGitHub ? "_blank" : undefined}
         >

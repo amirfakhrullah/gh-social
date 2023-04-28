@@ -9,6 +9,7 @@ import CardSkeleton from "../skeletons/CardSkeleton";
 import RepoCard from "./RepoCard";
 import PostCard from "./PostCard";
 import CommentCard from "./CommentCard";
+import { convertToRepoId } from "@/helpers/repoId";
 
 interface Props {
   notification: RouterOutputs["notification"]["getRecents"][number];
@@ -90,11 +91,11 @@ const NotificationCard = ({ notification }: Props) => {
           if (postId) {
             link = `/posts/${postId}`;
           } else {
-            link = `/repos/${repoName?.replace("/", "-")}`;
+            link = `/repos/${convertToRepoId(repoName!)}`;
           }
           break;
         case "star":
-          link = `/repos/${repoName?.replace("/", "-")}`;
+          link = `/repos/${convertToRepoId(repoName!)}`;
           break;
         default:
           break;
