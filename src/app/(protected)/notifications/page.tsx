@@ -1,9 +1,12 @@
-import React from "react";
+import TitleHead from "@/components/heads/TitleHead";
 
 export default function Notifications() {
-  return <div></div>;
+  return (
+    <>
+      <TitleHead title="Notifications" disableBackButton />
+    </>
+  );
 }
-
 
 export const runtime = "experimental-edge";
 export const revalidate = 0;

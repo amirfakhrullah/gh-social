@@ -9,6 +9,7 @@ import { likes } from "@/server/db/schema/likes";
 import { getUsernameFromClerkOrCached } from "@/server/caches/usernameCache";
 import { z } from "zod";
 import { getPostsWithCommentsCountAndLikesCountQuery } from "@/server/helpers/drizzleQueries";
+import { postNotification } from "@/server/helpers/notifications";
 
 export const likeRouter = createTRPCRouter({
   myLikedPosts: userProtectedProcedure
@@ -106,7 +107,7 @@ export const likeRouter = createTRPCRouter({
 
       const postReference = (
         await db
-          .select({ id: posts.id })
+          .select({ id: posts.id, ownerId: posts.ownerId })
           .from(posts)
           .where(eq(posts.id, postId))
       )[0];
@@ -123,12 +124,36 @@ export const likeRouter = createTRPCRouter({
           .delete(likes)
           .where(
             and(eq(likes.postId, postReference.id), eq(likes.ownerId, username))
-          );
+          )
+          .catch((err) => {
+            console.error(err);
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message:
+                "There's an error occured when trying to unlike the post.",
+            });
+          });
       } else {
-        await db.insert(likes).values({
-          id: v4(),
+        await db
+          .insert(likes)
+          .values({
+            id: v4(),
+            postId: postReference.id,
+            ownerId: username,
+          })
+          .catch((err) => {
+            console.error(err);
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message: "There's an error occured when trying to like the post.",
+            });
+          });
+        // notifications for liking posts
+        void postNotification(db, {
+          originId: username,
+          receiverId: postReference.ownerId,
+          postAction: "like",
           postId: postReference.id,
-          ownerId: username,
         });
       }
     }),

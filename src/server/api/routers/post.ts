@@ -14,6 +14,7 @@ import {
 } from "@/validationSchemas";
 import { getUsernameFromClerkOrCached } from "@/server/caches/usernameCache";
 import { getPostsWithCommentsCountAndLikesCountQuery } from "@/server/helpers/drizzleQueries";
+import { postNotification } from "@/server/helpers/notifications";
 
 export const postRouter = createTRPCRouter({
   hotFeedPosts: userProtectedProcedure
@@ -153,12 +154,32 @@ export const postRouter = createTRPCRouter({
       const { content, repoShared } = input;
       const username = await getUsernameFromClerkOrCached(userId);
 
-      await db.insert(posts).values({
-        id: v4(),
-        ownerId: username,
-        content,
-        repoShared,
-      });
+      await db
+        .insert(posts)
+        .values({
+          id: v4(),
+          ownerId: username,
+          content,
+          repoShared,
+        })
+        .catch((err) => {
+          console.error(err);
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "There's an error occured when trying to create the post.",
+          });
+        });
+
+      // notifications
+      if (repoShared) {
+        const receiverId = repoShared.split("/")[0];
+        void postNotification(db, {
+          originId: username,
+          receiverId,
+          githubAction: "share",
+          repoName: repoShared,
+        });
+      }
     }),
 
   deleteById: userProtectedProcedure
@@ -186,14 +207,23 @@ export const postRouter = createTRPCRouter({
         });
       }
 
-      await db.transaction(async (tx) => {
-        await tx
-          .delete(likes)
-          .where(eq(likes.postId, postNeededToBeDeleted.id));
-        await tx
-          .delete(comments)
-          .where(eq(comments.postId, postNeededToBeDeleted.id));
-        await tx.delete(posts).where(eq(posts.id, postNeededToBeDeleted.id));
-      });
+      await db
+        .transaction(async (tx) => {
+          await tx
+            .delete(likes)
+            .where(eq(likes.postId, postNeededToBeDeleted.id));
+          await tx
+            .delete(comments)
+            .where(eq(comments.postId, postNeededToBeDeleted.id));
+          await tx.delete(posts).where(eq(posts.id, postNeededToBeDeleted.id));
+        })
+        .catch((err) => {
+          console.error(err);
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message:
+              "There's an error occured when trying to delete the comment.",
+          });
+        });
     }),
 });

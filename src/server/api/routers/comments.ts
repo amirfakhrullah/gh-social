@@ -12,6 +12,7 @@ import { posts } from "@/server/db/schema/posts";
 import { TRPCError } from "@trpc/server";
 import { v4 } from "uuid";
 import { getUsernameFromClerkOrCached } from "@/server/caches/usernameCache";
+import { postNotification } from "@/server/helpers/notifications";
 
 export const commentRouter = createTRPCRouter({
   commentsByPostId: userProtectedProcedure
@@ -93,7 +94,7 @@ export const commentRouter = createTRPCRouter({
 
       const postReference = (
         await db
-          .select({ id: posts.id })
+          .select({ id: posts.id, ownerId: posts.ownerId })
           .from(posts)
           .where(eq(posts.id, postId))
       )[0];
@@ -105,10 +106,28 @@ export const commentRouter = createTRPCRouter({
         });
       }
 
-      await db.insert(comments).values({
-        id: v4(),
-        ownerId: username,
-        content,
+      await db
+        .insert(comments)
+        .values({
+          id: v4(),
+          ownerId: username,
+          content,
+          postId: postReference.id,
+        })
+        .catch((err) => {
+          console.error(err);
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message:
+              "There's an error occured when trying to create the comment.",
+          });
+        });
+
+      // notifications adding comments
+      void postNotification(db, {
+        originId: username,
+        receiverId: postReference.ownerId,
+        postAction: "comment",
         postId: postReference.id,
       });
     }),
@@ -124,6 +143,14 @@ export const commentRouter = createTRPCRouter({
 
       await db
         .delete(comments)
-        .where(and(eq(comments.ownerId, username), eq(comments.id, input.id)));
+        .where(and(eq(comments.ownerId, username), eq(comments.id, input.id)))
+        .catch((err) => {
+          console.error(err);
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message:
+              "There's an error occured when trying to delete the comment.",
+          });
+        });
     }),
 });

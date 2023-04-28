@@ -25,6 +25,18 @@
       "version": "5",
       "when": 1682531356776,
       "tag": "0003_free_reavers"
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1682674906102,
+      "tag": "0004_condemned_madelyne_pryor"
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1682675053632,
+      "tag": "0005_clever_ted_forrester"
     }
   ]
 }

@@ -9,6 +9,8 @@ import { gitHubProtectedProcedure } from "../procedures";
 import githubApi from "@/server/helpers/githubApi";
 import { TRPCError } from "@trpc/server";
 import { githubRepoSchema, paginationSchema } from "@/validationSchemas";
+import { postNotification } from "@/server/helpers/notifications";
+import { getUsernameFromClerkOrCached } from "@/server/caches/usernameCache";
 
 export const githubRouter = createTRPCRouter({
   profile: gitHubProtectedProcedure.query(async ({ ctx }) => {
@@ -115,6 +117,8 @@ export const githubRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const {
+        db,
+        auth: { userId },
         oAuth: { token },
       } = ctx;
       const { username, action } = input;
@@ -124,6 +128,17 @@ export const githubRouter = createTRPCRouter({
         username,
         action
       );
+
+      // notifications
+      if (action === "follow" && isRequestSucceed) {
+        const originId = await getUsernameFromClerkOrCached(userId);
+
+        void postNotification(db, {
+          originId,
+          receiverId: username,
+          githubAction: "follow",
+        });
+      }
 
       const successMessage =
         action === "unfollow"
@@ -197,6 +212,8 @@ export const githubRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const {
+        db,
+        auth: { userId },
         oAuth: { token },
       } = ctx;
       const { repoName, action } = input;
@@ -206,6 +223,20 @@ export const githubRouter = createTRPCRouter({
         repoName,
         action
       );
+
+      // notifications
+      if (action === "star" && isRequestSucceed) {
+        const receiverId = repoName.split("/")[0];
+        const originId = await getUsernameFromClerkOrCached(userId);
+
+        void postNotification(db, {
+          originId,
+          receiverId,
+          githubAction: "star",
+          repoName,
+        });
+      }
+
       const successMessage =
         action === "unstar"
           ? "Successfully unstarred the repository"
