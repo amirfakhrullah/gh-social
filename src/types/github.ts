@@ -53,6 +53,7 @@ export type TrimmedGitHubProfile = Pick<
   | "avatar_url"
   | "bio"
   | "blog"
+  | "company"
   | "followers"
   | "following"
   | "html_url"

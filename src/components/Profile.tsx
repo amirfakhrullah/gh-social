@@ -5,6 +5,7 @@ import { TrimmedGitHubProfile } from "@/types/github";
 import Link from "next/link";
 import { Separator } from "./ui/separator";
 import { AiOutlineLink } from "react-icons/ai";
+import { BsFillBuildingFill } from "react-icons/bs";
 import Followers from "./Followers";
 import { useState } from "react";
 import Following from "./Following";
@@ -64,13 +65,23 @@ const Profile = ({ profile, self = false }: Props) => {
             <p className="text-sm text-gray-500 mb-5">@{profile.login}</p>
             <p className="mb-2">{profile.bio}</p>
 
-            {profile.blog && (
-              <Link href={`https://${profile.blog}`} target="_blank">
-                <div className="text-blue-400 text-sm hover:underline cursor-pointer flex flex-row items-center gap-1">
-                  <AiOutlineLink />
-                  {profile.blog}
-                </div>
-              </Link>
+            {(profile.blog || profile.company) && (
+              <div className="flex flex-row items-center gap-3 mt-1">
+                {profile.company && (
+                  <div className="text-sm text-slate-500 flex flex-row items-center gap-1">
+                    <BsFillBuildingFill />
+                    {profile.company}
+                  </div>
+                )}
+                {profile.blog && (
+                  <Link href={`https://${profile.blog}`} target="_blank">
+                    <div className="text-blue-400 text-sm hover:underline cursor-pointer flex flex-row items-center gap-1">
+                      <AiOutlineLink />
+                      {profile.blog}
+                    </div>
+                  </Link>
+                )}
+              </div>
             )}
           </div>
           <div>

@@ -13,10 +13,12 @@ export const trimGitHubProfileData = (profile: GitHubUserProfile) => {
     login: profile.login,
     avatar_url: profile.avatar_url,
     bio: profile.bio,
+    blog: profile.blog,
     followers: profile.followers,
     following: profile.following,
     html_url: profile.html_url,
     type: profile.type,
+    company: profile.company,
   };
   return trimmedProfile;
 };
