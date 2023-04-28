@@ -50,7 +50,7 @@ const NotificationCard = ({ notification }: Props) => {
           }
           break;
         case "star":
-          link = `/repos/${repoName}?.replace("/", "-")`;
+          link = `/repos/${repoName?.replace("/", "-")}`;
           break;
         default:
           break;
