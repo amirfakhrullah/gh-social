@@ -1,6 +1,12 @@
+import FeedContents from "@/components/FeedContents";
+import TitleHead from "@/components/heads/TitleHead";
+
 export default function Home() {
   return (
-    <div></div>
+    <>
+      <TitleHead title="Public Feeds" disableBackButton />
+      <FeedContents />
+    </>
   );
 }
 

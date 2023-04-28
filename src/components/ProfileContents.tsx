@@ -4,7 +4,6 @@ import { TrimmedGitHubProfile } from "@/types/github";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import MyRepoLists from "./lists/MyRepoLists";
 import RepoLists from "./lists/RepoLists";
-import { useState } from "react";
 import MyPostLists from "./lists/MyPostLists";
 import MyLikedPostLists from "./lists/MyLikedPostLists";
 import PostLists from "./lists/PostLists";

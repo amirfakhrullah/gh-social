@@ -1,8 +1,8 @@
 import { posts } from "@/server/db/schema/posts";
 import { userProtectedProcedure } from "../procedures";
 import { createTRPCRouter } from "../trpc";
-import { and, desc, eq } from "drizzle-orm";
-import { object, z } from "zod";
+import { and, desc, eq, sql } from "drizzle-orm";
+import { z } from "zod";
 import { comments } from "@/server/db/schema/comments";
 import { likes } from "@/server/db/schema/likes";
 import { v4 } from "uuid";
@@ -16,6 +16,34 @@ import { getUsernameFromClerkOrCached } from "@/server/caches/usernameCache";
 import { getPostsWithCommentsCountAndLikesCountQuery } from "@/server/helpers/drizzleQueries";
 
 export const postRouter = createTRPCRouter({
+  hotFeedPosts: userProtectedProcedure
+    .input(paginationSchema)
+    .query(async ({ ctx, input }) => {
+      const { db } = ctx;
+      const { page, perPage } = input;
+
+      const topPosts = await getPostsWithCommentsCountAndLikesCountQuery(db)
+        .orderBy(desc(sql<string>`count(${likes.id})`.as("likes_count")))
+        .offset((page - 1) * perPage)
+        .limit(perPage);
+
+      return topPosts;
+    }),
+
+  latestFeedPosts: userProtectedProcedure
+    .input(paginationSchema)
+    .query(async ({ ctx, input }) => {
+      const { db } = ctx;
+      const { page, perPage } = input;
+
+      const latestPosts = await getPostsWithCommentsCountAndLikesCountQuery(db)
+        .orderBy(desc(posts.createdAt))
+        .offset((page - 1) * perPage)
+        .limit(perPage);
+
+      return latestPosts;
+    }),
+
   myPosts: userProtectedProcedure
     .input(paginationSchema)
     .query(async ({ ctx, input }) => {
