@@ -1,11 +1,19 @@
 import { SignUp } from "@clerk/nextjs/app-beta";
 
-export default function Page() {
-  return (
-    <div className="fixed z-20 top-0 left-0 w-screen h-screen bg-gradient-to-r from-slate-900 to-indigo-950 flex flex-row items-center justify-center">
-      <SignUp afterSignUpUrl="/" signInUrl="/sign-in" />
-    </div>
-  );
+interface PageProps {
+  searchParams: {
+    [key: string]: unknown;
+  };
+}
+export default function Page({ searchParams }: PageProps) {
+  const { redirect_url: redirectUrlFromParams } = searchParams || {};
+
+  let redirectUrl = "/";
+  if (redirectUrlFromParams && typeof redirectUrlFromParams === "string") {
+    redirectUrl = redirectUrlFromParams;
+  }
+
+  return <SignUp signInUrl="/sign-in" redirectUrl={redirectUrl} />;
 }
 
 export const runtime = "experimental-edge";
