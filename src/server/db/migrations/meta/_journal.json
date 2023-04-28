@@ -43,6 +43,36 @@
       "version": "5",
       "when": 1682704443147,
       "tag": "0006_ambiguous_dark_beast"
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1682710543877,
+      "tag": "0007_flawless_the_hunter"
+    },
+    {
+      "idx": 8,
+      "version": "5",
+      "when": 1682710622883,
+      "tag": "0008_fantastic_molly_hayes"
+    },
+    {
+      "idx": 9,
+      "version": "5",
+      "when": 1682710838346,
+      "tag": "0009_famous_eternity"
+    },
+    {
+      "idx": 10,
+      "version": "5",
+      "when": 1682710966229,
+      "tag": "0010_typical_shinobi_shaw"
+    },
+    {
+      "idx": 11,
+      "version": "5",
+      "when": 1682711215661,
+      "tag": "0011_open_the_executioner"
     }
   ]
 }

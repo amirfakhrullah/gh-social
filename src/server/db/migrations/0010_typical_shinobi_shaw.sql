@@ -1,0 +1,1 @@
+DROP INDEX `sender_id_idx` ON `chats`;

@@ -1,0 +1,1 @@
+CREATE INDEX `receiver_id_idx` ON `chats` (`receiver_id`);
