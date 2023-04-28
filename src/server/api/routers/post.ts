@@ -2,7 +2,7 @@ import { posts } from "@/server/db/schema/posts";
 import { userProtectedProcedure } from "../procedures";
 import { createTRPCRouter } from "../trpc";
 import { and, desc, eq } from "drizzle-orm";
-import { z } from "zod";
+import { object, z } from "zod";
 import { comments } from "@/server/db/schema/comments";
 import { likes } from "@/server/db/schema/likes";
 import { v4 } from "uuid";
@@ -75,6 +75,27 @@ export const postRouter = createTRPCRouter({
         });
       }
       return post;
+    }),
+
+  repoSharedPosts: userProtectedProcedure
+    .input(
+      z
+        .object({
+          repoName: z.string(),
+        })
+        .merge(paginationSchema)
+    )
+    .query(async ({ ctx, input }) => {
+      const { db } = ctx;
+      const { repoName, perPage, page } = input;
+
+      const postLists = await getPostsWithCommentsCountAndLikesCountQuery(db)
+        .where(eq(posts.repoShared, repoName))
+        .orderBy(desc(posts.createdAt))
+        .offset((page - 1) * perPage)
+        .limit(perPage);
+
+      return postLists;
     }),
 
   repoSharedCounts: userProtectedProcedure

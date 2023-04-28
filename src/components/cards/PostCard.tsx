@@ -1,7 +1,7 @@
 "use client";
 
 import { RouterOutputs, api } from "@/lib/api/client";
-import { TrimmedGitHubProfile } from "@/types/github";
+import { TrimmedGitHubProfile, TrimmedGitHubRepo } from "@/types/github";
 import RepoCard from "./RepoCard";
 import CardSkeleton from "../skeletons/CardSkeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -36,11 +36,13 @@ import {
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
 import { useState } from "react";
+import { boolean } from "zod";
 
 interface Props {
   data: Omit<RouterOutputs["post"]["myPosts"][number], "comments">;
   onlyShowLikes?: boolean;
   owner?: TrimmedGitHubProfile;
+  isInRepoPage?: boolean;
   showFullRepo?: boolean;
   disableNavigateToPostPage?: boolean;
   border?: boolean;
@@ -48,6 +50,7 @@ interface Props {
 const PostCard = ({
   data,
   owner,
+  isInRepoPage = false,
   onlyShowLikes = false,
   showFullRepo = false,
   disableNavigateToPostPage = false,
@@ -76,7 +79,7 @@ const PostCard = ({
       repoName: post.repoShared!,
     },
     {
-      enabled: !!post.repoShared,
+      enabled: !!post.repoShared && !isInRepoPage,
     }
   );
 
@@ -138,6 +141,12 @@ const PostCard = ({
     });
   };
 
+  const displayRepo = !!post.repoShared && !isInRepoPage;
+  const displayLoaderRepo = displayRepo ? isLoadingRepo : false;
+
+  const displayLoaderProfile = !owner ? isLoadingProfile : false;
+  const postOwner = owner ?? profile;
+
   const handleDelete = () =>
     user?.username === post.ownerId && deleteMutate({ id: post.id });
   const readPost = () =>
@@ -145,11 +154,7 @@ const PostCard = ({
   const readComments = () =>
     !disableNavigateToPostPage && router.push(`/posts/${post.id}#comments`);
   const readProfile = () =>
-    (owner || profile) && router.push(`/users/${(owner ?? profile)!.login}`);
-
-  const displayRepo = !!post.repoShared;
-  const displayLoaderRepo = displayRepo ? isLoadingRepo : false;
-  const displayLoaderProfile = !owner ? isLoadingProfile : false;
+    postOwner && router.push(`/users/${postOwner.login}`);
 
   return (
     <div
@@ -162,15 +167,12 @@ const PostCard = ({
     >
       <div className="md:p-5 md:pb-1 p-2 pb-1">
         {displayLoaderProfile && <AvatarSkeleton />}
-        {(owner || profile) && (
+        {postOwner && (
           <div className="flex flex-row items-center gap-2 mb-3">
             <Avatar className="h-8 w-8 cursor-pointer" onClick={readProfile}>
-              <AvatarImage
-                src={(owner ?? profile)!.avatar_url}
-                alt={(owner ?? profile)!.login}
-              />
+              <AvatarImage src={postOwner.avatar_url} alt={postOwner.login} />
               <AvatarFallback>
-                {(owner ?? profile)!.login.slice(0, 1).toUpperCase()}
+                {postOwner.login.slice(0, 1).toUpperCase()}
               </AvatarFallback>
             </Avatar>
             <div
@@ -178,11 +180,9 @@ const PostCard = ({
               onClick={readProfile}
             >
               <p className="text-sm text-slate-200 font-bold">
-                {(owner ?? profile)!.name}
+                {postOwner.name}
               </p>
-              <p className="text-sm text-gray-500">
-                @{(owner ?? profile)!.login}
-              </p>
+              <p className="text-sm text-gray-500">@{postOwner.login}</p>
             </div>
             <div className="md:block hidden text-sm text-gray-500">
               {" "}

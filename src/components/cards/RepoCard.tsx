@@ -22,12 +22,20 @@ import {
   TooltipTrigger,
 } from "../ui/tooltip";
 import { usePostModalContext } from "@/providers/PostModalProvider";
+import { cn } from "@/lib/utils";
 
 interface Props {
   repo: TrimmedGitHubRepo;
   hideCounts?: boolean;
+  border?: boolean;
+  navigateToGitHub?: boolean;
 }
-const RepoCard = ({ repo, hideCounts = false }: Props) => {
+const RepoCard = ({
+  repo,
+  hideCounts = false,
+  border = true,
+  navigateToGitHub = false,
+}: Props) => {
   const { handleOpen: handleOpenPostModal } = usePostModalContext();
 
   const { isLoading: isLoadingHasStarred, data: hasStarred } =
@@ -94,9 +102,17 @@ const RepoCard = ({ repo, hideCounts = false }: Props) => {
   const handleShareRepo = () => handleOpenPostModal(repo);
 
   return (
-    <div className="border border-slate-700 m-2 rounded-md shadow-md">
+    <div
+      className={cn(
+        "shadow-md",
+        border ? "rounded-md border border-slate-700 m-2" : "border-b border-slate-700"
+      )}
+    >
       <div className="md:p-5 p-2">
-        <Link href={repo.html_url} target="_blank">
+        <Link
+          href={navigateToGitHub ? repo.html_url : `/repos/${repo.full_name}`}
+          target={navigateToGitHub ? "_blank" : undefined}
+        >
           <p className="text-md font-bold mb-2 text-blue-400 cursor-pointer hover:underline">
             {repo.full_name}
           </p>
