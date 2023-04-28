@@ -20,7 +20,12 @@ const NotificationLists = () => {
     return (
       <>
         {[...Array(10)].map((_, idx) => (
-          <CardSkeleton key={`cardSkeleton__${idx}`} withAvatar hideCounts />
+          <CardSkeleton
+            key={`cardSkeleton__${idx}`}
+            withAvatar
+            hideCounts
+            border={false}
+          />
         ))}
       </>
     );

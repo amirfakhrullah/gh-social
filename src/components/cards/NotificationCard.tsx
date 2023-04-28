@@ -80,7 +80,7 @@ const NotificationCard = ({ notification }: Props) => {
   })();
 
   return (
-    <div className="rounded-md border border-slate-700 m-2 md:p-5 p-2">
+    <div className="border-b border-slate-700 p-3">
       {isLoadingProfile || !profile ? (
         <AvatarSkeleton />
       ) : (
@@ -101,7 +101,7 @@ const NotificationCard = ({ notification }: Props) => {
           </div>
         </div>
       )}
-      <p className="mb-2 text-slate-200 cursor-pointer" onClick={goToReference}>
+      <p className="mb-2 text-gray-400 cursor-pointer" onClick={goToReference}>
         {notificationInfo}
       </p>
       {displayLoaderRepo && <CardSkeleton hideCounts />}
