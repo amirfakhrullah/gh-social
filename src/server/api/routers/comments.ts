@@ -15,6 +15,19 @@ import { getUsernameFromClerkOrCached } from "@/server/caches/usernameCache";
 import { postNotification } from "@/server/helpers/notifications";
 
 export const commentRouter = createTRPCRouter({
+  commentById: userProtectedProcedure
+    .input(idSchema)
+    .query(async ({ ctx, input }) => {
+      const { db } = ctx;
+
+      const foundComment = (
+        await db.select().from(comments).where(eq(comments.id, input.id))
+      )[0];
+
+      if (!foundComment) return;
+      return foundComment;
+    }),
+
   commentsByPostId: userProtectedProcedure
     .input(
       z
@@ -106,10 +119,11 @@ export const commentRouter = createTRPCRouter({
         });
       }
 
+      const commentId = v4();
       await db
         .insert(comments)
         .values({
-          id: v4(),
+          id: commentId,
           ownerId: username,
           content,
           postId: postReference.id,
@@ -129,6 +143,7 @@ export const commentRouter = createTRPCRouter({
         receiverId: postReference.ownerId,
         postAction: "comment",
         postId: postReference.id,
+        commentId: commentId,
       });
     }),
 

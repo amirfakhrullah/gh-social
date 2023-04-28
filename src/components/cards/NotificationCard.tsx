@@ -7,6 +7,8 @@ import AvatarSkeleton from "../skeletons/AvatarSkeleton";
 import { formatTimeAgo } from "@/helpers/formatTimeAgo";
 import CardSkeleton from "../skeletons/CardSkeleton";
 import RepoCard from "./RepoCard";
+import PostCard from "./PostCard";
+import CommentCard from "./CommentCard";
 
 interface Props {
   notification: RouterOutputs["notification"]["getRecents"][number];
@@ -19,16 +21,58 @@ const NotificationCard = ({ notification }: Props) => {
       username: notification.originId,
     });
 
-  const { isLoading: isLoadingRepo, data: repo } = api.github.getARepo.useQuery(
+  /**
+   * Post action
+   */
+  const displayPost = !!(
+    notification.postAction &&
+    notification.postAction !== "comment" &&
+    notification.postId
+  );
+  const { isLoading: isLoadingPost, data: post } = api.post.postById.useQuery(
     {
-      repoName: notification.repoName!,
+      id: notification.postId!!,
     },
     {
-      enabled: !!notification.repoName,
+      enabled: displayPost,
     }
   );
+  const displayLoaderPost = displayPost ? isLoadingPost : false;
 
-  const displayRepo = !!notification.repoName;
+  /**
+   * Comment action
+   */
+  const displayComment = !!(
+    notification.postAction === "comment" && notification.commentId
+  );
+  const { isLoading: isLoadingComment, data: comment } =
+    api.comment.commentById.useQuery(
+      {
+        id: notification.commentId!,
+      },
+      {
+        enabled: displayComment,
+      }
+    );
+  const displayLoaderComment = displayComment ? isLoadingComment : false;
+
+  /**
+   * Repos action
+   */
+  const displayRepo = !!(
+    notification.githubAction &&
+    notification.githubAction !== "follow" &&
+    notification.repoName
+  );
+  const { isLoading: isLoadingRepo, data: repoShared } =
+    api.github.getARepo.useQuery(
+      {
+        repoName: notification.repoName!,
+      },
+      {
+        enabled: displayRepo,
+      }
+    );
   const displayLoaderRepo = displayRepo ? isLoadingRepo : false;
 
   const readProfile = () => router.push(`/users/${notification.originId}`);
@@ -71,11 +115,12 @@ const NotificationCard = ({ notification }: Props) => {
   const notificationInfo = (() => {
     const { githubAction, postAction } = notification;
     let action = "";
-    if (githubAction === "follow") action = "Started following you.";
-    if (githubAction === "share") action = "Shared one of your repo in a post.";
-    if (githubAction === "star") action = "Starred one of your repo.";
-    if (postAction === "comment") action = "Commented in one of your post.";
-    if (postAction === "like") action = "Liked one of your post.";
+    if (githubAction === "follow") action = "started following you";
+    if (githubAction === "share")
+      action = "shared one of your repository in a post";
+    if (githubAction === "star") action = "has starred one of your repository";
+    if (postAction === "comment") action = "commented in one of your post";
+    if (postAction === "like") action = "liked one of your post";
     return action;
   })();
 
@@ -91,24 +136,44 @@ const NotificationCard = ({ notification }: Props) => {
               {profile.login.slice(0, 1).toUpperCase()}
             </AvatarFallback>
           </Avatar>
-          <div className="cursor-pointer hover:underline" onClick={readProfile}>
-            <p className="text-sm text-slate-200 font-bold">{profile.name}</p>
-            <p className="text-sm text-gray-500">@{profile.login}</p>
-          </div>
-          <div className="md:block hidden text-sm text-gray-500">
-            {" "}
-            | {formatTimeAgo(notification.createdAt)}
+          <div className="flex md:flex-row flex-col md:justify-center gap-2">
+            <div
+              className="cursor-pointer hover:underline"
+              onClick={readProfile}
+            >
+              <p className="text-gray-300">@{profile.login}</p>
+            </div>
+            <p
+              className="text-slate-500 cursor-pointer"
+              onClick={goToReference}
+            >
+              {notificationInfo}
+            </p>
+            <span className="text-slate-600 text-sm md:block hidden">
+              | {formatTimeAgo(notification.createdAt)}
+            </span>
           </div>
         </div>
       )}
-      <p className="mb-2 text-gray-400 cursor-pointer" onClick={goToReference}>
-        {notificationInfo}
-      </p>
-      {displayLoaderRepo && <CardSkeleton hideCounts />}
-      {displayRepo && repo && <RepoCard repo={repo} hideCounts />}
-      {displayRepo && !displayLoaderRepo && !repo && (
+      {(displayLoaderRepo || displayLoaderComment || displayLoaderPost) && (
+        <CardSkeleton hideCounts />
+      )}
+      {displayRepo && repoShared && <RepoCard repo={repoShared} hideCounts />}
+      {displayRepo && !displayLoaderRepo && !repoShared && (
         <div className="border border-slate-700 m-2 rounded-md shadow-lg md:p-5 p-2 text-center">
-          Repo doesn&apos;t exist
+          Repository doesn&apos;t exist
+        </div>
+      )}
+      {displayPost && post && <PostCard data={post} isInRepoPage />}
+      {displayPost && !displayLoaderPost && !post && (
+        <div className="border border-slate-700 m-2 rounded-md shadow-lg md:p-5 p-2 text-center">
+          Post doesn&apos;t exist
+        </div>
+      )}
+      {displayComment && comment && <CommentCard comment={comment} />}
+      {displayComment && !displayLoaderComment && !comment && (
+        <div className="border border-slate-700 m-2 rounded-md shadow-lg md:p-5 p-2 text-center">
+          Comment doesn&apos;t exist
         </div>
       )}
       <div className="md:hidden block text-sm ml-2 mb-1 text-gray-500 italic">

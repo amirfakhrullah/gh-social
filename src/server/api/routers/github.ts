@@ -18,17 +18,8 @@ export const githubRouter = createTRPCRouter({
       auth: { userId },
       oAuth: { token },
     } = ctx;
-
-    const user = await clerkClient.users.getUser(userId);
-
-    if (!user.username) {
-      throw new TRPCError({
-        code: "INTERNAL_SERVER_ERROR",
-        message: "Username not found in Clerk",
-      });
-    }
-
-    const profile = await githubApi.getUserProfile(token, user.username);
+    const username = await getUsernameFromClerkOrCached(userId);
+    const profile = await githubApi.getUserProfile(token, username);
     if (!profile) return;
     return trimGitHubProfileData(profile);
   }),
@@ -44,7 +35,6 @@ export const githubRouter = createTRPCRouter({
         oAuth: { token },
       } = ctx;
       const { username } = input;
-
       const profile = await githubApi.getUserProfile(token, username);
       if (!profile) return;
       return trimGitHubProfileData(profile);

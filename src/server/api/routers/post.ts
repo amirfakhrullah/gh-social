@@ -97,12 +97,7 @@ export const postRouter = createTRPCRouter({
         )
       )[0];
 
-      if (!post) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Post not found",
-        });
-      }
+      if (!post) return;
       return post;
     }),
 

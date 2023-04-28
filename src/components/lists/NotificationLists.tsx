@@ -11,10 +11,17 @@ const NotificationLists = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const { isLoading, data: notifications } =
-    api.notification.getRecents.useQuery({
-      perPage: NOTIFICATION_LISTING_PER_PAGE,
-      page: currentPage,
-    });
+    api.notification.getRecents.useQuery(
+      {
+        perPage: NOTIFICATION_LISTING_PER_PAGE,
+        page: currentPage,
+      },
+      {
+        refetchOnMount: true,
+        refetchOnReconnect: true,
+        refetchOnWindowFocus: true,
+      }
+    );
 
   if (isLoading)
     return (

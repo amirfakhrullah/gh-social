@@ -67,27 +67,27 @@ const CommentCard = ({ comment, owner, navigateToPost = true }: Props) => {
   const handleDelete = () =>
     user?.username === comment.ownerId && mutate({ id: comment.id });
   const displayLoaderProfile = !owner ? isLoadingProfile : false;
+  const commentOwner = owner ?? profile;
+
   return (
     <div className="border border-slate-700 m-2 rounded-md shadow-md md:p-5 p-2">
       {displayLoaderProfile && <AvatarSkeleton />}
-      {(owner || profile) && (
+      {commentOwner && (
         <div className="flex flex-row items-center gap-2 mb-3">
           <Avatar className="h-8 w-8 cursor-pointer" onClick={readProfile}>
             <AvatarImage
-              src={(owner ?? profile)!.avatar_url}
-              alt={(owner ?? profile)!.login}
+              src={commentOwner.avatar_url}
+              alt={commentOwner.login}
             />
             <AvatarFallback>
-              {(owner ?? profile)!.login.slice(0, 1).toUpperCase()}
+              {commentOwner.login.slice(0, 1).toUpperCase()}
             </AvatarFallback>
           </Avatar>
           <div className="cursor-pointer hover:underline" onClick={readProfile}>
             <p className="text-sm text-slate-200 font-bold">
-              {(owner ?? profile)!.name}
+              {commentOwner.name}
             </p>
-            <p className="text-sm text-gray-500">
-              @{(owner ?? profile)!.login}
-            </p>
+            <p className="text-sm text-gray-500">@{commentOwner.login}</p>
           </div>
           <div className="md:block hidden text-sm text-gray-500">
             {" "}

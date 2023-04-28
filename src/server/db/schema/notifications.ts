@@ -15,6 +15,7 @@ export const notifications = mysqlTable(
     repoName: varchar("repo_name", { length: 256 }),
     postAction: mysqlEnum("post_action", ["comment", "like"]),
     postId: varchar("post_id", { length: 191 }),
+    commentId: varchar("comment_id", { length: 191 }),
     originId: varchar("origin_id", { length: 191 }).notNull(),
     receiverId: varchar("receiver_id", { length: 191 }).notNull(),
     createdAt: timestamp("created_at").notNull().defaultNow(),

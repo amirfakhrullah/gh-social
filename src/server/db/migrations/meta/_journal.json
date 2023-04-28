@@ -37,6 +37,12 @@
       "version": "5",
       "when": 1682675053632,
       "tag": "0005_clever_ted_forrester"
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1682704443147,
+      "tag": "0006_ambiguous_dark_beast"
     }
   ]
 }

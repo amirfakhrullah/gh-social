@@ -5,6 +5,7 @@ import {
   notifications,
 } from "../db/schema/notifications";
 import { v4 } from "uuid";
+import { env } from "@/env.mjs";
 
 export const postNotification = async (
   db: PlanetScaleDatabase,
@@ -17,17 +18,20 @@ export const postNotification = async (
     repoName = null,
     postAction = null,
     postId = null,
+    commentId = null,
   } = inputs;
 
   /**
-   * - githubAction requires repoName
-   * - postAction requires postId
+   * - githubAction requires repoName (except "follow")
+   * - postAction requires postId (except "comment", it required commentId)
    * - if the originId and receiverId is the same, do not send notification
    */
   if (
     (githubAction && githubAction !== "follow" && !repoName) ||
     (postAction && !postId) ||
-    receiverId === originId
+    (postAction && postAction === "comment" && !commentId) ||
+    // for easier test in development
+    (env.NODE_ENV === "production" && receiverId === originId)
   )
     return;
 
@@ -37,6 +41,7 @@ export const postNotification = async (
     repoName,
     postAction,
     postId,
+    commentId,
     createdAt: new Date(),
     originId,
     receiverId,
