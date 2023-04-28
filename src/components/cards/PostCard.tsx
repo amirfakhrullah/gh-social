@@ -36,7 +36,6 @@ import {
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
 import { useState } from "react";
-import { boolean } from "zod";
 
 interface Props {
   data: Omit<RouterOutputs["post"]["myPosts"][number], "comments">;

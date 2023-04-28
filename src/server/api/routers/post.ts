@@ -154,10 +154,12 @@ export const postRouter = createTRPCRouter({
       const { content, repoShared } = input;
       const username = await getUsernameFromClerkOrCached(userId);
 
+      const id = v4();
+
       await db
         .insert(posts)
         .values({
-          id: v4(),
+          id,
           ownerId: username,
           content,
           repoShared,
@@ -178,6 +180,7 @@ export const postRouter = createTRPCRouter({
           receiverId,
           githubAction: "share",
           repoName: repoShared,
+          postId: id,
         });
       }
     }),
