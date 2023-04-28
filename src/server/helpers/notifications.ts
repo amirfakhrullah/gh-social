@@ -20,12 +20,14 @@ export const postNotification = async (
   } = inputs;
 
   /**
-   * githubAction requires repoName
-   * postAction requires postId
+   * - githubAction requires repoName
+   * - postAction requires postId
+   * - if the originId and receiverId is the same, do not send notification
    */
   if (
     (githubAction && githubAction !== "follow" && !repoName) ||
-    (postAction && !postId)
+    (postAction && !postId) ||
+    receiverId === originId
   )
     return;
 
