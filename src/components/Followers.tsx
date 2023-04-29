@@ -1,7 +1,7 @@
 "use client";
 
 import { api } from "@/lib/api/client";
-import React, { Fragment, useState } from "react";
+import React, { Fragment } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { ScrollArea } from "./ui/scroll-area";
 import UserCardSkeleton from "./skeletons/UserCardSkeleton";
@@ -9,6 +9,7 @@ import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { USER_LISTING_PER_PAGE } from "@/constants";
 import { useRouter } from "next/navigation";
+import usePagination from "@/hooks/usePagination";
 
 interface Props {
   username: string;
@@ -17,8 +18,8 @@ interface Props {
 }
 const Followers = ({ username, isOpened, setIsOpened }: Props) => {
   const router = useRouter();
+  const { currentPage, Pagination } = usePagination();
 
-  const [currentPage, setCurrentPage] = useState(1);
   const { data, isLoading } = api.github.followers.useQuery(
     {
       username,
@@ -48,7 +49,9 @@ const Followers = ({ username, isOpened, setIsOpened }: Props) => {
                   <div className="flex flex-row items-center gap-4 my-2">
                     <Avatar>
                       <AvatarImage src={user.avatar_url} alt={user.login} />
-                      <AvatarFallback>{user.login.slice(0, 1).toUpperCase()}</AvatarFallback>
+                      <AvatarFallback>
+                        {user.login.slice(0, 1).toUpperCase()}
+                      </AvatarFallback>
                     </Avatar>
                     <div>{user.login}</div>
                   </div>
@@ -58,29 +61,7 @@ const Followers = ({ username, isOpened, setIsOpened }: Props) => {
                 </div>
               </Fragment>
             ))}
-            <div className="py-2 flex flex-row items-center justify-center gap-2">
-              {currentPage > 1 && (
-                <Button
-                  variant="secondary"
-                  onClick={() =>
-                    currentPage !== 1 && setCurrentPage(currentPage - 1)
-                  }
-                >
-                  Prev
-                </Button>
-              )}
-              {currentPage > 1 && data.length >= USER_LISTING_PER_PAGE && (
-                <div>{currentPage}</div>
-              )}
-              {data.length >= USER_LISTING_PER_PAGE && (
-                <Button
-                  variant="secondary"
-                  onClick={() => setCurrentPage(currentPage + 1)}
-                >
-                  Next
-                </Button>
-              )}
-            </div>
+            <Pagination nextPage={data.length >= USER_LISTING_PER_PAGE} />
           </ScrollArea>
         )}
 

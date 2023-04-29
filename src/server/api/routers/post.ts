@@ -1,7 +1,10 @@
 import { posts } from "@/server/db/schema/posts";
-import { userProtectedProcedure } from "../procedures";
+import {
+  gitHubProtectedProcedure,
+  userProtectedProcedure,
+} from "../procedures";
 import { createTRPCRouter } from "../trpc";
-import { and, desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, inArray, sql } from "drizzle-orm";
 import { z } from "zod";
 import { comments } from "@/server/db/schema/comments";
 import { likes } from "@/server/db/schema/likes";
@@ -15,6 +18,7 @@ import {
 import { getUsernameFromClerkOrCached } from "@/server/caches/usernameCache";
 import { getPostsWithCommentsCountAndLikesCountQuery } from "@/server/helpers/drizzleQueries";
 import { postNotification } from "@/server/helpers/notifications";
+import { getFollowingUsernameFromGitHubOrCached } from "@/server/caches/followingsCache";
 
 export const postRouter = createTRPCRouter({
   hotFeedPosts: userProtectedProcedure
@@ -38,6 +42,31 @@ export const postRouter = createTRPCRouter({
       const { page, perPage } = input;
 
       const latestPosts = await getPostsWithCommentsCountAndLikesCountQuery(db)
+        .orderBy(desc(posts.createdAt))
+        .offset((page - 1) * perPage)
+        .limit(perPage);
+
+      return latestPosts;
+    }),
+
+  followingFeedPosts: gitHubProtectedProcedure
+    .input(paginationSchema)
+    .query(async ({ ctx, input }) => {
+      const {
+        db,
+        auth: { userId },
+        oAuth: { token },
+      } = ctx;
+      const { page, perPage } = input;
+      const followingUsernames = await getFollowingUsernameFromGitHubOrCached(
+        token,
+        userId
+      );
+
+      if (!followingUsernames) return [];
+
+      const latestPosts = await getPostsWithCommentsCountAndLikesCountQuery(db)
+        .where(inArray(posts.ownerId, followingUsernames))
         .orderBy(desc(posts.createdAt))
         .offset((page - 1) * perPage)
         .limit(perPage);

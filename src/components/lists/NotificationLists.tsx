@@ -2,13 +2,12 @@
 
 import { NOTIFICATION_LISTING_PER_PAGE } from "@/constants";
 import { api } from "@/lib/api/client";
-import { useState } from "react";
 import CardSkeleton from "../skeletons/CardSkeleton";
-import { Button } from "../ui/button";
 import NotificationCard from "../cards/NotificationCard";
+import usePagination from "@/hooks/usePagination";
 
 const NotificationLists = () => {
-  const [currentPage, setCurrentPage] = useState(1);
+  const { currentPage, Pagination } = usePagination();
 
   const { isLoading, data: notifications } =
     api.notification.getRecents.useQuery(
@@ -50,31 +49,9 @@ const NotificationLists = () => {
           <NotificationCard key={notification.id} notification={notification} />
         ))}
       {notifications && (
-        <div className="py-2 flex flex-row items-center justify-center gap-2">
-          {currentPage > 1 && (
-            <Button
-              variant="secondary"
-              onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
-            >
-              Prev
-            </Button>
-          )}
-          {currentPage > 1 &&
-            notifications.length >= NOTIFICATION_LISTING_PER_PAGE && (
-              <div>{currentPage}</div>
-            )}
-          {notifications.length >= NOTIFICATION_LISTING_PER_PAGE && (
-            <Button
-              variant="secondary"
-              onClick={() =>
-                notifications.length >= NOTIFICATION_LISTING_PER_PAGE &&
-                setCurrentPage(currentPage + 1)
-              }
-            >
-              Next
-            </Button>
-          )}
-        </div>
+        <Pagination
+          nextPage={notifications.length >= NOTIFICATION_LISTING_PER_PAGE}
+        />
       )}
     </>
   );

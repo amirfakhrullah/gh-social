@@ -3,17 +3,16 @@
 import { POST_LISTING_PER_PAGE } from "@/constants";
 import { api } from "@/lib/api/client";
 import { TrimmedGitHubRepo } from "@/types/github";
-import { useState } from "react";
 import CardSkeleton from "../skeletons/CardSkeleton";
 import PostCard from "../cards/PostCard";
-import { Button } from "../ui/button";
+import usePagination from "@/hooks/usePagination";
 
 interface Props {
   repo: TrimmedGitHubRepo;
 }
 
 const RepoPostLists = ({ repo }: Props) => {
-  const [currentPage, setCurrentPage] = useState(1);
+  const { currentPage, Pagination } = usePagination();
 
   const { isLoading, data: posts } = api.post.repoSharedPosts.useQuery({
     repoName: repo.full_name,
@@ -40,32 +39,7 @@ const RepoPostLists = ({ repo }: Props) => {
         posts.map((data) => (
           <PostCard key={data.post.id} data={data} isInRepoPage />
         ))}
-      {posts && (
-        <div className="py-2 flex flex-row items-center justify-center gap-2">
-          {currentPage > 1 && (
-            <Button
-              variant="secondary"
-              onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
-            >
-              Prev
-            </Button>
-          )}
-          {currentPage > 1 && posts.length >= POST_LISTING_PER_PAGE && (
-            <div>{currentPage}</div>
-          )}
-          {posts.length >= POST_LISTING_PER_PAGE && (
-            <Button
-              variant="secondary"
-              onClick={() =>
-                posts.length >= POST_LISTING_PER_PAGE &&
-                setCurrentPage(currentPage + 1)
-              }
-            >
-              Next
-            </Button>
-          )}
-        </div>
-      )}
+      {posts && <Pagination nextPage={posts.length >= POST_LISTING_PER_PAGE} />}
     </>
   );
 };

@@ -1,5 +1,4 @@
 import { createTRPCRouter } from "../trpc";
-import { clerkClient } from "@clerk/nextjs/server";
 import { z } from "zod";
 import {
   trimGitHubProfileData,
@@ -7,10 +6,10 @@ import {
 } from "@/server/helpers/trimGitHubData";
 import { gitHubProtectedProcedure } from "../procedures";
 import githubApi from "@/server/helpers/githubApi";
-import { TRPCError } from "@trpc/server";
 import { githubRepoSchema, paginationSchema } from "@/validationSchemas";
 import { postNotification } from "@/server/helpers/notifications";
 import { getUsernameFromClerkOrCached } from "@/server/caches/usernameCache";
+import { deleteFollowingsUsernameListsCache } from "@/server/caches/followingsCache";
 
 export const githubRouter = createTRPCRouter({
   profile: gitHubProtectedProcedure.query(async ({ ctx }) => {
@@ -120,6 +119,9 @@ export const githubRouter = createTRPCRouter({
         username,
         action
       );
+
+      // delete cache
+      if (isRequestSucceed) deleteFollowingsUsernameListsCache(userId);
 
       // notifications
       if (action === "follow" && isRequestSucceed) {

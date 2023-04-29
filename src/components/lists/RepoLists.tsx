@@ -4,25 +4,19 @@ import { REPO_LISTING_PER_PAGE } from "@/constants";
 import { api } from "@/lib/api/client";
 import RepoCard from "../cards/RepoCard";
 import CardSkeleton from "../skeletons/CardSkeleton";
-import { Button } from "../ui/button";
-import { useState } from "react";
+import usePagination from "@/hooks/usePagination";
 
 interface Props {
   username: string;
 }
 const RepoLists = ({ username }: Props) => {
-  const [currentPage, setCurrentPage] = useState(1);
+  const { currentPage, Pagination } = usePagination();
 
   const { data: repos, isLoading } = api.github.otherUserRepos.useQuery({
     perPage: REPO_LISTING_PER_PAGE,
     page: currentPage,
     username,
   });
-
-  const handlePage = (pageToGo: number) => {
-    window.scrollTo(0, 0);
-    setCurrentPage(pageToGo);
-  };
 
   if (isLoading)
     return (
@@ -35,40 +29,13 @@ const RepoLists = ({ username }: Props) => {
 
   return (
     <>
-      {repos &&
-        repos.length > 0 &&
-        repos.map((repo) => <RepoCard key={repo.node_id} repo={repo} />)}
-
-      {repos && (
-        <div className="py-2 flex flex-row items-center justify-center gap-2">
-          {currentPage > 1 && (
-            <Button
-              variant="secondary"
-              onClick={() => currentPage > 1 && handlePage(currentPage - 1)}
-            >
-              Prev
-            </Button>
-          )}
-          {currentPage > 1 && repos.length >= REPO_LISTING_PER_PAGE && (
-            <div>{currentPage}</div>
-          )}
-          {repos.length >= REPO_LISTING_PER_PAGE && (
-            <Button
-              variant="secondary"
-              onClick={() =>
-                repos.length >= REPO_LISTING_PER_PAGE &&
-                handlePage(currentPage + 1)
-              }
-            >
-              Next
-            </Button>
-          )}
-        </div>
-      )}
-
       {repos && repos.length === 0 && (
         <div className="py-10 text-center">No Repository Found.</div>
       )}
+      {repos &&
+        repos.length > 0 &&
+        repos.map((repo) => <RepoCard key={repo.node_id} repo={repo} />)}
+      {repos && <Pagination nextPage={repos.length >= REPO_LISTING_PER_PAGE} />}
     </>
   );
 };

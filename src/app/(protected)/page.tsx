@@ -4,7 +4,7 @@ import TitleHead from "@/components/heads/TitleHead";
 export default function Home() {
   return (
     <>
-      <TitleHead title="Public Feeds" disableBackButton />
+      <TitleHead title="Home" disableBackButton />
       <FeedContents />
     </>
   );

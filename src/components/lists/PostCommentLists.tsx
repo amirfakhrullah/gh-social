@@ -2,17 +2,16 @@
 
 import { COMMENTS_LISTING_PER_PAGE } from "@/constants";
 import { api } from "@/lib/api/client";
-import { useState } from "react";
 import CommentCard from "../cards/CommentCard";
-import { Button } from "../ui/button";
 import CardSkeleton from "../skeletons/CardSkeleton";
 import CommentForm from "../CommentForm";
+import usePagination from "@/hooks/usePagination";
 
 interface Props {
   postId: string;
 }
 const PostCommentLists = ({ postId }: Props) => {
-  const [currentPage, setCurrentPage] = useState(1);
+  const { currentPage, Pagination } = usePagination();
 
   const { isLoading, data: comments } = api.comment.commentsByPostId.useQuery({
     postId,
@@ -43,30 +42,7 @@ const PostCommentLists = ({ postId }: Props) => {
           />
         ))}
       {comments && (
-        <div className="py-2 flex flex-row items-center justify-center gap-2">
-          {currentPage > 1 && (
-            <Button
-              variant="secondary"
-              onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
-            >
-              Prev
-            </Button>
-          )}
-          {currentPage > 1 && comments.length >= COMMENTS_LISTING_PER_PAGE && (
-            <div>{currentPage}</div>
-          )}
-          {comments.length >= COMMENTS_LISTING_PER_PAGE && (
-            <Button
-              variant="secondary"
-              onClick={() =>
-                comments.length >= COMMENTS_LISTING_PER_PAGE &&
-                setCurrentPage(currentPage + 1)
-              }
-            >
-              Next
-            </Button>
-          )}
-        </div>
+        <Pagination nextPage={comments.length >= COMMENTS_LISTING_PER_PAGE} />
       )}
     </>
   );

@@ -2,31 +2,23 @@
 
 import { POST_LISTING_PER_PAGE } from "@/constants";
 import { api } from "@/lib/api/client";
-import CardSkeleton from "../skeletons/CardSkeleton";
-import PostCard from "../cards/PostCard";
+import CardSkeleton from "../../skeletons/CardSkeleton";
+import PostCard from "../../cards/PostCard";
 import usePagination from "@/hooks/usePagination";
 
-interface Props {
-  username: string;
-}
-const PostLists = ({ username }: Props) => {
+const FollowingFeedLists = () => {
   const { currentPage, Pagination } = usePagination();
 
   const { isLoading: isLoadingPosts, data: posts } =
-    api.post.otherUserPosts.useQuery({
-      username,
+    api.post.followingFeedPosts.useQuery({
       perPage: POST_LISTING_PER_PAGE,
       page: currentPage,
     });
-  const { isLoading: isLoadingProfile, data: profile } =
-    api.github.otherProfile.useQuery({
-      username,
-    });
 
-  if (isLoadingPosts || isLoadingProfile)
+  if (isLoadingPosts)
     return (
       <>
-        {[...Array(3)].map((_, idx) => (
+        {[...Array(10)].map((_, idx) => (
           <CardSkeleton key={`cardSkeleton__${idx}`} withAvatar />
         ))}
       </>
@@ -41,12 +33,10 @@ const PostLists = ({ username }: Props) => {
       )}
       {posts &&
         posts.length > 0 &&
-        posts.map((data) => (
-          <PostCard key={data.post.id} data={data} owner={profile} />
-        ))}
+        posts.map((data) => <PostCard key={data.post.id} data={data} />)}
       {posts && <Pagination nextPage={posts.length >= POST_LISTING_PER_PAGE} />}
     </>
   );
 };
 
-export default PostLists;
+export default FollowingFeedLists;
