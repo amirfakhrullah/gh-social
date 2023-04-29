@@ -21,7 +21,10 @@ const useRefetchTimer = (time?: number) => {
 
   const restartTimer = () => setToRefetch(false);
 
-  return <div>useRefetchTimer</div>;
+  return {
+    toRefetch,
+    restartTimer,
+  };
 };
 
 export default useRefetchTimer;
