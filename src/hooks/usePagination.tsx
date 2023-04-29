@@ -5,6 +5,7 @@ import { useState } from "react";
 
 const usePagination = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const resetPage = () => setCurrentPage(1);
 
   const Pagination = ({ nextPage }: { nextPage: boolean }) => (
     <div className="py-2 flex flex-row items-center justify-center gap-2">
@@ -30,8 +31,9 @@ const usePagination = () => {
 
   return {
     currentPage,
-    Pagination
-  }
+    Pagination,
+    resetPage,
+  };
 };
 
 export default usePagination;

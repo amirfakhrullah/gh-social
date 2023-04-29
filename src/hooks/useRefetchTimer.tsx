@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-const A_MINUTE_IN_MILLISECONDS = 60000;
+const A_MINUTE_IN_MILLISECONDS = 30000;
 
 const useRefetchTimer = (time?: number) => {
   const duration = time ?? A_MINUTE_IN_MILLISECONDS;

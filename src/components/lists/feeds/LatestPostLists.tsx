@@ -5,17 +5,31 @@ import { api } from "@/lib/api/client";
 import CardSkeleton from "../../skeletons/CardSkeleton";
 import PostCard from "../../cards/PostCard";
 import usePagination from "@/hooks/usePagination";
+import useRefetchTimer from "@/hooks/useRefetchTimer";
+import { Button } from "@/components/ui/button";
 
 const LatestPostLists = () => {
-  const { currentPage, Pagination } = usePagination();
+  const { currentPage, Pagination, resetPage } = usePagination();
+  const { toRefetch, restartTimer } = useRefetchTimer();
 
-  const { isLoading: isLoadingPosts, data: posts } =
-    api.post.latestFeedPosts.useQuery({
-      perPage: POST_LISTING_PER_PAGE,
-      page: currentPage,
-    });
+  const {
+    isLoading: isLoadingPosts,
+    isFetching: isRefetchingPosts,
+    data: posts,
+    refetch,
+  } = api.post.latestFeedPosts.useQuery({
+    perPage: POST_LISTING_PER_PAGE,
+    page: currentPage,
+  });
 
-  if (isLoadingPosts)
+  const handleRefetch = () => {
+    if (!toRefetch) return;
+    resetPage();
+    refetch();
+    restartTimer();
+  };
+
+  if (isLoadingPosts || isRefetchingPosts)
     return (
       <>
         {[...Array(10)].map((_, idx) => (
@@ -29,6 +43,11 @@ const LatestPostLists = () => {
       {posts && posts.length === 0 && (
         <div className="pt-20 text-center text-lg font-bold text-slate-500">
           Uh oh.. no post here.
+        </div>
+      )}
+      {toRefetch && (
+        <div className="flex flex-row items-center justify-center">
+          <Button onClick={handleRefetch}>Refetch</Button>
         </div>
       )}
       {posts &&
