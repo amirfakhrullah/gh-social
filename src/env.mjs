@@ -6,10 +6,15 @@ const server = z.object({
   DATABASE_HOST: z.string().min(1),
   DATABASE_USERNAME: z.string().min(1),
   DATABASE_PASSWORD: z.string().min(1),
+  PUSHER_ID: z.string().min(1),
+  PUSHER_SECRET: z.string().min(1),
+  PUSHER_API_KEY: z.string().min(1),
 });
 
 const client = z.object({
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1),
+  NEXT_PUBLIC_PUSHER_KEY: z.string().min(1),
+  NEXT_PUBLIC_PUSHER_CLUSTER: z.string().min(1),
 });
 
 /**
@@ -24,9 +29,14 @@ const processEnv = {
   DATABASE_HOST: process.env.DATABASE_HOST,
   DATABASE_USERNAME: process.env.DATABASE_USERNAME,
   DATABASE_PASSWORD: process.env.DATABASE_PASSWORD,
+  PUSHER_ID: process.env.PUSHER_ID,
+  PUSHER_SECRET: process.env.PUSHER_SECRET,
+  PUSHER_API_KEY: process.env.PUSHER_API_KEY,
   // public
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
     process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
+  NEXT_PUBLIC_PUSHER_KEY: process.env.NEXT_PUBLIC_PUSHER_KEY,
+  NEXT_PUBLIC_PUSHER_CLUSTER: process.env.NEXT_PUBLIC_PUSHER_CLUSTER,
 };
 
 // Don't touch the part below

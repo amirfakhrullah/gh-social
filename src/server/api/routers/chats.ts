@@ -2,11 +2,12 @@ import { Chat, chats } from "@/server/db/schema/chats";
 import { userProtectedProcedure } from "../procedures";
 import { createTRPCRouter } from "../trpc";
 import { and, desc, eq, sql } from "drizzle-orm";
-import { idSchema, paginationSchema } from "@/validationSchemas";
+import { paginationSchema } from "@/validationSchemas";
 import { z } from "zod";
 import { getUsernameFromClerkOrCached } from "@/server/caches/usernameCache";
 import { v4 } from "uuid";
 import { TRPCError } from "@trpc/server";
+import pusherApi from "@/server/helpers/pusher";
 
 export const chatRouter = createTRPCRouter({
   recentChatters: userProtectedProcedure
@@ -95,32 +96,6 @@ export const chatRouter = createTRPCRouter({
           });
         });
 
-      /**
-       * TODO: publish message to pusher
-       */
-    }),
-
-  delete: userProtectedProcedure
-    .input(idSchema)
-    .mutation(async ({ ctx, input }) => {
-      const {
-        db,
-        auth: { userId },
-      } = ctx;
-      const username = await getUsernameFromClerkOrCached(userId);
-
-      await db
-        .delete(chats)
-        .where(and(eq(chats.id, input.id), eq(chats.senderId, username)))
-        .catch(() => {
-          throw new TRPCError({
-            code: "INTERNAL_SERVER_ERROR",
-            message: "There's an error when trying to delete the chat",
-          });
-        });
-
-      /**
-       * TODO: publish message to pusher
-       */
+      void pusherApi.pushChat(chatContent);
     }),
 });

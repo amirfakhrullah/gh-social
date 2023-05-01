@@ -2,6 +2,7 @@
  * WHY WE CACHED THIS?
  * - For getting feed posts, we need the all follower's username from github
  * - And github limits max = 100 followers per requests
+ * - The github requests gonna be heavy if the user has a lot of followings (1 requests per 100 followers)
  */
 
 import { MAX_FOLLOWING_USERNAME_LISTS_CACHE_LIFE_IN_SECONDS } from "@/constants";

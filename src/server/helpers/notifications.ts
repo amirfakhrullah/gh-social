@@ -6,6 +6,8 @@ import {
 } from "../db/schema/notifications";
 import { v4 } from "uuid";
 import { env } from "@/env.mjs";
+import { TRPCError } from "@trpc/server";
+import pusherApi from "./pusher";
 
 export const postNotification = async (
   db: PlanetScaleDatabase,
@@ -46,9 +48,15 @@ export const postNotification = async (
     originId,
     receiverId,
   };
-  await db.insert(notifications).values(newNotification);
+  await db
+    .insert(notifications)
+    .values(newNotification)
+    .catch(() => {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Unable to push notification",
+      });
+    });
 
-  /**
-   * TODO: pusher with `newNotification` data
-   */
+  void pusherApi.pushNotification(newNotification);
 };

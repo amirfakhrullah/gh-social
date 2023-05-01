@@ -42,6 +42,8 @@
     "lucide-react": "^0.176.0",
     "next": "13.3.1",
     "postcss": "8.4.23",
+    "pusher": "^5.1.2",
+    "pusher-js": "^8.0.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.43.9",
