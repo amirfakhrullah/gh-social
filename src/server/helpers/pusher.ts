@@ -18,19 +18,8 @@ const pushNotification = async (receiverId: string) => {
   });
 };
 
-const pushChat = async (chat: Chat) => {
-  await fetch(baseUrl + "/api/pusher/push-chat", {
-    method: "POST",
-    body: JSON.stringify(chat),
-    headers: {
-      "x-api-key": env.PUSHER_API_KEY,
-    },
-  });
-};
-
 const pusherApi = {
   pushNotification,
-  pushChat,
 };
 
 export default pusherApi;

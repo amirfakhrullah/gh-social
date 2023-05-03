@@ -6,8 +6,6 @@ import {
   AiFillHome,
   AiFillBell,
   AiOutlineBell,
-  AiFillMessage,
-  AiOutlineMessage,
 } from "react-icons/ai";
 import { IoSearchOutline, IoSearchSharp } from "react-icons/io5";
 import { RiUser3Fill, RiUser3Line } from "react-icons/ri";
@@ -48,12 +46,6 @@ export default function Sidebar() {
         InActive: AiOutlineBell,
         title: "Notifications",
         path: "/notifications",
-      },
-      {
-        Active: AiFillMessage,
-        InActive: AiOutlineMessage,
-        title: "Messages",
-        path: "/messages",
       },
       {
         Active: RiUser3Fill,
