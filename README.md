@@ -5,6 +5,14 @@ A social media platform for GitHub users built mostly with Experimental Edge sta
 > **Warning**
 > This project is using Next.js App Router, which is not production-ready yet. This project is built for learning/testing these stacks
 
+## Demo
+
+![demo1](https://user-images.githubusercontent.com/73758525/236004677-9d196358-5fd0-47e0-902b-7ba917f2592f.png)
+
+![demo2](https://user-images.githubusercontent.com/73758525/236004640-d78da87e-b7d5-40fe-9b63-fa1dddf67c2e.png)
+
+![demo3](https://user-images.githubusercontent.com/73758525/236004660-99bae668-e437-4a69-91ff-dd1eb475d3a8.png)
+
 ## Features
 
 - You can follow/unfollow users, fork/star repositories and everything will sync-up with your GitHub account
