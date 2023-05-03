@@ -96,6 +96,6 @@ export const chatRouter = createTRPCRouter({
           });
         });
 
-      void pusherApi.pushChat(chatContent);
+      await pusherApi.pushChat(chatContent);
     }),
 });

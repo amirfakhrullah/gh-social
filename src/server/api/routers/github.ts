@@ -127,7 +127,7 @@ export const githubRouter = createTRPCRouter({
       if (action === "follow" && isRequestSucceed) {
         const originId = await getUsernameFromClerkOrCached(userId);
 
-        void postNotification(db, {
+        await postNotification(db, {
           originId,
           receiverId: username,
           githubAction: "follow",
@@ -224,7 +224,7 @@ export const githubRouter = createTRPCRouter({
         const receiverId = repoName.split("/")[0];
         const originId = await getUsernameFromClerkOrCached(userId);
 
-        void postNotification(db, {
+        await postNotification(db, {
           originId,
           receiverId,
           githubAction: "star",

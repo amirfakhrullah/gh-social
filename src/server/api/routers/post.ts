@@ -220,7 +220,7 @@ export const postRouter = createTRPCRouter({
       // notifications
       if (repoShared) {
         const receiverId = repoShared.split("/")[0];
-        void postNotification(db, {
+        await postNotification(db, {
           originId: username,
           receiverId,
           githubAction: "share",

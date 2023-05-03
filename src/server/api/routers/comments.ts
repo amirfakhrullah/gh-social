@@ -138,7 +138,7 @@ export const commentRouter = createTRPCRouter({
         });
 
       // notifications adding comments
-      void postNotification(db, {
+      await postNotification(db, {
         originId: username,
         receiverId: postReference.ownerId,
         postAction: "comment",

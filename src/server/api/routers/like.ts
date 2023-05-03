@@ -149,7 +149,7 @@ export const likeRouter = createTRPCRouter({
             });
           });
         // notifications for liking posts
-        void postNotification(db, {
+        await postNotification(db, {
           originId: username,
           receiverId: postReference.ownerId,
           postAction: "like",

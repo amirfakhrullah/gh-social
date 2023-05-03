@@ -58,5 +58,5 @@ export const postNotification = async (
       });
     });
 
-  void pusherApi.pushNotification(newNotification);
+  await pusherApi.pushNotification(newNotification);
 };
