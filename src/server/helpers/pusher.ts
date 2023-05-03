@@ -1,6 +1,4 @@
 import { env } from "@/env.mjs";
-import { Chat } from "../db/schema/chats";
-import { Notification } from "../db/schema/notifications";
 
 const baseUrl = (() => {
   if (typeof window !== "undefined") return ""; // browser should use relative url
