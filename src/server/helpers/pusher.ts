@@ -1,13 +1,13 @@
-import { env } from "@/env.mjs";
 import { Chat } from "../db/schema/chats";
 import { Notification } from "../db/schema/notifications";
+import { getApiKey } from "./apiKey";
 
 const pushNotification = async (notification: Notification) => {
   await fetch("/api/pusher/push-notification", {
     method: "POST",
     body: JSON.stringify(notification),
     headers: {
-      "x-api-key": env.PUSHER_API_KEY,
+      "x-api-key": getApiKey(),
     },
   });
 };
@@ -17,7 +17,7 @@ const pushChat = async (chat: Chat) => {
     method: "POST",
     body: JSON.stringify(chat),
     headers: {
-      "x-api-key": env.PUSHER_API_KEY,
+      "x-api-key": getApiKey(),
     },
   });
 };

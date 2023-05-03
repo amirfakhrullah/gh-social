@@ -4,7 +4,7 @@ import {
   userProtectedProcedure,
 } from "../procedures";
 import { createTRPCRouter } from "../trpc";
-import { and, desc, eq, inArray, sql } from "drizzle-orm";
+import { and, desc, eq, like, inArray, sql } from "drizzle-orm";
 import { z } from "zod";
 import { comments } from "@/server/db/schema/comments";
 import { likes } from "@/server/db/schema/likes";
@@ -72,6 +72,27 @@ export const postRouter = createTRPCRouter({
         .limit(perPage);
 
       return latestPosts;
+    }),
+
+  searchPosts: userProtectedProcedure
+    .input(
+      z
+        .object({
+          query: z.string().min(1).max(50),
+        })
+        .merge(paginationSchema)
+    )
+    .query(async ({ ctx, input }) => {
+      const { db } = ctx;
+      const { query, page, perPage } = input;
+      const keys = query.trim().split(" ");
+
+      const results = await getPostsWithCommentsCountAndLikesCountQuery(db)
+        .where(and(...keys.map((key) => like(posts.content, `%${key}%`))))
+        .offset((page - 1) * perPage)
+        .limit(perPage);
+
+      return results;
     }),
 
   myPosts: userProtectedProcedure
