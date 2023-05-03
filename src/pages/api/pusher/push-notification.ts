@@ -20,13 +20,15 @@ export default async function handler(
   }
 
   try {
-    const notification = publishNotificationSchema.parse(JSON.parse(req.body));
+    const notificationObj = publishNotificationSchema.parse(
+      JSON.parse(req.body)
+    );
 
     const pusher = getPusherServerSdk();
     pusher.trigger(
-      getPusherNotificationsChannelId(notification.receiverId),
+      getPusherNotificationsChannelId(notificationObj.receiverId),
       PUSHER_NOTIFICATION_EVENT.New,
-      notification
+      {}
     );
 
     res.status(201).end();

@@ -1,11 +1,11 @@
 "use client";
 
 import { NOTIFICATION_LISTING_PER_PAGE } from "@/constants";
-import { RouterOutputs, api } from "@/lib/api/client";
+import { api } from "@/lib/api/client";
 import CardSkeleton from "../skeletons/CardSkeleton";
 import NotificationCard from "../cards/NotificationCard";
 import usePagination from "@/hooks/usePagination";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
 import { getPusherClientSdk } from "@/lib/pusher/client";
 import {
@@ -13,32 +13,27 @@ import {
   getPusherNotificationsChannelId,
 } from "@/lib/pusher/shared";
 
-type Notification = RouterOutputs["notification"]["getRecents"][number];
-type NotificationFromPusher = Omit<Notification, "createdAt"> & {
-  createdAt: string;
-};
 const NotificationLists = () => {
   const { user } = useUser();
-  const [notifications, setNotifications] = useState<Notification[]>([]);
   const { currentPage, Pagination } = usePagination();
 
-  const { isLoading, data, refetch } = api.notification.getRecents.useQuery(
+  const {
+    isLoading,
+    data: notifications,
+    refetch,
+  } = api.notification.getRecents.useQuery(
     {
       perPage: NOTIFICATION_LISTING_PER_PAGE,
       page: currentPage,
     },
     {
+      refetchOnWindowFocus: true,
       refetchOnMount: true,
       refetchOnReconnect: true,
-      refetchOnWindowFocus: true,
+      cacheTime: 0,
+      staleTime: 0,
     }
   );
-
-  useEffect(() => {
-    if (data) {
-      setNotifications(data);
-    }
-  }, [data]);
 
   useEffect(() => {
     if (user?.username) {
@@ -47,19 +42,7 @@ const NotificationLists = () => {
       const channel = pusher.subscribe(
         getPusherNotificationsChannelId(username)
       );
-      channel.bind(
-        PUSHER_NOTIFICATION_EVENT.New,
-        (newNotification: NotificationFromPusher) => {
-          setNotifications((noti) => [
-            {
-              ...newNotification,
-              createdAt: new Date(newNotification.createdAt),
-            },
-            ...noti,
-          ]);
-          refetch();
-        }
-      );
+      channel.bind(PUSHER_NOTIFICATION_EVENT.New, () => refetch());
       return () => {
         pusher.unsubscribe(getPusherNotificationsChannelId(username));
         channel.unbind(PUSHER_NOTIFICATION_EVENT.New);

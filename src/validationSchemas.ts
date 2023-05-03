@@ -29,15 +29,7 @@ export const githubRepoSchema = z.object({
 });
 
 export const publishNotificationSchema = z.object({
-  id: z.string().min(1),
-  githubAction: z.enum(["follow", "share", "star"]).nullable(),
-  repoName: z.string().nullable(),
-  postAction: z.enum(["like", "comment"]).nullable(),
-  postId: z.string().min(1).nullable(),
-  commentId: z.string().min(1).nullable(),
-  createdAt: z.string().min(1),
   receiverId: z.string().min(1),
-  originId: z.string().min(1),
 });
 
 export const publishChatSchema = z.object({

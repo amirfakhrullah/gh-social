@@ -8,10 +8,10 @@ const baseUrl = (() => {
   return `http://localhost:${process.env.PORT ?? 3000}`; // dev SSR should use localhost
 })();
 
-const pushNotification = async (notification: Notification) => {
+const pushNotification = async (receiverId: string) => {
   await fetch(baseUrl + "/api/pusher/push-notification", {
     method: "POST",
-    body: JSON.stringify(notification),
+    body: JSON.stringify({ receiverId }),
     headers: {
       "x-api-key": env.PUSHER_API_KEY,
     },
