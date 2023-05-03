@@ -8,6 +8,7 @@ const server = z.object({
   DATABASE_PASSWORD: z.string().min(1),
   PUSHER_ID: z.string().min(1),
   PUSHER_SECRET: z.string().min(1),
+  PUSHER_API_KEY: z.string().min(1),
 });
 
 const client = z.object({
@@ -30,6 +31,7 @@ const processEnv = {
   DATABASE_PASSWORD: process.env.DATABASE_PASSWORD,
   PUSHER_ID: process.env.PUSHER_ID,
   PUSHER_SECRET: process.env.PUSHER_SECRET,
+  PUSHER_API_KEY: process.env.PUSHER_API_KEY,
   // public
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
     process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,

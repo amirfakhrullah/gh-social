@@ -1,9 +1,9 @@
+import { env } from "@/env.mjs";
 import { getPusherServerSdk } from "@/lib/pusher/server";
 import {
   PUSHER_CHAT_EVENT,
   getPusherChatsChannelId,
 } from "@/lib/pusher/shared";
-import { getApiKey } from "@/server/helpers/apiKey";
 import { publishChatSchema } from "@/validationSchemas";
 import { NextApiRequest, NextApiResponse } from "next";
 
@@ -15,7 +15,7 @@ export default async function handler(
     res.status(400).end();
   }
   const apiKey = req.headers["x-api-key"];
-  if (apiKey !== getApiKey()) {
+  if (apiKey !== env.PUSHER_API_KEY) {
     res.status(401).end();
   }
 

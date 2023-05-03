@@ -1,7 +1,6 @@
 import { env } from "@/env.mjs";
 import { Chat } from "../db/schema/chats";
 import { Notification } from "../db/schema/notifications";
-import { getApiKey } from "./apiKey";
 
 const baseUrl = (() => {
   if (typeof window !== "undefined") return ""; // browser should use relative url
@@ -14,7 +13,7 @@ const pushNotification = async (notification: Notification) => {
     method: "POST",
     body: JSON.stringify(notification),
     headers: {
-      "x-api-key": getApiKey(),
+      "x-api-key": env.PUSHER_API_KEY,
     },
   });
 };
@@ -24,7 +23,7 @@ const pushChat = async (chat: Chat) => {
     method: "POST",
     body: JSON.stringify(chat),
     headers: {
-      "x-api-key": getApiKey(),
+      "x-api-key": env.PUSHER_API_KEY,
     },
   });
 };
