@@ -19,8 +19,6 @@ export default async function handler(
     res.status(401).end();
   }
 
-  console.log(req.body);
-
   try {
     const notification = publishNotificationSchema.parse(JSON.parse(req.body));
 
