@@ -73,3 +73,6 @@ Run
 ```
 pnpm dev
 ```
+## License
+
+License under the [MIT License](./LICENSE)
