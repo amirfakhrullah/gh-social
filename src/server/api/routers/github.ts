@@ -59,7 +59,7 @@ export const githubRouter = createTRPCRouter({
         page,
         perPage
       );
-      return profiles.map((profile) => trimGitHubProfileData(profile));
+      return profiles.map(trimGitHubProfileData);
     }),
 
   following: gitHubProtectedProcedure
@@ -82,7 +82,7 @@ export const githubRouter = createTRPCRouter({
         page,
         perPage
       );
-      return profiles.map((profile) => trimGitHubProfileData(profile));
+      return profiles.map(trimGitHubProfileData);
     }),
 
   hasFollowedTheUser: gitHubProtectedProcedure
