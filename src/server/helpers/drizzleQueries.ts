@@ -1,11 +1,11 @@
 import { eq, sql } from "drizzle-orm";
-import { PlanetScaleDatabase } from "drizzle-orm/planetscale-serverless";
 import { posts } from "../db/schema/posts";
 import { comments } from "../db/schema/comments";
 import { likes } from "../db/schema/likes";
+import { MySql2Database } from "drizzle-orm/mysql2";
 
 export const getPostsWithCommentsCountAndLikesCountQuery = (
-  db: PlanetScaleDatabase
+  db: MySql2Database<Record<string, never>>
 ) => {
   const postCommentsSq = db
     .select({

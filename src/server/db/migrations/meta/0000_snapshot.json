@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "6957d62c-9f99-452d-b8e5-5423c5401680",
+  "id": "43cbbd13-c0cd-4003-9fa2-4b349b27617d",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "comments": {
@@ -10,7 +10,7 @@
         "id": {
           "name": "id",
           "type": "varchar(191)",
-          "primaryKey": true,
+          "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
@@ -30,7 +30,7 @@
         },
         "post_id": {
           "name": "post_id",
-          "type": "int",
+          "type": "varchar(191)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -61,7 +61,15 @@
         }
       },
       "foreignKeys": {},
-      "compositePrimaryKeys": {}
+      "compositePrimaryKeys": {
+        "comments_id": {
+          "name": "comments_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
     },
     "likes": {
       "name": "likes",
@@ -69,7 +77,7 @@
         "id": {
           "name": "id",
           "type": "varchar(191)",
-          "primaryKey": true,
+          "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
@@ -82,7 +90,7 @@
         },
         "post_id": {
           "name": "post_id",
-          "type": "int",
+          "type": "varchar(191)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -110,10 +118,114 @@
             "id"
           ],
           "isUnique": false
+        },
+        "owner_id_post_id_unique_idx": {
+          "name": "owner_id_post_id_unique_idx",
+          "columns": [
+            "post_id",
+            "owner_id"
+          ],
+          "isUnique": true
         }
       },
       "foreignKeys": {},
-      "compositePrimaryKeys": {}
+      "compositePrimaryKeys": {
+        "likes_id": {
+          "name": "likes_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "notifications": {
+      "name": "notifications",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(191)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "github_action": {
+          "name": "github_action",
+          "type": "enum('follow','star','share')",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "repo_name": {
+          "name": "repo_name",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "post_action": {
+          "name": "post_action",
+          "type": "enum('comment','like')",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "post_id": {
+          "name": "post_id",
+          "type": "varchar(191)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "comment_id": {
+          "name": "comment_id",
+          "type": "varchar(191)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "origin_id": {
+          "name": "origin_id",
+          "type": "varchar(191)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "receiver_id": {
+          "name": "receiver_id",
+          "type": "varchar(191)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        }
+      },
+      "indexes": {
+        "receiver_id_idx": {
+          "name": "receiver_id_idx",
+          "columns": [
+            "receiver_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "notifications_id": {
+          "name": "notifications_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
     },
     "posts": {
       "name": "posts",
@@ -121,7 +233,7 @@
         "id": {
           "name": "id",
           "type": "varchar(191)",
-          "primaryKey": true,
+          "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
@@ -162,10 +274,25 @@
             "owner_id"
           ],
           "isUnique": false
+        },
+        "repo_shared_idx": {
+          "name": "repo_shared_idx",
+          "columns": [
+            "repo_shared"
+          ],
+          "isUnique": false
         }
       },
       "foreignKeys": {},
-      "compositePrimaryKeys": {}
+      "compositePrimaryKeys": {
+        "posts_id": {
+          "name": "posts_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
     }
   },
   "schemas": {},

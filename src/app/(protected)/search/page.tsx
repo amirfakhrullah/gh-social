@@ -10,5 +10,4 @@ export default function Search() {
   );
 }
 
-export const runtime = "experimental-edge";
 export const revalidate = 0;

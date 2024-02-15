@@ -1,1 +1,0 @@
-ALTER TABLE `notifications` MODIFY COLUMN `id` varchar(191) NOT NULL;

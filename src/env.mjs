@@ -3,12 +3,16 @@ import { z } from "zod";
 const server = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]),
   CLERK_SECRET_KEY: z.string().min(1),
-  DATABASE_HOST: z.string().min(1),
-  DATABASE_USERNAME: z.string().min(1),
-  DATABASE_PASSWORD: z.string().min(1),
   PUSHER_ID: z.string().min(1),
   PUSHER_SECRET: z.string().min(1),
   PUSHER_API_KEY: z.string().min(1),
+
+  // db
+  DATABASE_NAME: z.string().min(1),
+  DATABASE_HOST: z.string().min(1),
+  DATABASE_USERNAME: z.string().min(1),
+  DATABASE_PASSWORD: z.string().min(1),
+  DATABASE_PORT: z.string().min(1),
 });
 
 const client = z.object({
@@ -26,9 +30,11 @@ const client = z.object({
 const processEnv = {
   NODE_ENV: process.env.NODE_ENV,
   CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
+  DATABASE_NAME: process.env.DATABASE_NAME,
   DATABASE_HOST: process.env.DATABASE_HOST,
   DATABASE_USERNAME: process.env.DATABASE_USERNAME,
   DATABASE_PASSWORD: process.env.DATABASE_PASSWORD,
+  DATABASE_PORT: process.env.DATABASE_PORT,
   PUSHER_ID: process.env.PUSHER_ID,
   PUSHER_SECRET: process.env.PUSHER_SECRET,
   PUSHER_API_KEY: process.env.PUSHER_API_KEY,

@@ -26,5 +26,4 @@ export default async function RepoIdPage({ params: { repoId } }: PageProps) {
   );
 }
 
-export const runtime = "experimental-edge";
 export const revalidate = 0;

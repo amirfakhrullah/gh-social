@@ -9,13 +9,13 @@
     "lint": "next lint",
     "ts-node": "ts-node -O \"{\\\"module\\\":\\\"commonjs\\\"}\"",
     "db:generate": "pnpm drizzle-kit generate:mysql",
+    "db:migrate": "tsx src/server/db/migrate.ts",
     "db:up": "pnpm drizzle-kit up:mysql"
   },
   "dependencies": {
     "@clerk/nextjs": "^4.16.4",
     "@clerk/themes": "^1.6.3",
     "@hookform/resolvers": "^3.1.0",
-    "@planetscale/database": "^1.7.0",
     "@radix-ui/react-alert-dialog": "^1.0.3",
     "@radix-ui/react-avatar": "^1.0.2",
     "@radix-ui/react-dialog": "^1.0.3",
@@ -36,10 +36,11 @@
     "autoprefixer": "10.4.14",
     "class-variance-authority": "^0.5.2",
     "clsx": "^1.2.1",
-    "drizzle-orm": "^0.25.2",
+    "drizzle-orm": "^0.29.3",
     "eslint": "8.39.0",
     "eslint-config-next": "13.3.1",
     "lucide-react": "^0.176.0",
+    "mysql2": "^3.9.1",
     "next": "13.3.1",
     "postcss": "8.4.23",
     "pusher": "^5.1.2",
@@ -66,7 +67,8 @@
   "devDependencies": {
     "@types/uuid": "^9.0.1",
     "dotenv": "^16.0.3",
-    "drizzle-kit": "^0.17.6",
-    "ts-node": "^10.9.1"
+    "drizzle-kit": "^0.20.14",
+    "ts-node": "^10.9.1",
+    "tsx": "^4.7.1"
   }
 }

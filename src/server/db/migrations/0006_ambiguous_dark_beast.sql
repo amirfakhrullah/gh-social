@@ -1,1 +1,0 @@
-ALTER TABLE `notifications` ADD `comment_id` varchar(191);

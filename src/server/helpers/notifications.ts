@@ -1,4 +1,3 @@
-import { PlanetScaleDatabase } from "drizzle-orm/planetscale-serverless";
 import {
   Notification,
   NotificationInsert,
@@ -8,9 +7,10 @@ import { v4 } from "uuid";
 import { env } from "@/env.mjs";
 import { TRPCError } from "@trpc/server";
 import pusherApi from "./pusher";
+import { MySql2Database } from "drizzle-orm/mysql2";
 
 export const postNotification = async (
-  db: PlanetScaleDatabase,
+  db: MySql2Database<Record<string, never>>,
   inputs: Omit<NotificationInsert, "id">
 ) => {
   const {

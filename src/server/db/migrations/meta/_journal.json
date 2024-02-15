@@ -5,80 +5,9 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1682447397664,
-      "tag": "0000_even_susan_delgado"
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1682448125846,
-      "tag": "0001_dark_charles_xavier"
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1682505792387,
-      "tag": "0002_zippy_cannonball"
-    },
-    {
-      "idx": 3,
-      "version": "5",
-      "when": 1682531356776,
-      "tag": "0003_free_reavers"
-    },
-    {
-      "idx": 4,
-      "version": "5",
-      "when": 1682674906102,
-      "tag": "0004_condemned_madelyne_pryor"
-    },
-    {
-      "idx": 5,
-      "version": "5",
-      "when": 1682675053632,
-      "tag": "0005_clever_ted_forrester"
-    },
-    {
-      "idx": 6,
-      "version": "5",
-      "when": 1682704443147,
-      "tag": "0006_ambiguous_dark_beast"
-    },
-    {
-      "idx": 7,
-      "version": "5",
-      "when": 1682710543877,
-      "tag": "0007_flawless_the_hunter"
-    },
-    {
-      "idx": 8,
-      "version": "5",
-      "when": 1682710622883,
-      "tag": "0008_fantastic_molly_hayes"
-    },
-    {
-      "idx": 9,
-      "version": "5",
-      "when": 1682710838346,
-      "tag": "0009_famous_eternity"
-    },
-    {
-      "idx": 10,
-      "version": "5",
-      "when": 1682710966229,
-      "tag": "0010_typical_shinobi_shaw"
-    },
-    {
-      "idx": 11,
-      "version": "5",
-      "when": 1682711215661,
-      "tag": "0011_open_the_executioner"
-    },
-    {
-      "idx": 12,
-      "version": "5",
-      "when": 1683136489102,
-      "tag": "0012_yummy_hemingway"
+      "when": 1707981128846,
+      "tag": "0000_lively_amazoness",
+      "breakpoints": true
     }
   ]
 }
