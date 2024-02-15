@@ -19,6 +19,9 @@ dependencies:
   '@hookform/resolvers':
     specifier: ^3.1.0
     version: 3.1.0(react-hook-form@7.43.9)
+  '@planetscale/database':
+    specifier: ^1.16.0
+    version: 1.16.0
   '@radix-ui/react-alert-dialog':
     specifier: ^1.0.3
     version: 1.0.3(@types/react@18.0.38)(react-dom@18.2.0)(react@18.2.0)
@@ -81,7 +84,7 @@ dependencies:
     version: 1.2.1
   drizzle-orm:
     specifier: ^0.29.3
-    version: 0.29.3(@types/react@18.0.38)(mysql2@3.9.1)(react@18.2.0)
+    version: 0.29.3(@planetscale/database@1.16.0)(@types/react@18.0.38)(mysql2@3.9.1)(react@18.2.0)
   eslint:
     specifier: 8.39.0
     version: 8.39.0
@@ -1100,6 +1103,11 @@ packages:
       picocolors: 1.0.0
       tiny-glob: 0.2.9
       tslib: 2.5.0
+    dev: false
+
+  /@planetscale/database@1.16.0:
+    resolution: {integrity: sha512-HNUrTqrd8aTRZYMDcsoZ62s36sIWkMMmKZBOehoCWR2WrfNPKq+Q1yQef5okl3pSVlldFnu2h/dbHjOsDTHXug==}
+    engines: {node: '>=16'}
     dev: false
 
   /@radix-ui/number@1.0.0:
@@ -2450,7 +2458,7 @@ packages:
       - supports-color
     dev: true
 
-  /drizzle-orm@0.29.3(@types/react@18.0.38)(mysql2@3.9.1)(react@18.2.0):
+  /drizzle-orm@0.29.3(@planetscale/database@1.16.0)(@types/react@18.0.38)(mysql2@3.9.1)(react@18.2.0):
     resolution: {integrity: sha512-uSE027csliGSGYD0pqtM+SAQATMREb3eSM/U8s6r+Y0RFwTKwftnwwSkqx3oS65UBgqDOM0gMTl5UGNpt6lW0A==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
@@ -2521,6 +2529,7 @@ packages:
       sqlite3:
         optional: true
     dependencies:
+      '@planetscale/database': 1.16.0
       '@types/react': 18.0.38
       mysql2: 3.9.1
       react: 18.2.0
