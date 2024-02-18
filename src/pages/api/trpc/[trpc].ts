@@ -27,3 +27,5 @@ export default function handler(req: NextRequest) {
         : undefined,
   });
 }
+
+export const runtime = "edge";

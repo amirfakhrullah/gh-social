@@ -8,11 +8,7 @@ const server = z.object({
   PUSHER_API_KEY: z.string().min(1),
 
   // db
-  DATABASE_NAME: z.string().min(1),
-  DATABASE_HOST: z.string().min(1),
-  DATABASE_USERNAME: z.string().min(1),
-  DATABASE_PASSWORD: z.string().min(1),
-  DATABASE_PORT: z.string().min(1),
+  NEON_DB_URL: z.string().min(1),
 });
 
 const client = z.object({
@@ -30,11 +26,7 @@ const client = z.object({
 const processEnv = {
   NODE_ENV: process.env.NODE_ENV,
   CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
-  DATABASE_NAME: process.env.DATABASE_NAME,
-  DATABASE_HOST: process.env.DATABASE_HOST,
-  DATABASE_USERNAME: process.env.DATABASE_USERNAME,
-  DATABASE_PASSWORD: process.env.DATABASE_PASSWORD,
-  DATABASE_PORT: process.env.DATABASE_PORT,
+  NEON_DB_URL: process.env.NEON_DB_URL,
   PUSHER_ID: process.env.PUSHER_ID,
   PUSHER_SECRET: process.env.PUSHER_SECRET,
   PUSHER_API_KEY: process.env.PUSHER_API_KEY,

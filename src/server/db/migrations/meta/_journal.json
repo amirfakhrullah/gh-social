@@ -1,12 +1,12 @@
 {
   "version": "5",
-  "dialect": "mysql",
+  "dialect": "pg",
   "entries": [
     {
       "idx": 0,
       "version": "5",
-      "when": 1707981128846,
-      "tag": "0000_lively_amazoness",
+      "when": 1708243465089,
+      "tag": "0000_lame_silver_centurion",
       "breakpoints": true
     }
   ]

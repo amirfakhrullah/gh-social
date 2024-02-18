@@ -29,4 +29,5 @@ export default async function Users({ params: { username } }: PageProps) {
   );
 }
 
+export const runtime = "experimental-edge";
 export const revalidate = 0;

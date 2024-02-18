@@ -7,10 +7,10 @@ import { v4 } from "uuid";
 import { env } from "@/env.mjs";
 import { TRPCError } from "@trpc/server";
 import pusherApi from "./pusher";
-import { MySql2Database } from "drizzle-orm/mysql2";
+import { NeonHttpDatabase } from "drizzle-orm/neon-http";
 
 export const postNotification = async (
-  db: MySql2Database<Record<string, never>>,
+  db: NeonHttpDatabase<Record<string, never>>,
   inputs: Omit<NotificationInsert, "id">
 ) => {
   const {

@@ -1,27 +1,34 @@
 import { InferModel } from "drizzle-orm";
 import {
   index,
-  mysqlEnum,
-  mysqlTable,
+  pgEnum,
+  pgTable,
   timestamp,
   varchar,
-} from "drizzle-orm/mysql-core";
+} from "drizzle-orm/pg-core";
+import { posts } from "./posts";
+import { comments } from "./comments";
 
-export const notifications = mysqlTable(
+export const githubAction = pgEnum("github_action", ["follow", "star", "share"]);
+export const postAction = pgEnum("post_action", ["comment", "like"]);
+
+export const notifications = pgTable(
   "notifications",
   {
     id: varchar("id", { length: 191 }).notNull().primaryKey(),
-    githubAction: mysqlEnum("github_action", ["follow", "star", "share"]),
+    githubAction: githubAction("github_action"),
     repoName: varchar("repo_name", { length: 256 }),
-    postAction: mysqlEnum("post_action", ["comment", "like"]),
-    postId: varchar("post_id", { length: 191 }),
-    commentId: varchar("comment_id", { length: 191 }),
+    postAction: postAction("post_action"),
+    postId: varchar("post_id", { length: 191 }).references(() => posts.id),
+    commentId: varchar("comment_id", { length: 191 }).references(
+      () => comments.id
+    ),
     originId: varchar("origin_id", { length: 191 }).notNull(),
     receiverId: varchar("receiver_id", { length: 191 }).notNull(),
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
   (table) => ({
-    receiverIdIdx: index("receiver_id_idx").on(table.receiverId),
+    receiverIdIdx: index("notifications_receiver_id_idx").on(table.receiverId),
   })
 );
 

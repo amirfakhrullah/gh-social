@@ -1,11 +1,7 @@
 import type { InferModel } from "drizzle-orm";
-import { timestamp } from "drizzle-orm/mysql-core";
-import { index } from "drizzle-orm/mysql-core";
-import { text } from "drizzle-orm/mysql-core";
-import { varchar } from "drizzle-orm/mysql-core";
-import { mysqlTable } from "drizzle-orm/mysql-core";
+import { index, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
-export const posts = mysqlTable(
+export const posts = pgTable(
   "posts",
   {
     id: varchar("id", { length: 191 }).notNull().primaryKey(),
@@ -15,8 +11,8 @@ export const posts = mysqlTable(
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
   (table) => ({
-    ownerIdIdx: index("owner_id_idx").on(table.ownerId),
-    repoSharedIdx: index("repo_shared_idx").on(table.repoShared),
+    ownerIdIdx: index("posts_owner_id_idx").on(table.ownerId),
+    repoSharedIdx: index("posts_repo_shared_idx").on(table.repoShared),
   })
 );
 

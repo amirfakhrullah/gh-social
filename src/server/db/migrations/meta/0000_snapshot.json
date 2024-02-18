@@ -1,126 +1,112 @@
 {
-  "version": "5",
-  "dialect": "mysql",
-  "id": "43cbbd13-c0cd-4003-9fa2-4b349b27617d",
+  "id": "a0c9017d-34de-4d1d-afe2-58eb819407d2",
   "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "5",
+  "dialect": "pg",
   "tables": {
     "comments": {
       "name": "comments",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
           "type": "varchar(191)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "primaryKey": true,
+          "notNull": true
         },
         "owner_id": {
           "name": "owner_id",
           "type": "varchar(191)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "content": {
           "name": "content",
           "type": "text",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "post_id": {
           "name": "post_id",
           "type": "varchar(191)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": "(now())"
+          "default": "now()"
         }
       },
       "indexes": {
-        "owner_id_idx": {
-          "name": "owner_id_idx",
+        "comments_owner_id_idx": {
+          "name": "comments_owner_id_idx",
           "columns": [
             "owner_id"
           ],
           "isUnique": false
-        },
-        "post_id_idx": {
-          "name": "post_id_idx",
-          "columns": [
+        }
+      },
+      "foreignKeys": {
+        "comments_post_id_posts_id_fk": {
+          "name": "comments_post_id_posts_id_fk",
+          "tableFrom": "comments",
+          "tableTo": "posts",
+          "columnsFrom": [
+            "post_id"
+          ],
+          "columnsTo": [
             "id"
           ],
-          "isUnique": false
+          "onDelete": "no action",
+          "onUpdate": "no action"
         }
       },
-      "foreignKeys": {},
-      "compositePrimaryKeys": {
-        "comments_id": {
-          "name": "comments_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
+      "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
     "likes": {
       "name": "likes",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
           "type": "varchar(191)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "primaryKey": true,
+          "notNull": true
         },
         "owner_id": {
           "name": "owner_id",
           "type": "varchar(191)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "post_id": {
           "name": "post_id",
           "type": "varchar(191)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": "(now())"
+          "default": "now()"
         }
       },
       "indexes": {
-        "owner_id_idx": {
-          "name": "owner_id_idx",
+        "likes_owner_id_idx": {
+          "name": "likes_owner_id_idx",
           "columns": [
             "owner_id"
           ],
           "isUnique": false
         },
-        "post_id_idx": {
-          "name": "post_id_idx",
-          "columns": [
-            "id"
-          ],
-          "isUnique": false
-        },
-        "owner_id_post_id_unique_idx": {
-          "name": "owner_id_post_id_unique_idx",
+        "likes_unique_idx": {
+          "name": "likes_unique_idx",
           "columns": [
             "post_id",
             "owner_id"
@@ -128,155 +114,170 @@
           "isUnique": true
         }
       },
-      "foreignKeys": {},
-      "compositePrimaryKeys": {
-        "likes_id": {
-          "name": "likes_id",
-          "columns": [
+      "foreignKeys": {
+        "likes_post_id_posts_id_fk": {
+          "name": "likes_post_id_posts_id_fk",
+          "tableFrom": "likes",
+          "tableTo": "posts",
+          "columnsFrom": [
+            "post_id"
+          ],
+          "columnsTo": [
             "id"
-          ]
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
         }
       },
+      "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
     "notifications": {
       "name": "notifications",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
           "type": "varchar(191)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "primaryKey": true,
+          "notNull": true
         },
         "github_action": {
           "name": "github_action",
-          "type": "enum('follow','star','share')",
+          "type": "github_action",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "repo_name": {
           "name": "repo_name",
           "type": "varchar(256)",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "post_action": {
           "name": "post_action",
-          "type": "enum('comment','like')",
+          "type": "post_action",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "post_id": {
           "name": "post_id",
           "type": "varchar(191)",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "comment_id": {
           "name": "comment_id",
           "type": "varchar(191)",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "origin_id": {
           "name": "origin_id",
           "type": "varchar(191)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "receiver_id": {
           "name": "receiver_id",
           "type": "varchar(191)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": "(now())"
+          "default": "now()"
         }
       },
       "indexes": {
-        "receiver_id_idx": {
-          "name": "receiver_id_idx",
+        "notifications_receiver_id_idx": {
+          "name": "notifications_receiver_id_idx",
           "columns": [
             "receiver_id"
           ],
           "isUnique": false
         }
       },
-      "foreignKeys": {},
-      "compositePrimaryKeys": {
-        "notifications_id": {
-          "name": "notifications_id",
-          "columns": [
+      "foreignKeys": {
+        "notifications_post_id_posts_id_fk": {
+          "name": "notifications_post_id_posts_id_fk",
+          "tableFrom": "notifications",
+          "tableTo": "posts",
+          "columnsFrom": [
+            "post_id"
+          ],
+          "columnsTo": [
             "id"
-          ]
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "notifications_comment_id_comments_id_fk": {
+          "name": "notifications_comment_id_comments_id_fk",
+          "tableFrom": "notifications",
+          "tableTo": "comments",
+          "columnsFrom": [
+            "comment_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
         }
       },
+      "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
     "posts": {
       "name": "posts",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
           "type": "varchar(191)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "primaryKey": true,
+          "notNull": true
         },
         "owner_id": {
           "name": "owner_id",
           "type": "varchar(191)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "content": {
           "name": "content",
           "type": "text",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "repo_shared": {
           "name": "repo_shared",
           "type": "varchar(256)",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": "(now())"
+          "default": "now()"
         }
       },
       "indexes": {
-        "owner_id_idx": {
-          "name": "owner_id_idx",
+        "posts_owner_id_idx": {
+          "name": "posts_owner_id_idx",
           "columns": [
             "owner_id"
           ],
           "isUnique": false
         },
-        "repo_shared_idx": {
-          "name": "repo_shared_idx",
+        "posts_repo_shared_idx": {
+          "name": "posts_repo_shared_idx",
           "columns": [
             "repo_shared"
           ],
@@ -284,21 +285,31 @@
         }
       },
       "foreignKeys": {},
-      "compositePrimaryKeys": {
-        "posts_id": {
-          "name": "posts_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
+      "compositePrimaryKeys": {},
       "uniqueConstraints": {}
+    }
+  },
+  "enums": {
+    "github_action": {
+      "name": "github_action",
+      "values": {
+        "follow": "follow",
+        "star": "star",
+        "share": "share"
+      }
+    },
+    "post_action": {
+      "name": "post_action",
+      "values": {
+        "comment": "comment",
+        "like": "like"
+      }
     }
   },
   "schemas": {},
   "_meta": {
+    "columns": {},
     "schemas": {},
-    "tables": {},
-    "columns": {}
+    "tables": {}
   }
 }

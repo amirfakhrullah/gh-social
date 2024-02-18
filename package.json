@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "ts-node": "ts-node -O \"{\\\"module\\\":\\\"commonjs\\\"}\"",
-    "db:generate": "pnpm drizzle-kit generate:mysql",
+    "db:generate": "pnpm drizzle-kit generate:pg",
     "db:migrate": "tsx src/server/db/migrate.ts",
     "db:up": "pnpm drizzle-kit up:mysql"
   },
@@ -16,6 +16,7 @@
     "@clerk/nextjs": "^4.16.4",
     "@clerk/themes": "^1.6.3",
     "@hookform/resolvers": "^3.1.0",
+    "@neondatabase/serverless": "^0.8.1",
     "@planetscale/database": "^1.16.0",
     "@radix-ui/react-alert-dialog": "^1.0.3",
     "@radix-ui/react-avatar": "^1.0.2",

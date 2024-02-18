@@ -16,4 +16,5 @@ export default function Page({ searchParams }: PageProps) {
   return <SignIn signUpUrl="/sign-up" redirectUrl={redirectUrl} />;
 }
 
+export const runtime = "experimental-edge";
 export const revalidate = 0;

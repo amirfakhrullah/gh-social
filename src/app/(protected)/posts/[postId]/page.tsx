@@ -41,4 +41,5 @@ export default async function PostIdPage({ params: { postId } }: PageProps) {
   );
 }
 
+export const runtime = "experimental-edge";
 export const revalidate = 0;
