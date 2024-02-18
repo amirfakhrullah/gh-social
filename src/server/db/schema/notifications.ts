@@ -6,6 +6,8 @@ import {
   timestamp,
   varchar,
 } from "drizzle-orm/pg-core";
+import { posts } from "./posts";
+import { comments } from "./comments";
 
 export const githubAction = pgEnum("github_action", ["follow", "star", "share"]);
 export const postAction = pgEnum("post_action", ["comment", "like"]);

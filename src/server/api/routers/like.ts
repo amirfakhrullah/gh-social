@@ -48,8 +48,8 @@ export const likeRouter = createTRPCRouter({
         string,
         {
           post: Post;
-          commentsCount: string;
-          likesCount: string;
+          commentsCount: number;
+          likesCount: number;
         }
       >();
       for (const data of likedPostsWithCommentsAndLikes) {
