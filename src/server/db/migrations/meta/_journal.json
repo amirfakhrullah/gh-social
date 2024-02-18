@@ -8,6 +8,13 @@
       "when": 1708243465089,
       "tag": "0000_lame_silver_centurion",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1708245371978,
+      "tag": "0001_silky_patch",
+      "breakpoints": true
     }
   ]
 }

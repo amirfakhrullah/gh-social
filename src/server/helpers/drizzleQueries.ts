@@ -10,7 +10,7 @@ export const getPostsWithCommentsCountAndLikesCountQuery = (
   const postCommentsSq = db
     .select({
       postId: posts.id,
-      commentsCount: sql<number>`count(${comments.id})`.as("comments_count"),
+      commentsCount: sql<string>`count(${comments.id})`.as("comments_count"),
     })
     .from(posts)
     .leftJoin(comments, eq(comments.postId, posts.id))
@@ -20,7 +20,7 @@ export const getPostsWithCommentsCountAndLikesCountQuery = (
   const postLikesSq = db
     .select({
       postId: posts.id,
-      likesCount: sql<number>`count(${likes.id})`.as("likes_count"),
+      likesCount: sql<string>`count(${likes.id})`.as("likes_count"),
     })
     .from(posts)
     .leftJoin(likes, eq(likes.postId, posts.id))
@@ -31,10 +31,10 @@ export const getPostsWithCommentsCountAndLikesCountQuery = (
     .select({
       post: posts,
       commentsCount:
-        sql<number>`coalesce(${postCommentsSq.commentsCount}, 0)`.as(
+        sql<string>`coalesce(${postCommentsSq.commentsCount}, "0")`.as(
           "comments_count"
         ),
-      likesCount: sql<number>`coalesce(${postLikesSq.likesCount}, 0)`.as(
+      likesCount: sql<string>`coalesce(${postLikesSq.likesCount}, "0")`.as(
         "likes_count"
       ),
     })

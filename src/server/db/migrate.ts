@@ -23,14 +23,14 @@ const runMigrate = async () => {
     migrationsFolder: "src/server/db/migrations",
   });
 
-  const connection2 = await mysql.createConnection({
-    host: "",
-    user: "",
-    database: "",
-    password: "",
-    port: 0,
-  });
-  const db = drizzle(connection2);
+  // const connection2 = await mysql.createConnection({
+  //   host: "",
+  //   user: "",
+  //   database: "",
+  //   password: "",
+  //   port: 0,
+  // });
+  // const db = drizzle(connection2);
 
   // const allPosts = await db.select().from(posts);
   // const postsRes = await neonDb.insert(postsPg).values(allPosts);
