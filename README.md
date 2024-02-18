@@ -28,7 +28,7 @@ A social media platform for GitHub users built mostly with Experimental Edge sta
 - [tRPC](https://trpc.io/)
 - [Clerk](https://clerk.com/)
 - [Drizzle Orm](https://github.com/drizzle-team/drizzle-orm)
-- [PlanetScale's Database.js](https://github.com/planetscale/database-js)
+- [Neon Serverless](https://neon.tech/)
 
 ## Deployments/Hosting
 
