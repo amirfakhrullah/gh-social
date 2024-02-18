@@ -1,6 +1,6 @@
 # GitHub Social
 
-A social media platform for GitHub users.
+A social media platform for GitHub users built mostly with Experimental Edge stacks.
 
 > **Warning**
 > This project is using Next.js App Router, which is not production-ready yet. This project is built for learning/testing these stacks
