@@ -28,12 +28,12 @@ A social media platform for GitHub users built mostly with Experimental Edge sta
 - [tRPC](https://trpc.io/)
 - [Clerk](https://clerk.com/)
 - [Drizzle Orm](https://github.com/drizzle-team/drizzle-orm)
-- [Neon Serverless](https://neon.tech/)
+- [Neon Serverless](https://neon.tech/docs/serverless/serverless-driver#use-the-driver-over-http)
 
 ## Deployments/Hosting
 
 - Next.js: [Vercel](https://vercel.com/)
-- Database (MySQL): [PlanetScale](https://planetscale.com/)
+- Database (PostgreSQL): [Neon](https://neon.tech/)
 - Real-time Notifications: [Pusher](https://pusher.com/)
 
 ## Others
