@@ -255,23 +255,25 @@ export const postRouter = createTRPCRouter({
         });
       }
 
-      await db
-        .transaction(async (tx) => {
-          await tx
-            .delete(likes)
-            .where(eq(likes.postId, postNeededToBeDeleted.id));
-          await tx
-            .delete(comments)
-            .where(eq(comments.postId, postNeededToBeDeleted.id));
-          await tx.delete(posts).where(eq(posts.id, postNeededToBeDeleted.id));
-        })
-        .catch((err) => {
-          console.error(err);
-          throw new TRPCError({
-            code: "INTERNAL_SERVER_ERROR",
-            message:
-              "There's an error occured when trying to delete the comment.",
-          });
+      /**
+       * Neon doesn't support db transaction
+       */
+
+      try {
+        await db
+          .delete(likes)
+          .where(eq(likes.postId, postNeededToBeDeleted.id));
+        await db
+          .delete(comments)
+          .where(eq(comments.postId, postNeededToBeDeleted.id));
+        await db.delete(posts).where(eq(posts.id, postNeededToBeDeleted.id));
+      } catch (error) {
+        console.error(error);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message:
+            "There's an error occured when trying to delete the post.",
         });
+      }
     }),
 });
